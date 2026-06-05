@@ -14,5 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('home');
+})->name('home');
+
+Route::get('/lapangan/{id}', function ($id) {
+    return view('lapangan.detail_lapangan', compact('id'));
+})->name('lapangan.detail');
+
+Route::get('/registrasi', function () {
+    return view('auth.register');
+})->name('register');
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
