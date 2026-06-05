@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Reservasi Lapangan Badminton')</title>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+
+<body class="bg-white min-h-screen">
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-6 left-0 right-0 z-50 transition-all duration-300">
+
+        <div class="max-w-7xl mx-auto px-4 lg:px-6">
+
+            <div id="navbarContainer" class="bg-white shadow-lg rounded-full px-6 lg:px-8 transition-all duration-300">
+
+                <div class="flex justify-between items-center h-20">
+
+                    <!-- Logo -->
+                    <a href="/" class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl">
+                            🏸
+                        </div>
+
+                        <div>
+                            <h1 class="font-bold text-lg text-gray-800">
+                                Badminton
+                            </h1>
+                            <p class="text-xs text-gray-500">
+                                Reservation System
+                            </p>
+                        </div>
+                    </a>
+
+                    <!-- Menu Desktop -->
+                    <div class="hidden md:flex items-center gap-8">
+
+                        <a href=" {{ route('home') }}#lapangan-populer"
+                            class="text-gray-700 hover:text-green-500 font-medium transition">
+                            Lapangan
+                        </a>
+
+                        <a href="#pelatih"
+                            class="text-gray-700 hover:text-green-500 font-medium transition">
+                            Pelatih
+                        </a>
+
+                        <a href="#cari-teman"
+                            class="text-gray-700 hover:text-green-500 font-medium transition">
+                            Cari Teman
+                        </a>
+
+                        <a href="#promo"
+                            class="text-gray-700 hover:text-green-500 font-medium transition">
+                            Promo
+                        </a>
+
+                        <a href="#berita"
+                            class="text-gray-700 hover:text-green-500 font-medium transition">
+                            Berita
+                        </a>
+
+                    </div>
+
+                    <!-- Button Desktop -->
+                    <div class="hidden md:block">
+                        <a href="/reservasi"
+                            class="bg-gradient-to-r from-green-500 to-teal-500
+                               text-white px-6 py-3 rounded-full
+                               font-medium hover:scale-105 transition">
+                            Booking Sekarang
+                        </a>
+                    </div>
+
+                    <!-- Hamburger Mobile -->
+                    <button id="menuBtn"
+                        class="md:hidden text-3xl text-gray-700">
+                        ☰
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Overlay -->
+    <div id="overlay"
+        class="fixed inset-0 bg-black/50 hidden z-40 md:hidden">
+    </div>
+
+    <!-- Sidebar Mobile -->
+    <div id="mobileSidebar"
+        class="fixed top-0 right-0 h-screen w-[80%] max-w-xs
+           bg-gradient-to-b from-green-400 via-teal-500 to-cyan-600
+           z-50 transform translate-x-full
+           transition-transform duration-300 md:hidden">
+
+        <!-- Close Button -->
+        <div class="p-6">
+            <button id="closeMenu"
+                class="text-white text-3xl">
+                ✕
+            </button>
+        </div>
+
+        <!-- Menu -->
+        <div class="px-8">
+
+            <div class="flex flex-col space-y-2">
+
+                <a href="/"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
+        {{ request()->routeIs('home') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                    Home
+                </a>
+
+                <a href="/lapangan"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
+        {{ request()->routeIs('lapangan') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                    Lapangan
+                </a>
+
+                <a href="/pelatih"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
+        {{ request()->routeIs('pelatih') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                    Pelatih
+                </a>
+
+                <a href="/cari-teman"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
+        {{ request()->routeIs('cari-teman') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                    Cari Teman
+                </a>
+
+                <a href="/promo"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
+        {{ request()->routeIs('promo') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                    Promo
+                </a>
+
+                <a href="/berita"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
+        {{ request()->routeIs('berita') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                    Berita
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="absolute bottom-8 left-0 right-0">
+
+            <div class="flex justify-center gap-4">
+
+                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white">
+                    f
+                </div>
+
+                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white">
+                    x
+                </div>
+
+                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white">
+                    ig
+                </div>
+
+                <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white">
+                    in
+                </div>
+
+            </div>
+
+            <p class="text-center text-white/80 text-sm mt-5">
+                © Copyright 2026
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Content -->
+    <main>
+        @yield('content')
+    </main>
+
+    <!-- Script Sidebar -->
+    <script>
+        // Sidebar
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenu = document.getElementById('closeMenu');
+        const sidebar = document.getElementById('mobileSidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            sidebar.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.add('translate-x-full');
+            overlay.classList.add('hidden');
+        });
+
+        // Navbar Scroll Effect
+        const navbar = document.getElementById('navbar');
+        const navbarContainer = document.getElementById('navbarContainer');
+
+        window.addEventListener('scroll', () => {
+
+            if (window.scrollY > 50) {
+
+                navbar.classList.remove('top-6');
+                navbar.classList.add('top-0');
+
+                navbarContainer.classList.remove('rounded-full');
+                navbarContainer.classList.add('rounded-full');
+
+            } else {
+
+                navbar.classList.remove('top-0');
+                navbar.classList.add('top-6');
+
+                navbarContainer.classList.remove('rounded-full');
+                navbarContainer.classList.add('rounded-full');
+
+            }
+        });
+    </script>
+
+    @if(isset($showFooter) && $showFooter)
+    @include('partials.footer')
+    @endif
+</body>
+
+</html>
