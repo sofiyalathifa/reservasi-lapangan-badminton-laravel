@@ -7,22 +7,22 @@
 <main class="bg-white overflow-hidden">
 
     {{-- HERO SECTION --}}
-    <section id="hero" class="relative min-h-screen overflow-hidden bg-white pt-28 lg:pt-0">
+    <section id="hero" class="relative z-20 min-h-screen bg-white pt-28 lg:pt-0">
 
         <div class="absolute top-0 right-[-180px] w-[350px] h-[350px]
-            lg:-top-32 lg:right-[-150px] lg:w-[700px] lg:h-[700px]
+            lg:top-4 lg:right-[-100px] lg:w-[550px] lg:h-[550px]
             rounded-full bg-gray-200">
         </div>
 
         <div class="absolute top-8 right-[-120px] w-[300px] h-[300px]
-            lg:-top-24 lg:right-[-100px] lg:w-[620px] lg:h-[620px]
+            lg:top-12 lg:right-[-60px] lg:w-[480px] lg:h-[480px]
             rounded-full overflow-hidden">
             <img src="{{ asset('images/banner1.jpeg') }}"
                 alt="Badminton"
                 class="w-full h-full object-cover">
         </div>
 
-        <div class="max-w-7xl mx-auto px-6 relative z-10 min-h-screen flex items-center pt-24 pb-20 lg:pt-24 lg:pb-24">
+        <div class="max-w-7xl mx-auto px-6 relative z-10 min-h-screen pt-24 pb-20 lg:pt-28 lg:pb-24">
             <div class="max-w-xl">
 
                 <p class="text-green-500 uppercase tracking-[4px] font-semibold mb-4">
@@ -280,7 +280,7 @@
                     <div class="space-y-4">
                         @foreach ($coaches as $coach)
                         <div
-                            class="flex flex-col justify-between gap-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-300 hover:shadow-lg sm:flex-row sm:items-center">
+                            class="flex flex-col justify-between gap-5 rounded-xl border border-slate-200 bg-green-50/50 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-300 hover:shadow-lg sm:flex-row sm:items-center">
 
                             <div>
                                 <span
@@ -307,7 +307,7 @@
                                 </span>
 
                                 <a href="#"
-                                    class="inline-flex items-center rounded-full bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-gradient-to-r from-green-500 to-teal-500 hover:text-white">
+                                    class="inline-flex items-center rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 px-5 py-3 text-sm font-semibold text-white transition">
                                     Booking Coach
 
                                     <svg class="ml-3" width="4" height="8" viewBox="0 0 3 6"
@@ -346,7 +346,7 @@
                     <div class="space-y-4">
                         @foreach ($partners as $partner)
                         <div
-                            class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:shadow-lg">
+                            class="rounded-xl border border-slate-200 bg-teal-50/50 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:shadow-lg">
 
                             <div class="flex items-start justify-between gap-4">
                                 <div>
@@ -370,7 +370,7 @@
                             </p>
 
                             <a href="#"
-                                class="mt-5 inline-flex items-center rounded-full bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-gradient-to-r from-green-500 to-teal-500 hover:text-white">
+                                class="mt-5 inline-flex items-center rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 px-5 py-3 text-sm font-semibold text-white transition">
                                 Ajak Main
 
                                 <svg class="ml-3" width="4" height="8" viewBox="0 0 3 6"

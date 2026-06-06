@@ -57,9 +57,9 @@
                                 <span class="inline-flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">06.00 - 23.00</span>
                             </div>
                             <span class="inline-block mt-2 px-3 py-1 text-green-200 bg-green-800/30 rounded-full text-sm">Tersedia</span>
-                            <button class="mt-4 w-full bg-gradient-to-r from-green-400 to-green-500 font-medium py-2 rounded-lg shadow hover:from-green-500 hover:to-green-600 transition-colors">
+                            <a href="{{ route('reservasi.create', ['id' => $id]) }}" class="mt-4 block text-center w-full bg-gradient-to-r from-green-400 to-green-500 font-medium py-2 rounded-lg shadow hover:from-green-500 hover:to-green-600 transition-colors">
                                 Booking Sekarang
-                            </button>
+                            </a>
                         </div>
 
                         <!-- Fasilitas -->

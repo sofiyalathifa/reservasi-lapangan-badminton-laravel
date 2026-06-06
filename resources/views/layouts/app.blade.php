@@ -12,7 +12,7 @@
 <body class="bg-white min-h-screen">
 
     <!-- Navbar -->
-    <nav id="navbar" class="fixed top-6 left-0 right-0 z-50 transition-all duration-300">
+    <nav id="navbar" class="fixed top-2 left-0 right-0 z-50 transition-all duration-300">
 
         <div class="max-w-7xl mx-auto px-4 lg:px-6">
 
@@ -68,12 +68,35 @@
 
                     <!-- Button Desktop -->
                     <div class="hidden md:block">
-                        <a href="/reservasi"
-                            class="bg-gradient-to-r from-green-500 to-teal-500
-                               text-white px-6 py-3 rounded-full
-                               font-medium hover:scale-105 transition">
-                            Booking Sekarang
-                        </a>
+                        @auth
+                            <div class="relative group cursor-pointer pt-2 pb-2">
+                                <!-- Profile Initial Avatar -->
+                                <div class="w-11 h-11 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold text-lg uppercase shadow-md hover:shadow-lg transition">
+                                    {{ substr(Auth::user()->name, 0, 1) }}
+                                </div>
+                                
+                                <!-- Dropdown Menu -->
+                                <div class="absolute right-0 top-full mt-1 w-56 bg-white rounded-xl shadow-xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-100">
+                                    <div class="px-4 py-3 border-b border-gray-100">
+                                        <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::user()->name }}</p>
+                                        <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
+                                    </div>
+                                    <form method="POST" action="{{ route('logout') }}" class="pt-1">
+                                        @csrf
+                                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition">
+                                            Sign out
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        @else
+                            <a href="/login"
+                                class="bg-gradient-to-r from-green-500 to-teal-500
+                                   text-white px-6 py-3 rounded-full
+                                   font-medium hover:scale-105 transition">
+                                Login
+                            </a>
+                        @endauth
                     </div>
 
                     <!-- Hamburger Mobile -->
@@ -215,25 +238,30 @@
         // Navbar Scroll Effect
         const navbar = document.getElementById('navbar');
         const navbarContainer = document.getElementById('navbarContainer');
+        let scrollTimeout;
 
         window.addEventListener('scroll', () => {
 
+            // Sembunyikan navbar saat scroll (jika tidak sedang di paling atas)
             if (window.scrollY > 50) {
+                navbar.style.transform = 'translateY(-150%)';
+            }
 
-                navbar.classList.remove('top-6');
+            // Hapus timeout sebelumnya agar tidak tumpang tindih
+            clearTimeout(scrollTimeout);
+
+            // Set timeout baru untuk memunculkan navbar setelah scroll berhenti (misal: 250ms)
+            scrollTimeout = setTimeout(() => {
+                navbar.style.transform = 'translateY(0)';
+            }, 250);
+
+            if (window.scrollY > 50) {
+                navbar.classList.remove('top-2');
                 navbar.classList.add('top-0');
-
-                navbarContainer.classList.remove('rounded-full');
-                navbarContainer.classList.add('rounded-full');
-
             } else {
-
                 navbar.classList.remove('top-0');
-                navbar.classList.add('top-6');
-
-                navbarContainer.classList.remove('rounded-full');
-                navbarContainer.classList.add('rounded-full');
-
+                navbar.classList.add('top-2');
+                navbar.style.transform = 'translateY(0)'; // Pastikan selalu muncul jika di atas
             }
         });
     </script>
