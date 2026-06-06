@@ -24,6 +24,18 @@
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
                     <h2 class="text-lg font-semibold text-gray-800 mb-6 border-b border-gray-100 pb-4">Detail Jadwal Main</h2>
                     
+                    @if(session('error'))
+                    <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3">
+                        <div class="flex-shrink-0 mt-0.5">
+                            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-medium text-red-800">Pemesanan Gagal</h3>
+                            <p class="text-sm text-red-600 mt-1">{{ session('error') }}</p>
+                        </div>
+                    </div>
+                    @endif
+                    
                     <form action="{{ route('reservasi.store', ['id' => $id]) }}" method="POST" id="bookingForm">
                         @csrf
                         
@@ -150,7 +162,7 @@
                             <label class="block text-sm font-semibold text-gray-800 mb-2">Punya Kode Promo?</label>
                             <div class="flex gap-2">
                                 <input type="text" id="promoInput" placeholder="Masukkan kode" class="w-full px-3 py-2 uppercase text-sm rounded-lg border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors">
-                                <button type="button" onclick="terapkanPromo()" class="px-4 py-2 bg-gray-100 hover:bg-green-50 text-gray-700 hover:text-green-700 text-sm font-bold rounded-lg transition-colors border border-gray-200 hover:border-green-200">Terakan</button>
+                                <button type="button" onclick="terapkanPromo()" class="px-4 py-2 bg-gray-100 hover:bg-green-50 text-gray-700 hover:text-green-700 text-sm font-bold rounded-lg transition-colors border border-gray-200 hover:border-green-200">Terapkan</button>
                             </div>
                             <p id="promoMessage" class="text-xs mt-2 hidden"></p>
                         </div>
@@ -271,6 +283,9 @@
 
         // Render ulang jam yang tersedia untuk tanggal ini
         renderTimeSlots(dateValue);
+        
+        // Cek ulang promo jika tanggal berubah
+        updateTotal();
     }
 
     function selectTime(element) {
@@ -283,10 +298,54 @@
         // Render ulang untuk mengubah style tombol aktif
         const dateValue = document.getElementById('selectedDate').value;
         renderTimeSlots(dateValue);
+        
+        // Cek ulang promo jika jam berubah
+        updateTotal();
     }
 
     const promos = JSON.parse(bookingDataElement.getAttribute('data-promos'));
     let diskonTerapan = 0;
+
+    function checkPromoValidity(promo, durasi, totalAwal) {
+        if (promo.min_durasi !== null && durasi < promo.min_durasi) {
+            return { valid: false, msg: 'Promo ini membutuhkan minimal pemesanan ' + promo.min_durasi + ' Jam.' };
+        }
+        if (promo.min_total_harga !== null && totalAwal < promo.min_total_harga) {
+            return { valid: false, msg: 'Promo ini berlaku untuk transaksi minimal Rp ' + promo.min_total_harga.toLocaleString('id-ID') + '.' };
+        }
+        
+        if (promo.hari_berlaku || promo.jam_mulai_berlaku || promo.jam_selesai_berlaku) {
+            const selectedDate = document.getElementById('selectedDate').value;
+            const selectedTime = document.getElementById('selectedTime').value;
+            
+            if (!selectedDate || !selectedTime) {
+                return { valid: false, msg: 'Silakan pilih tanggal dan jam main terlebih dahulu untuk promo ini.' };
+            }
+            
+            if (promo.hari_berlaku) {
+                const dateObj = new Date(selectedDate);
+                const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
+                if (promo.hari_berlaku === 'weekday' && isWeekend) {
+                    return { valid: false, msg: 'Promo ini hanya berlaku pada hari kerja (Senin-Jumat).' };
+                }
+                if (promo.hari_berlaku === 'weekend' && !isWeekend) {
+                    return { valid: false, msg: 'Promo ini hanya berlaku pada akhir pekan (Sabtu-Minggu).' };
+                }
+            }
+            
+            if (promo.jam_mulai_berlaku || promo.jam_selesai_berlaku) {
+                const selectedTimeStr = selectedTime + ":00";
+                if (promo.jam_mulai_berlaku && selectedTimeStr < promo.jam_mulai_berlaku) {
+                    return { valid: false, msg: 'Promo ini baru berlaku mulai pukul ' + promo.jam_mulai_berlaku.substring(0,5) + ' WIB.' };
+                }
+                if (promo.jam_selesai_berlaku && selectedTimeStr >= promo.jam_selesai_berlaku) {
+                    return { valid: false, msg: 'Promo ini hanya berlaku sebelum pukul ' + promo.jam_selesai_berlaku.substring(0,5) + ' WIB.' };
+                }
+            }
+        }
+        
+        return { valid: true, msg: 'Promo berhasil diterapkan: ' + promo.nama_promo };
+    }
 
     function terapkanPromo() {
         const inputKode = document.getElementById('promoInput').value.trim().toUpperCase();
@@ -304,7 +363,19 @@
         const validPromo = promos.find(p => p.kode_promo.toUpperCase() === inputKode);
         
         if (validPromo) {
-            msgEl.textContent = 'Promo berhasil diterapkan: ' + validPromo.nama_promo;
+            const durasi = parseInt(document.getElementById('durasiSelect').value);
+            const harga = parseInt(document.getElementById('hargaPerJam').getAttribute('data-harga'));
+            const total = durasi * harga;
+
+            const check = checkPromoValidity(validPromo, durasi, total);
+            if (!check.valid) {
+                msgEl.textContent = check.msg;
+                msgEl.className = 'text-xs mt-2 text-red-500 block';
+                resetPromo();
+                return;
+            }
+
+            msgEl.textContent = check.msg;
             msgEl.className = 'text-xs mt-2 text-green-500 block';
             hiddenInput.value = validPromo.kode_promo;
             diskonContainer.classList.remove('hidden');
@@ -334,16 +405,29 @@
         if (hiddenKode) {
              const validPromo = promos.find(p => p.kode_promo.toUpperCase() === hiddenKode);
              if (validPromo) {
-                 if (validPromo.tipe_diskon === 'persen') {
-                     diskonTerapan = total * (validPromo.nilai_diskon / 100);
+                 const check = checkPromoValidity(validPromo, durasi, total);
+                 if (!check.valid) {
+                     document.getElementById('promoMessage').textContent = check.msg;
+                     document.getElementById('promoMessage').className = 'text-xs mt-2 text-red-500 block';
+                     
+                     diskonTerapan = 0;
+                     document.getElementById('hiddenKodePromo').value = '';
+                     document.getElementById('diskonContainer').classList.add('hidden');
                  } else {
-                     diskonTerapan = parseInt(validPromo.nilai_diskon);
+                     document.getElementById('promoMessage').textContent = check.msg;
+                     document.getElementById('promoMessage').className = 'text-xs mt-2 text-green-500 block';
+                     
+                     if (validPromo.tipe_diskon === 'persen') {
+                         diskonTerapan = total * (validPromo.nilai_diskon / 100);
+                     } else {
+                         diskonTerapan = parseInt(validPromo.nilai_diskon);
+                     }
+                     
+                     if (diskonTerapan > total) diskonTerapan = total;
+                     
+                     document.getElementById('displayDiskon').innerText = '- Rp ' + diskonTerapan.toLocaleString('id-ID');
+                     total -= diskonTerapan;
                  }
-                 
-                 if (diskonTerapan > total) diskonTerapan = total;
-                 
-                 document.getElementById('displayDiskon').innerText = '- Rp ' + diskonTerapan.toLocaleString('id-ID');
-                 total -= diskonTerapan;
              }
         } else {
              diskonTerapan = 0;

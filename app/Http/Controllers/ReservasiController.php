@@ -45,7 +45,14 @@ class ReservasiController extends Controller
             }
         }
 
-        $promos = \App\Models\Promo::where('status', true)->get();
+        $allPromos = \App\Models\Promo::where('status', true)->get();
+        $validPromos = [];
+        foreach ($allPromos as $promo) {
+            if ($promo->isValidForUser(auth()->id())['is_valid']) {
+                $validPromos[] = $promo;
+            }
+        }
+        $promos = collect($validPromos);
 
         return view('reservasi.create', compact('lapangan', 'bookedSlots', 'id', 'promos'));
     }
@@ -75,8 +82,18 @@ class ReservasiController extends Controller
         $kode_promo = $request->kode_promo;
 
         if ($kode_promo) {
-            $promo = \App\Models\Promo::where('kode_promo', $kode_promo)->where('status', true)->first();
+            $promo = \App\Models\Promo::where('kode_promo', $kode_promo)->first();
             if ($promo) {
+                $validation = $promo->isValidForUser(auth()->id());
+                if (!$validation['is_valid']) {
+                    return back()->with('error', 'Gagal menggunakan promo: ' . $validation['message'])->withInput();
+                }
+
+                $bookingValidation = $promo->isValidForBooking($durasi, $totalBiaya, $request->tanggal, $request->jam_mulai);
+                if (!$bookingValidation['is_valid']) {
+                    return back()->with('error', 'Gagal menggunakan promo: ' . $bookingValidation['message'])->withInput();
+                }
+
                 if ($promo->tipe_diskon === 'persen') {
                     $diskon = $totalBiaya * ($promo->nilai_diskon / 100);
                 } else {
@@ -87,6 +104,11 @@ class ReservasiController extends Controller
                     $diskon = $totalBiaya;
                 }
                 $totalBiaya -= $diskon;
+
+                // Kurangi kuota jika promo digunakan dan punya batasan kuota global
+                if ($promo->kuota_total !== null) {
+                    $promo->decrement('kuota_total');
+                }
             } else {
                 $kode_promo = null;
             }

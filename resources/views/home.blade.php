@@ -464,7 +464,7 @@
                             <span class="shrink-0 rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700">
                                 {{ $promo->kode_promo }}
                             </span>
-                            <button type="button" onclick="salinPromo('{{ $promo->kode_promo }}')"
+                            <button type="button" onclick="salinPromo(this, '{{ $promo->kode_promo }}')"
                                 class="ml-auto inline-flex shrink-0 items-center whitespace-nowrap text-xs font-semibold text-green-500 transition hover:text-green-600 sm:text-sm">
                                 Klaim Promo
                                 <span class="ml-2">›</span>
@@ -493,9 +493,21 @@
     </section>
 
     <script>
-        function salinPromo(kode) {
+        function salinPromo(btn, kode) {
             navigator.clipboard.writeText(kode).then(() => {
-                alert('Berhasil mengklaim! Kode promo [' + kode + '] telah disalin ke clipboard.');
+                const originalContent = btn.innerHTML;
+                
+                // Ubah tampilan tombol menjadi sukses
+                btn.innerHTML = `<svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Tersalin!`;
+                btn.classList.add('text-green-600', 'scale-105');
+                btn.classList.remove('hover:text-green-600');
+                
+                // Kembalikan ke semula setelah 2.5 detik
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.classList.remove('text-green-600', 'scale-105');
+                    btn.classList.add('hover:text-green-600');
+                }, 2500);
             }).catch(err => {
                 alert('Gagal menyalin kode promo.');
             });

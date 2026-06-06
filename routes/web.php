@@ -16,7 +16,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     $lapangans = \App\Models\Lapangan::all();
     $beritas = \App\Models\Berita::latest('tanggal_publikasi')->take(6)->get();
-    $promos = \App\Models\Promo::where('status', true)->get();
+    
+    // Hanya tampilkan promo aktif, kuota masih ada, dan belum kadaluarsa
+    $promos = \App\Models\Promo::where('status', true)->get()->filter(function ($promo) {
+        if ($promo->tanggal_berakhir && $promo->tanggal_berakhir->isPast()) return false;
+        if ($promo->kuota_total !== null && $promo->kuota_total <= 0) return false;
+        return true;
+    });
+
     return view('home', compact('lapangans', 'beritas', 'promos'));
 })->name('home');
 
