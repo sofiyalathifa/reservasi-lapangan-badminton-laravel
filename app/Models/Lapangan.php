@@ -16,4 +16,8 @@ class Lapangan extends Model
     public $timestamps = false;
 
     protected $guarded = [];
+    public function ulasans()
+    {
+        return $this->hasMany(Ulasan::class, 'id_lapangan', 'id_lapangan');
+    }
 }

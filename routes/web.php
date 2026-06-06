@@ -28,6 +28,7 @@ Route::get('/lapangan/{id}', function ($id) {
 
 Route::get('/lapangan/{id}/booking', [ReservasiController::class, 'create'])->name('reservasi.create')->middleware('auth');
 Route::post('/lapangan/{id}/booking', [ReservasiController::class, 'store'])->name('reservasi.store')->middleware('auth');
+Route::post('/reservasi/{id}/ulasan', [ReservasiController::class, 'storeUlasan'])->name('reservasi.ulasan')->middleware('auth');
 
 Route::get('/pembayaran/{id_reservasi}', [PembayaranController::class, 'create'])->name('pembayaran.create')->middleware('auth');
 Route::post('/pembayaran/{id_reservasi}', [PembayaranController::class, 'store'])->name('pembayaran.store')->middleware('auth');

@@ -34,4 +34,9 @@ class Reservasi extends Model
     {
         return $this->hasOne(Pembayaran::class, 'id_reservasi', 'id_reservasi');
     }
+
+    public function ulasan()
+    {
+        return $this->hasOne(Ulasan::class, 'id_reservasi', 'id_reservasi');
+    }
 }

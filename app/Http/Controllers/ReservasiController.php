@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Lapangan;
 use App\Models\Reservasi;
+use App\Models\Ulasan;
 use Illuminate\Support\Str;
 
 class ReservasiController extends Controller
@@ -126,5 +127,52 @@ class ReservasiController extends Controller
         $reservasi->update(['status_reservasi' => 'dibatalkan']);
 
         return back()->with('success', 'Pesanan berhasil dibatalkan.');
+    }
+
+    public function storeUlasan(Request $request, $id)
+    {
+        $reservasi = Reservasi::where('id_reservasi', $id)->with('lapangan')->firstOrFail();
+
+        // Pastikan hanya pemilik yang bisa memberi ulasan
+        if ($reservasi->id_pengguna !== auth()->id()) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        // Pastikan reservasi sudah selesai
+        $isPast = \Carbon\Carbon::parse($reservasi->tanggal_booking . ' ' . $reservasi->jam_selesai)->isPast();
+        if ($reservasi->status_reservasi !== 'dikonfirmasi' || !$isPast) {
+            return back()->with('error', 'Anda belum bisa memberikan ulasan untuk sesi ini.');
+        }
+
+        // Pastikan belum pernah memberi ulasan
+        if ($reservasi->ulasan()->exists()) {
+            return back()->with('error', 'Anda sudah memberikan ulasan untuk sesi ini.');
+        }
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'komentar' => 'nullable|string',
+        ]);
+
+        // Simpan ulasan
+        Ulasan::create([
+            'id_reservasi' => $reservasi->id_reservasi,
+            'id_lapangan' => $reservasi->id_lapangan,
+            'id_user' => auth()->id(),
+            'rating' => $request->rating,
+            'komentar' => $request->komentar,
+        ]);
+
+        // Update rating lapangan
+        $lapangan = $reservasi->lapangan;
+        $totalUlasan = $lapangan->ulasans()->count();
+        $avgRating = $lapangan->ulasans()->avg('rating');
+
+        $lapangan->update([
+            'rating' => round($avgRating, 1),
+            'jumlah_ulasan' => $totalUlasan
+        ]);
+
+        return back()->with('success_review', 'Terima kasih! Ulasan Anda berhasil disimpan.');
     }
 }
