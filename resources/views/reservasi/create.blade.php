@@ -101,6 +101,7 @@
                                     <textarea name="catatan" rows="1" placeholder="Cth: Sewa 2 sepatu..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-gray-50 hover:bg-white font-medium text-gray-700"></textarea>
                                 </div>
                             </div>
+                            <input type="hidden" name="kode_promo" id="hiddenKodePromo">
 
                         </div>
                     </form>
@@ -142,6 +143,25 @@
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </span>
                             <span class="font-bold text-green-500">Gratis</span>
+                        </div>
+
+                        <!-- Promo Input -->
+                        <div class="pt-2 pb-5 border-b border-gray-100">
+                            <label class="block text-sm font-semibold text-gray-800 mb-2">Punya Kode Promo?</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="promoInput" placeholder="Masukkan kode" class="w-full px-3 py-2 uppercase text-sm rounded-lg border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors">
+                                <button type="button" onclick="terapkanPromo()" class="px-4 py-2 bg-gray-100 hover:bg-green-50 text-gray-700 hover:text-green-700 text-sm font-bold rounded-lg transition-colors border border-gray-200 hover:border-green-200">Terakan</button>
+                            </div>
+                            <p id="promoMessage" class="text-xs mt-2 hidden"></p>
+                        </div>
+                        
+                        <!-- Rincian Diskon -->
+                        <div class="flex justify-between text-sm items-center text-orange-500 hidden" id="diskonContainer">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                                Diskon Promo
+                            </span>
+                            <span class="font-bold font-mono" id="displayDiskon">- Rp 0</span>
                         </div>
                         
                         <!-- Total -->
@@ -187,7 +207,7 @@
     }
 </style>
 
-<div id="booking-data" data-booked-slots="{{ json_encode($bookedSlots) }}" style="display: none;"></div>
+<div id="booking-data" data-booked-slots="{{ json_encode($bookedSlots) }}" data-promos="{{ json_encode($promos) }}" style="display: none;"></div>
 <script>
     const bookingDataElement = document.getElementById('booking-data');
     const bookedSlots = JSON.parse(bookingDataElement.getAttribute('data-booked-slots'));
@@ -265,12 +285,69 @@
         renderTimeSlots(dateValue);
     }
 
+    const promos = JSON.parse(bookingDataElement.getAttribute('data-promos'));
+    let diskonTerapan = 0;
+
+    function terapkanPromo() {
+        const inputKode = document.getElementById('promoInput').value.trim().toUpperCase();
+        const msgEl = document.getElementById('promoMessage');
+        const diskonContainer = document.getElementById('diskonContainer');
+        const hiddenInput = document.getElementById('hiddenKodePromo');
+        
+        if (!inputKode) {
+            msgEl.textContent = 'Masukkan kode promo terlebih dahulu.';
+            msgEl.className = 'text-xs mt-2 text-red-500 block';
+            resetPromo();
+            return;
+        }
+
+        const validPromo = promos.find(p => p.kode_promo.toUpperCase() === inputKode);
+        
+        if (validPromo) {
+            msgEl.textContent = 'Promo berhasil diterapkan: ' + validPromo.nama_promo;
+            msgEl.className = 'text-xs mt-2 text-green-500 block';
+            hiddenInput.value = validPromo.kode_promo;
+            diskonContainer.classList.remove('hidden');
+            updateTotal();
+        } else {
+            msgEl.textContent = 'Kode promo tidak valid atau tidak ditemukan.';
+            msgEl.className = 'text-xs mt-2 text-red-500 block';
+            resetPromo();
+        }
+    }
+    
+    function resetPromo() {
+        diskonTerapan = 0;
+        document.getElementById('hiddenKodePromo').value = '';
+        document.getElementById('diskonContainer').classList.add('hidden');
+        updateTotal();
+    }
+
     function updateTotal() {
-        const durasi = document.getElementById('durasiSelect').value;
+        const durasi = parseInt(document.getElementById('durasiSelect').value);
         const hargaElement = document.getElementById('hargaPerJam');
         const harga = parseInt(hargaElement.getAttribute('data-harga'));
         
-        const total = durasi * harga;
+        let total = durasi * harga;
+        
+        const hiddenKode = document.getElementById('hiddenKodePromo').value;
+        if (hiddenKode) {
+             const validPromo = promos.find(p => p.kode_promo.toUpperCase() === hiddenKode);
+             if (validPromo) {
+                 if (validPromo.tipe_diskon === 'persen') {
+                     diskonTerapan = total * (validPromo.nilai_diskon / 100);
+                 } else {
+                     diskonTerapan = parseInt(validPromo.nilai_diskon);
+                 }
+                 
+                 if (diskonTerapan > total) diskonTerapan = total;
+                 
+                 document.getElementById('displayDiskon').innerText = '- Rp ' + diskonTerapan.toLocaleString('id-ID');
+                 total -= diskonTerapan;
+             }
+        } else {
+             diskonTerapan = 0;
+        }
         
         // Update display
         document.getElementById('displayDurasi').innerText = durasi;

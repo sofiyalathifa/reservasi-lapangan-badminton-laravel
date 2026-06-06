@@ -15,9 +15,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $lapangans = \App\Models\Lapangan::all();
-    return view('home', compact('lapangans'));
+    $beritas = \App\Models\Berita::latest('tanggal_publikasi')->take(6)->get();
+    $promos = \App\Models\Promo::where('status', true)->get();
+    return view('home', compact('lapangans', 'beritas', 'promos'));
 })->name('home');
 
+use App\Http\Controllers\BeritaController;
+Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('berita.show');
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\PembayaranController;
 
@@ -56,7 +60,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 use App\Http\Controllers\AdminController;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/reservasi', [AdminController::class, 'index'])->name('reservasi.index');
-    Route::post('/reservasi/{id}/konfirmasi', [AdminController::class, 'konfirmasi'])->name('reservasi.konfirmasi');
-    Route::post('/reservasi/{id}/tolak', [AdminController::class, 'tolak'])->name('reservasi.tolak');
+    // Route::get('/reservasi', [AdminController::class, 'index'])->name('reservasi.index');
+    // Route::post('/reservasi/{id}/konfirmasi', [AdminController::class, 'konfirmasi'])->name('reservasi.konfirmasi');
+    // Route::post('/reservasi/{id}/tolak', [AdminController::class, 'tolak'])->name('reservasi.tolak');
 });

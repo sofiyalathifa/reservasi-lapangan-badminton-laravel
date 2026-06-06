@@ -424,99 +424,52 @@
                 </div>
 
 
-                {{-- HAPPY HOUR --}}
+                @foreach($promos as $promo)
                 <article
                     class="group flex min-h-[370px] flex-col rounded-md bg-white p-10 shadow-lg transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl">
 
                     <span class="w-fit rounded-full bg-orange-100 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-orange-600">
-                        Hemat
+                        {{ $promo->tag }}
                     </span>
 
                     <h3 class="mt-5 text-3xl font-bold leading-tight text-slate-900">
-                        Happy Hour Weekday
+                        {{ $promo->nama_promo }}
                     </h3>
 
                     <p class="mt-5 flex-1 leading-8 text-slate-500">
-                        Dapatkan diskon 25% untuk booking lapangan pada pukul 10.00–15.00.
+                        {{ $promo->deskripsi }}
                     </p>
 
                     <div class="mt-auto flex w-full items-center gap-2 pt-6">
                         <span
                             class="shrink-0 rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700">
-                            HAPPY25
+                            {{ $promo->kode_promo }}
                         </span>
 
-                        <a href="#"
+                        <button type="button" onclick="salinPromo('{{ $promo->kode_promo }}')"
                             class="ml-auto inline-flex shrink-0 items-center whitespace-nowrap text-xs font-semibold text-green-500 transition hover:text-green-600 sm:text-sm">
                             Klaim Promo
                             <span class="ml-2">›</span>
-                        </a>
+                        </button>
                     </div>
 
                 </article>
+                @endforeach
 
+            </div>
 
-                {{-- PAKET MAIN DAN PELATIH --}}
-                <article
-                    class="group flex h-full min-h-[370px] flex-col rounded-md bg-white p-10 shadow-lg transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl">
+        </div>
+    </section>
 
-                    <span class="w-fit rounded-full bg-orange-100 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-orange-600">
-                        Favorit
-                    </span>
-
-                    <h3 class="mt-5 text-3xl font-bold leading-tight text-slate-900">
-                        Paket Main + Pelatih
-                    </h3>
-
-                    <p class="mt-5 flex-1 leading-8 text-slate-500">
-                        Gratis shuttlecock untuk pemesanan sesi latihan dengan durasi minimal dua jam.
-                    </p>
-
-                    <div class="mt-auto flex w-full items-center gap-2 pt-6">
-                        <span
-                            class="shrink-0 rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700">
-                            COACHPLAY
-                        </span>
-
-                        <a href="#"
-                            class="ml-auto inline-flex shrink-0 items-center whitespace-nowrap text-xs font-semibold text-green-500 transition hover:text-green-600 sm:text-sm">
-                            Klaim Promo
-                            <span class="ml-2">›</span>
-                        </a>
-                    </div>
-
-                </article>
-
-
-                {{-- MEMBER REFERRAL --}}
-                <article
-                    class="group flex min-h-[370px] flex-col rounded-md bg-white p-10 shadow-lg transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl">
-
-                    <span class="w-fit rounded-full bg-orange-100 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-orange-600">
-                        Baru
-                    </span>
-
-                    <h3 class="mt-5 text-3xl font-bold leading-tight text-slate-900">
-                        Member Referral
-                    </h3>
-
-                    <p class="mt-5 flex-1 leading-8 text-slate-500">
-                        Ajak teman untuk bergabung dan dapatkan voucher booking senilai Rp50.000.
-                    </p>
-
-                    <div class="mt-auto flex w-full items-center gap-2 pt-6">
-                        <span
-                            class="shrink-0 rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700">
-                            REFER50
-                        </span>
-
-                        <a href="#"
-                            class="ml-auto inline-flex shrink-0 items-center whitespace-nowrap text-xs font-semibold text-green-500 transition hover:text-green-600 sm:text-sm">
-                            Klaim Promo
-                            <span class="ml-2">›</span>
-                        </a>
-                    </div>
-                </article>
+    <script>
+        function salinPromo(kode) {
+            navigator.clipboard.writeText(kode).then(() => {
+                alert('Berhasil mengklaim! Kode promo [' + kode + '] telah disalin ke clipboard.');
+            }).catch(err => {
+                alert('Gagal menyalin kode promo.');
+            });
+        }
+    </script>
 
             </div>
 
@@ -553,45 +506,45 @@
             {{-- BERITA CONTENT --}}
             <div class="grid grid-cols-1 items-start gap-12 lg:grid-cols-12">
 
+                @if($beritas->count() > 0)
                 {{-- ARTIKEL UTAMA --}}
                 <article class="lg:col-span-7">
 
-                    <a href="#"
+                    <a href="{{ route('berita.show', $beritas[0]->slug) }}"
                         class="group block overflow-hidden rounded-2xl">
 
                         <img
-                            src="{{ asset('images/banner.jpeg') }}"
-                            alt="Tips meningkatkan permainan badminton"
+                            src="{{ asset('images/' . $beritas[0]->gambar) }}"
+                            alt="{{ $beritas[0]->judul }}"
                             class="h-72 w-full object-cover transition duration-500 group-hover:scale-105 md:h-96">
 
                     </a>
 
                     <div class="mt-6">
 
-                        <a href="#"
+                        <a href="{{ route('berita.show', $beritas[0]->slug) }}"
                             class="text-xs font-semibold uppercase tracking-wide text-green-500 transition hover:text-green-600">
-                            Tips Bermain
+                            {{ $beritas[0]->kategori }}
                         </a>
 
                         <h3 class="mt-3">
-                            <a href="#"
+                            <a href="{{ route('berita.show', $beritas[0]->slug) }}"
                                 class="text-2xl font-bold leading-tight text-slate-900 transition hover:text-green-500 md:text-3xl">
-                                Cara meningkatkan konsistensi permainan badminton
+                                {{ $beritas[0]->judul }}
                             </a>
                         </h3>
 
                         <p class="mt-4 max-w-3xl text-sm leading-7 text-slate-600">
-                            Pelajari cara memperbaiki footwork, kontrol pukulan,
-                            dan strategi permainan agar lebih konsisten di lapangan.
+                            {!! Str::limit(strip_tags($beritas[0]->konten), 120) !!}
                         </p>
 
                         <div class="mt-5 flex items-center gap-3 text-xs text-slate-400">
-                            <span>12 Juni 2026</span>
+                            <span>{{ \Carbon\Carbon::parse($beritas[0]->tanggal_publikasi)->translatedFormat('d F Y') }}</span>
                             <span>•</span>
-                            <span>5 menit baca</span>
+                            <span>{{ $beritas[0]->baca_menit }} menit baca</span>
                         </div>
 
-                        <a href="#"
+                        <a href="{{ route('berita.show', $beritas[0]->slug) }}"
                             class="mt-6 inline-flex items-center rounded-full bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-gradient-to-r from-green-500 to-teal-500 hover:text-white">
                             Baca Artikel
                             <span class="ml-3">›</span>
@@ -621,15 +574,15 @@
 
                     <div class="space-y-5">
 
-                        {{-- BERITA 1 --}}
-                        <article class="group flex items-start gap-4 border-b border-slate-200 pb-5">
+                        @foreach($beritas->skip(1) as $berita)
+                        <article class="group flex items-start gap-4 border-b border-slate-200 pb-5 last:border-b-0 last:pb-0">
 
-                            <a href="#"
+                            <a href="{{ route('berita.show', $berita->slug) }}"
                                 class="shrink-0 overflow-hidden rounded-lg">
 
                                 <img
-                                    src="{{ asset('images/berita1.jpeg') }}"
-                                    alt="Turnamen badminton lokal"
+                                    src="{{ asset('images/' . $berita->gambar) }}"
+                                    alt="{{ $berita->judul }}"
                                     class="h-24 w-24 object-cover transition duration-300 group-hover:scale-105">
 
                             </a>
@@ -637,124 +590,27 @@
                             <div>
 
                                 <p class="text-xs text-slate-400">
-                                    10 Juni 2026
+                                    {{ \Carbon\Carbon::parse($berita->tanggal_publikasi)->translatedFormat('d M Y') }}
                                 </p>
 
-                                <a href="#"
+                                <a href="{{ route('berita.show', $berita->slug) }}"
                                     class="mt-2 block font-semibold leading-6 text-slate-900 transition hover:text-green-500">
-                                    Turnamen badminton lokal segera dimulai
+                                    {{ $berita->judul }}
                                 </a>
 
                                 <p class="mt-2 text-sm leading-6 text-slate-500">
-                                    Informasi pendaftaran dan jadwal pertandingan terbaru.
+                                    {!! Str::limit(strip_tags($berita->konten), 60) !!}
                                 </p>
 
                             </div>
 
                         </article>
-
-
-                        {{-- BERITA 2 --}}
-                        <article class="group flex items-start gap-4 border-b border-slate-200 pb-5">
-
-                            <a href="#"
-                                class="shrink-0 overflow-hidden rounded-lg">
-
-                                <img
-                                    src="{{ asset('images/berita2.jpeg') }}"
-                                    alt="Tips memilih raket badminton"
-                                    class="h-24 w-24 object-cover transition duration-300 group-hover:scale-105">
-
-                            </a>
-
-                            <div>
-
-                                <p class="text-xs text-slate-400">
-                                    8 Juni 2026
-                                </p>
-
-                                <a href="#"
-                                    class="mt-2 block font-semibold leading-6 text-slate-900 transition hover:text-green-500">
-                                    Tips memilih raket berdasarkan gaya bermain
-                                </a>
-
-                                <p class="mt-2 text-sm leading-6 text-slate-500">
-                                    Kenali jenis raket yang sesuai dengan kebutuhanmu.
-                                </p>
-
-                            </div>
-
-                        </article>
-
-
-                        {{-- BERITA 3 --}}
-                        <article class="group flex items-start gap-4 border-b border-slate-200 pb-5">
-
-                            <a href="#"
-                                class="shrink-0 overflow-hidden rounded-lg">
-
-                                <img
-                                    src="{{ asset('images/berita3.jpeg') }}"
-                                    alt="Latihan footwork badminton"
-                                    class="h-24 w-24 object-cover transition duration-300 group-hover:scale-105">
-
-                            </a>
-
-                            <div>
-
-                                <p class="text-xs text-slate-400">
-                                    5 Juni 2026
-                                </p>
-
-                                <a href="#"
-                                    class="mt-2 block font-semibold leading-6 text-slate-900 transition hover:text-green-500">
-                                    Latihan footwork sederhana untuk pemula
-                                </a>
-
-                                <p class="mt-2 text-sm leading-6 text-slate-500">
-                                    Latihan dasar untuk meningkatkan pergerakan di lapangan.
-                                </p>
-
-                            </div>
-
-                        </article>
-
-
-                        {{-- BERITA 4 --}}
-                        <article class="group flex items-start gap-4">
-
-                            <a href="#"
-                                class="shrink-0 overflow-hidden rounded-lg">
-
-                                <img
-                                    src="{{ asset('images/berita4.jpeg') }}"
-                                    alt="Komunitas badminton"
-                                    class="h-24 w-24 object-cover transition duration-300 group-hover:scale-105">
-
-                            </a>
-
-                            <div>
-
-                                <p class="text-xs text-slate-400">
-                                    2 Juni 2026
-                                </p>
-
-                                <a href="#"
-                                    class="mt-2 block font-semibold leading-6 text-slate-900 transition hover:text-green-500">
-                                    Agenda open play komunitas minggu ini
-                                </a>
-
-                                <p class="mt-2 text-sm leading-6 text-slate-500">
-                                    Temukan jadwal bermain bersama komunitas badminton.
-                                </p>
-
-                            </div>
-
-                        </article>
+                        @endforeach
 
                     </div>
 
                 </aside>
+                @endif
 
             </div>
 

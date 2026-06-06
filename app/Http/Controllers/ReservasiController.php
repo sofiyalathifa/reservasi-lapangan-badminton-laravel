@@ -45,7 +45,9 @@ class ReservasiController extends Controller
             }
         }
 
-        return view('reservasi.create', compact('lapangan', 'id', 'bookedSlots'));
+        $promos = \App\Models\Promo::where('status', true)->get();
+
+        return view('reservasi.create', compact('lapangan', 'bookedSlots', 'id', 'promos'));
     }
 
     public function store(Request $request, $id)
@@ -69,6 +71,27 @@ class ReservasiController extends Controller
         $jamSelesaiStr = date('H:i:s', strtotime($jam_mulai . " + $durasi hours"));
         $totalBiaya = $durasi * $harga_per_jam;
 
+        $diskon = 0;
+        $kode_promo = $request->kode_promo;
+
+        if ($kode_promo) {
+            $promo = \App\Models\Promo::where('kode_promo', $kode_promo)->where('status', true)->first();
+            if ($promo) {
+                if ($promo->tipe_diskon === 'persen') {
+                    $diskon = $totalBiaya * ($promo->nilai_diskon / 100);
+                } else {
+                    $diskon = $promo->nilai_diskon;
+                }
+                
+                if ($diskon > $totalBiaya) {
+                    $diskon = $totalBiaya;
+                }
+                $totalBiaya -= $diskon;
+            } else {
+                $kode_promo = null;
+            }
+        }
+
         // Generate ID Reservasi Unik
         $idReservasi = 'RES-' . date('Ymd', strtotime($request->tanggal)) . '-' . strtoupper(Str::random(4));
 
@@ -80,6 +103,8 @@ class ReservasiController extends Controller
             'jam_mulai' => $jam_mulai,
             'jam_selesai' => $jamSelesaiStr,
             'durasi' => $durasi,
+            'kode_promo' => $kode_promo,
+            'diskon' => $diskon,
             'total_biaya' => $totalBiaya,
             'status_reservasi' => 'pending',
         ]);
