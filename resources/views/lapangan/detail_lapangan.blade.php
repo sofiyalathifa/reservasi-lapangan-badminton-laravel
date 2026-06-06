@@ -29,46 +29,41 @@
                                 Ulasan Pelanggan
                             </h3>
                             <div class="space-y-6">
-                                <!-- Review 1 -->
+                                @forelse($lapangan->ulasans()->latest()->get() as $ulasan)
+                                @php
+                                    $initial = strtoupper(substr($ulasan->user->name, 0, 1));
+                                    $colors = ['bg-green-500', 'bg-blue-500', 'bg-indigo-500', 'bg-purple-500', 'bg-pink-500', 'bg-red-500', 'bg-orange-500'];
+                                    $colorClass = $colors[crc32($ulasan->user->name) % count($colors)];
+                                @endphp
                                 <div class="border-b border-gray-100 pb-6 last:border-0 last:pb-0 transition duration-300 hover:bg-gray-50 p-4 rounded-xl -mx-4">
                                     <div class="flex items-start gap-4">
-                                        <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-sm">
-                                            A
+                                        <div class="w-12 h-12 rounded-full {{ $colorClass }} flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-sm">
+                                            {{ $initial }}
                                         </div>
                                         <div class="flex-1">
                                             <div class="flex items-center justify-between mb-1">
-                                                <h4 class="font-bold text-gray-900">Ahmad Budi</h4>
-                                                <span class="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-1 rounded-full">2 hari lalu</span>
+                                                <h4 class="font-bold text-gray-900">{{ $ulasan->user->name }}</h4>
+                                                <span class="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-1 rounded-full">{{ $ulasan->created_at->diffForHumans() }}</span>
                                             </div>
                                             <div class="flex text-yellow-400 text-sm mb-3">
-                                                ★★★★★
+                                                @for($i=1; $i<=5; $i++)
+                                                    @if($i <= $ulasan->rating) ★ @else <span class="text-gray-300">★</span> @endif
+                                                @endfor
                                             </div>
+                                            @if($ulasan->komentar)
                                             <p class="text-gray-600 leading-relaxed text-sm">
-                                                "Sirkulasi udara sangat bagus, karpet vinylnya kesat dan tidak licin sama sekali. Pencahayaannya juga pas, tidak bikin silau saat melihat bola lambung. Sangat direkomendasikan!"
+                                                "{{ $ulasan->komentar }}"
                                             </p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Review 2 -->
-                                <div class="border-b border-gray-100 pb-6 last:border-0 last:pb-0 transition duration-300 hover:bg-gray-50 p-4 rounded-xl -mx-4">
-                                    <div class="flex items-start gap-4">
-                                        <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-sm">
-                                            R
-                                        </div>
-                                        <div class="flex-1">
-                                            <div class="flex items-center justify-between mb-1">
-                                                <h4 class="font-bold text-gray-900">Rizky Pratama</h4>
-                                                <span class="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-1 rounded-full">1 mgg lalu</span>
-                                            </div>
-                                            <div class="flex text-yellow-400 text-sm mb-3">
-                                                ★★★★<span class="text-gray-300">★</span>
-                                            </div>
-                                            <p class="text-gray-600 leading-relaxed text-sm">
-                                                "Fasilitas ruang gantinya bersih dan nyaman. Parkiran juga tergolong luas untuk mobil. Kekurangannya mungkin kantin kalau malam tutupnya agak kepagian. Selebihnya joss!"
-                                            </p>
-                                        </div>
-                                    </div>
+                                @empty
+                                <div class="text-center py-8 text-gray-400">
+                                    <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                                    <p class="font-medium">Belum ada ulasan untuk lapangan ini.</p>
                                 </div>
+                                @endforelse
                             </div>
                         </div>
                     </div>
