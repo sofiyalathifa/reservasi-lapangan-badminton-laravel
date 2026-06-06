@@ -25,22 +25,29 @@
             <!-- LEFT COLUMN: Summary & Instructions -->
             <div class="lg:col-span-7 space-y-6 animate-fade-in-up" style="animation-delay: 0.1s">
                 
-                <!-- Total Tagihan Card -->
-                <div class="bg-gradient-to-br from-green-500 to-teal-600 p-8 rounded-2xl shadow-lg text-white text-center relative overflow-hidden">
-                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
-                    <div class="absolute -left-8 -bottom-8 w-24 h-24 bg-black opacity-10 rounded-full blur-xl"></div>
+
+                <!-- Rincian Pesanan -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sm:p-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2">
+                        <span class="text-2xl">🏸</span> Rincian Pesanan
+                    </h3>
                     
-                    <div class="relative z-10">
-                        <p class="text-green-100 text-sm uppercase tracking-widest font-semibold mb-2">Total Tagihan</p>
-                        <h2 class="text-4xl sm:text-5xl font-black mb-4 tracking-tight drop-shadow-md">Rp {{ number_format($reservasi->total_biaya, 0, ',', '.') }}</h2>
-                        <div class="inline-flex items-center justify-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 px-5 py-2 rounded-full text-sm font-medium shadow-sm">
-                            <svg class="w-4 h-4 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Menunggu Pembayaran
+                    <div class="space-y-4 text-base">
+                        <div class="flex justify-between items-center border-b border-gray-100 pb-4">
+                            <span class="text-gray-500 font-medium">Lapangan</span>
+                            <span class="font-bold text-gray-900 text-right">{{ $reservasi->lapangan->nama_lapangan }}</span>
                         </div>
-                        @php
-                            $deadline = \Carbon\Carbon::parse($reservasi->created_at)->addHours(24);
-                        @endphp
-                        <p class="mt-4 text-green-50 text-sm font-medium">Selesaikan sebelum <strong class="text-white tracking-wide">{{ $deadline->format('H:i') }} WIB, {{ $deadline->format('d/m/Y') }}</strong></p>
+                        <div class="flex justify-between items-center border-b border-gray-100 pb-4">
+                            <span class="text-gray-500 font-medium">Tanggal Main</span>
+                            <span class="font-bold text-gray-900 text-right">{{ \Carbon\Carbon::parse($reservasi->tanggal_booking)->translatedFormat('l, d F Y') }}</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-2">
+                            <span class="text-gray-500 font-medium">Waktu Main</span>
+                            <div class="text-right">
+                                <span class="font-bold text-green-600">{{ date('H:i', strtotime($reservasi->jam_mulai)) }} - {{ date('H:i', strtotime($reservasi->jam_selesai)) }} WIB</span>
+                                <span class="block text-sm text-gray-400 font-medium mt-0.5">Durasi: {{ $reservasi->durasi }} Jam</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -147,7 +154,28 @@
 
             <!-- RIGHT COLUMN: Upload Form -->
             <div class="lg:col-span-5 animate-fade-in-up" style="animation-delay: 0.2s">
-                <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8 lg:sticky lg:top-24">
+                <div class="lg:sticky lg:top-24 space-y-6">
+                    
+                    <!-- Total Tagihan Card -->
+                    <div class="bg-gradient-to-br from-green-500 to-teal-600 p-8 rounded-2xl shadow-lg text-white text-center relative overflow-hidden">
+                        <div class="absolute -right-8 -top-8 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
+                        <div class="absolute -left-8 -bottom-8 w-24 h-24 bg-black opacity-10 rounded-full blur-xl"></div>
+                        
+                        <div class="relative z-10">
+                            <p class="text-green-100 text-sm uppercase tracking-widest font-semibold mb-2">Total Tagihan</p>
+                            <h2 class="text-4xl sm:text-5xl font-black mb-4 tracking-tight drop-shadow-md">Rp {{ number_format($reservasi->total_biaya, 0, ',', '.') }}</h2>
+                            <div class="inline-flex items-center justify-center gap-2 bg-white/20 backdrop-blur-md border border-white/30 px-5 py-2 rounded-full text-sm font-medium shadow-sm">
+                                <svg class="w-4 h-4 animate-spin-slow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Menunggu Pembayaran
+                            </div>
+                            @php
+                                $deadline = \Carbon\Carbon::parse($reservasi->created_at)->addHours(24);
+                            @endphp
+                            <p class="mt-4 text-green-50 text-sm font-medium">Selesaikan sebelum <strong class="text-white tracking-wide">{{ $deadline->format('H:i') }} WIB, {{ $deadline->format('d/m/Y') }}</strong></p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sm:p-8">
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Konfirmasi Pembayaran</h3>
                     <p class="text-sm text-gray-500 mb-6">Upload bukti transfer agar pesananmu segera diproses.</p>
 
@@ -209,8 +237,10 @@
                                 Transaksi aman & terenkripsi
                             </div>
                         </div>
+                        </div>
                     </form>
                 </div>
+            </div>
             </div>
             
         </div>
