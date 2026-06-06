@@ -89,7 +89,7 @@ class ReservasiController extends Controller
     public function riwayat()
     {
         $reservasis = Reservasi::where('id_pengguna', auth()->id())
-            ->with('lapangan')
+            ->with(['lapangan', 'pembayaran'])
             ->orderBy('created_at', 'desc')
             ->get();
 
