@@ -9,6 +9,25 @@
         <div class="mb-8">
             <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Pesanan Saya</h1>
             <p class="text-gray-500">Pantau semua riwayat booking dan status pembayaran Anda di sini.</p>
+            
+            <!-- Filter Tabs -->
+            <div class="mt-6 flex flex-wrap gap-2">
+                <a href="{{ route('reservasi.riwayat', ['status' => 'semua']) }}" class="px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 {{ $status === 'semua' ? 'bg-gray-900 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                    Semua
+                </a>
+                <a href="{{ route('reservasi.riwayat', ['status' => 'belum_bayar']) }}" class="px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 {{ $status === 'belum_bayar' ? 'bg-yellow-500 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                    Belum Bayar
+                </a>
+                <a href="{{ route('reservasi.riwayat', ['status' => 'menunggu_konfirmasi']) }}" class="px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 {{ $status === 'menunggu_konfirmasi' ? 'bg-blue-500 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                    Menunggu Konfirmasi
+                </a>
+                <a href="{{ route('reservasi.riwayat', ['status' => 'dikonfirmasi']) }}" class="px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 {{ $status === 'dikonfirmasi' ? 'bg-green-500 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                    Dikonfirmasi / Lunas
+                </a>
+                <a href="{{ route('reservasi.riwayat', ['status' => 'dibatalkan']) }}" class="px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 {{ $status === 'dibatalkan' ? 'bg-red-500 text-white shadow-md' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
+                    Dibatalkan
+                </a>
+            </div>
         </div>
 
         @if(session('success'))
@@ -113,10 +132,18 @@
                                         Bukti bayar telah diunggah. Menunggu verifikasi admin.
                                     </div>
                                 @else
-                                    <a href="{{ route('pembayaran.create', $res->id_reservasi) }}" class="inline-flex items-center gap-2 bg-gray-900 text-white font-bold py-2.5 px-6 rounded-lg shadow-md hover:bg-black hover:-translate-y-0.5 transition-all duration-200">
-                                        Lanjutkan Pembayaran
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                                    </a>
+                                    <div class="flex items-center gap-3">
+                                        <form action="{{ route('reservasi.batal', $res->id_reservasi) }}" method="POST">
+                                            @csrf
+                                            <button type="button" onclick="showCancelModal(this.closest('form'))" class="inline-flex items-center gap-2 bg-white text-red-600 border border-red-200 font-bold py-2.5 px-6 rounded-lg shadow-sm hover:bg-red-50 hover:border-red-300 hover:text-red-700 transition-all duration-200">
+                                                Batalkan Pesanan
+                                            </button>
+                                        </form>
+                                        <a href="{{ route('pembayaran.create', $res->id_reservasi) }}" class="inline-flex items-center gap-2 bg-gray-900 text-white font-bold py-2.5 px-6 rounded-lg shadow-md hover:bg-black hover:-translate-y-0.5 transition-all duration-200">
+                                            Lanjutkan Pembayaran
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                        </a>
+                                    </div>
                                 @endif
                             </div>
                         @endif
@@ -148,6 +175,7 @@
         </button>
     </div>
 </div>
+@endif
 
 <style>
     .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
@@ -155,6 +183,53 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 </style>
-@endif
+
+<!-- Modal Konfirmasi Batal -->
+<div id="cancelConfirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-100 animate-pop-in relative">
+        <button onclick="closeCancelModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        </div>
+        <h3 class="text-2xl font-black text-center text-gray-900 mb-2">Batalkan Pesanan?</h3>
+        <p class="text-center text-gray-500 font-medium mb-8 leading-relaxed">
+            Apakah Anda yakin ingin membatalkan pesanan ini? Aksi ini tidak dapat dibatalkan.
+        </p>
+        <div class="flex justify-center gap-3 w-full">
+            <button onclick="closeCancelModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-3.5 px-4 rounded-xl transition-all duration-200">
+                Kembali
+            </button>
+            <button onclick="submitCancelForm()" class="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 shadow-lg shadow-red-500/30">
+                Ya, Batalkan
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentCancelForm = null;
+
+    function showCancelModal(formElement) {
+        currentCancelForm = formElement;
+        const modal = document.getElementById('cancelConfirmModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeCancelModal() {
+        currentCancelForm = null;
+        const modal = document.getElementById('cancelConfirmModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    function submitCancelForm() {
+        if (currentCancelForm) {
+            currentCancelForm.submit();
+        }
+    }
+</script>
 
 @endsection

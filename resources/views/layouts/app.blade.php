@@ -86,6 +86,12 @@
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                                             Pesanan Saya
                                         </a>
+                                        @if(Auth::user()->role === 'admin')
+                                        <a href="{{ route('admin.reservasi.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm font-bold text-gray-700 hover:bg-teal-50 hover:text-teal-600 transition border-t border-gray-100">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                                            Dashboard Admin
+                                        </a>
+                                        @endif
                                     </div>
                                     <form method="POST" action="{{ route('logout') }}" class="pt-1">
                                         @csrf
@@ -185,6 +191,14 @@
         {{ request()->routeIs('reservasi.riwayat') ? 'bg-white/20' : 'hover:bg-white/20' }}">
                     Pesanan Saya
                 </a>
+                
+                @if(Auth::user()->role === 'admin')
+                <a href="{{ route('admin.reservasi.index') }}"
+                    class="block w-full px-4 py-3 rounded-md font-bold text-teal-300 transition duration-200
+        {{ request()->routeIs('admin.reservasi.index') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                    Dashboard Admin
+                </a>
+                @endif
                 @endauth
 
             </div>

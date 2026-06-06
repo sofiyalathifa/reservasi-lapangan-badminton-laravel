@@ -86,13 +86,45 @@ class ReservasiController extends Controller
         return redirect()->route('pembayaran.create', $idReservasi)->with('success', 'Booking diamankan! Silakan selesaikan pembayaran Anda.');
     }
 
-    public function riwayat()
+    public function riwayat(Request $request)
     {
-        $reservasis = Reservasi::where('id_pengguna', auth()->id())
-            ->with(['lapangan', 'pembayaran'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $status = $request->query('status', 'semua');
 
-        return view('reservasi.riwayat', compact('reservasis'));
+        $query = Reservasi::where('id_pengguna', auth()->id())
+            ->with(['lapangan', 'pembayaran'])
+            ->orderBy('created_at', 'desc');
+
+        if ($status === 'belum_bayar') {
+            $query->where('status_reservasi', 'pending')
+                  ->whereDoesntHave('pembayaran');
+        } elseif ($status === 'menunggu_konfirmasi') {
+            $query->where('status_reservasi', 'pending')
+                  ->has('pembayaran');
+        } elseif ($status !== 'semua') {
+            $query->where('status_reservasi', $status);
+        }
+
+        $reservasis = $query->get();
+
+        return view('reservasi.riwayat', compact('reservasis', 'status'));
+    }
+
+    public function batal($id)
+    {
+        $reservasi = Reservasi::findOrFail($id);
+
+        // Pastikan hanya pemilik yang bisa membatalkan
+        if ($reservasi->id_pengguna !== auth()->id()) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        // Cek jika pesanan sudah dibayar atau statusnya bukan pending
+        if ($reservasi->status_reservasi !== 'pending' || $reservasi->pembayaran()->exists()) {
+            return back()->with('error', 'Pesanan ini tidak dapat dibatalkan karena sudah dalam proses pembayaran atau sudah lunas.');
+        }
+
+        $reservasi->update(['status_reservasi' => 'dibatalkan']);
+
+        return back()->with('success', 'Pesanan berhasil dibatalkan.');
     }
 }

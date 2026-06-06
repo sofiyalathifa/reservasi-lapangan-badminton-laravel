@@ -33,6 +33,7 @@ Route::get('/pembayaran/{id_reservasi}', [PembayaranController::class, 'create']
 Route::post('/pembayaran/{id_reservasi}', [PembayaranController::class, 'store'])->name('pembayaran.store')->middleware('auth');
 
 Route::get('/pesanan-saya', [ReservasiController::class, 'riwayat'])->name('reservasi.riwayat')->middleware('auth');
+Route::post('/reservasi/{id}/batal', [ReservasiController::class, 'batal'])->name('reservasi.batal')->middleware('auth');
 
 
 use App\Http\Controllers\Auth\RegisterController;
@@ -50,3 +51,11 @@ Route::get('/login', function () {
 
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+use App\Http\Controllers\AdminController;
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/reservasi', [AdminController::class, 'index'])->name('reservasi.index');
+    Route::post('/reservasi/{id}/konfirmasi', [AdminController::class, 'konfirmasi'])->name('reservasi.konfirmasi');
+    Route::post('/reservasi/{id}/tolak', [AdminController::class, 'tolak'])->name('reservasi.tolak');
+});
