@@ -404,59 +404,90 @@
     <section id="promo" class="relative bg-white py-20">
         <div class="mx-auto max-w-7xl px-6">
 
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <style>
+                .custom-carousel {
+                    display: flex;
+                    overflow-x: auto;
+                    gap: 1.5rem; /* 24px */
+                    padding-bottom: 2rem;
+                    scroll-snap-type: x mandatory;
+                    scroll-behavior: smooth;
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+                .custom-carousel::-webkit-scrollbar {
+                    display: none;
+                }
+                .carousel-item {
+                    flex: 0 0 auto;
+                    width: 100%;
+                    max-width: 320px;
+                    scroll-snap-align: start;
+                }
+                @media (min-width: 768px) {
+                    .carousel-item { width: calc(50% - 0.75rem); max-width: none; }
+                }
+                @media (min-width: 1024px) {
+                    .carousel-item { width: calc(25% - 1.125rem); max-width: none; }
+                }
+            </style>
 
-                {{-- INTRO PROMO --}}
-                <div class="flex min-h-[370px] flex-col rounded-md bg-gradient-to-b from-green-400 to-cyan-600 p-12 text-white">
+            <div class="relative" id="promo-carousel-container">
+                
+                <div id="promoTrack" class="custom-carousel">
 
-                    <p class="text-sm font-semibold uppercase tracking-[5px]">
-                        Promosi
-                    </p>
+                    {{-- INTRO PROMO --}}
+                    <div class="carousel-item flex min-h-[370px] flex-col rounded-md bg-gradient-to-b from-green-400 to-cyan-600 p-12 text-white">
+                        <p class="text-sm font-semibold uppercase tracking-[5px]">
+                            Promosi
+                        </p>
+                        <h2 class="mt-10 text-4xl font-bold leading-tight">
+                            Promo yang Bikin Booking Lebih Ringan
+                        </h2>
+                        <p class="mt-5 text-sm leading-7 text-white/80">
+                            Gunakan promo aktif untuk mendapatkan harga booking yang lebih hemat.
+                        </p>
+                    </div>
 
-                    <h2 class="mt-10 text-4xl font-bold leading-tight">
-                        Promo yang Bikin Booking Lebih Ringan
-                    </h2>
-
-                    <p class="mt-5 text-sm leading-7 text-white/80">
-                        Gunakan promo aktif untuk mendapatkan harga booking yang lebih hemat.
-                    </p>
+                    @foreach($promos as $promo)
+                    <article class="carousel-item group flex min-h-[370px] flex-col rounded-md bg-white p-10 shadow-lg transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl">
+                        <span class="w-fit rounded-full bg-orange-100 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-orange-600">
+                            {{ $promo->tag }}
+                        </span>
+                        <h3 class="mt-5 text-3xl font-bold leading-tight text-slate-900">
+                            {{ $promo->nama_promo }}
+                        </h3>
+                        <p class="mt-5 flex-1 leading-8 text-slate-500">
+                            {{ $promo->deskripsi }}
+                        </p>
+                        <div class="mt-auto flex w-full items-center gap-2 pt-6">
+                            <span class="shrink-0 rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700">
+                                {{ $promo->kode_promo }}
+                            </span>
+                            <button type="button" onclick="salinPromo('{{ $promo->kode_promo }}')"
+                                class="ml-auto inline-flex shrink-0 items-center whitespace-nowrap text-xs font-semibold text-green-500 transition hover:text-green-600 sm:text-sm">
+                                Klaim Promo
+                                <span class="ml-2">›</span>
+                            </button>
+                        </div>
+                    </article>
+                    @endforeach
 
                 </div>
 
-
-                @foreach($promos as $promo)
-                <article
-                    class="group flex min-h-[370px] flex-col rounded-md bg-white p-10 shadow-lg transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl">
-
-                    <span class="w-fit rounded-full bg-orange-100 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-orange-600">
-                        {{ $promo->tag }}
-                    </span>
-
-                    <h3 class="mt-5 text-3xl font-bold leading-tight text-slate-900">
-                        {{ $promo->nama_promo }}
-                    </h3>
-
-                    <p class="mt-5 flex-1 leading-8 text-slate-500">
-                        {{ $promo->deskripsi }}
-                    </p>
-
-                    <div class="mt-auto flex w-full items-center gap-2 pt-6">
-                        <span
-                            class="shrink-0 rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700">
-                            {{ $promo->kode_promo }}
-                        </span>
-
-                        <button type="button" onclick="salinPromo('{{ $promo->kode_promo }}')"
-                            class="ml-auto inline-flex shrink-0 items-center whitespace-nowrap text-xs font-semibold text-green-500 transition hover:text-green-600 sm:text-sm">
-                            Klaim Promo
-                            <span class="ml-2">›</span>
-                        </button>
-                    </div>
-
-                </article>
-                @endforeach
-
+                <!-- Tombol Navigasi Carousel -->
+                <button id="promoPrevBtn"
+                    class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-2 md:-translate-x-6 bg-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg text-blue-900 border border-gray-100 hover:bg-blue-50 z-10 transition">
+                    ‹
+                </button>
+                <button id="promoNextBtn"
+                    class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-2 md:translate-x-6 bg-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg text-blue-900 border border-gray-100 hover:bg-blue-50 z-10 transition">
+                    ›
+                </button>
             </div>
+
+            <!-- Indikator Dots -->
+            <div class="flex justify-center mt-2 space-x-2" id="promoIndicators"></div>
 
         </div>
     </section>
@@ -469,6 +500,128 @@
                 alert('Gagal menyalin kode promo.');
             });
         }
+
+        // Logic Carousel Promo
+        document.addEventListener('DOMContentLoaded', () => {
+            const track = document.getElementById('promoTrack');
+            if (!track) return;
+
+            const nextBtn = document.getElementById('promoNextBtn');
+            const prevBtn = document.getElementById('promoPrevBtn');
+            const dotsContainer = document.getElementById('promoIndicators');
+            const container = document.getElementById('promo-carousel-container');
+
+            let autoPlayInterval;
+            
+            function getScrollAmount() {
+                const item = track.querySelector('.carousel-item');
+                if (item) {
+                    const style = window.getComputedStyle(item);
+                    return item.offsetWidth + parseFloat(style.marginRight || 0) + 24; // 24 is gap-6
+                }
+                return 300;
+            }
+
+            function updateDots() {
+                const scrollLeft = track.scrollLeft;
+                const maxScrollLeft = track.scrollWidth - track.clientWidth;
+                const totalDots = dotsContainer.children.length;
+                
+                if (totalDots === 0) return;
+
+                // Hitung index aktif berdasarkan posisi scroll
+                let activeIndex = 0;
+                if (scrollLeft >= maxScrollLeft - 10) {
+                    activeIndex = totalDots - 1;
+                } else {
+                    const scrollRatio = scrollLeft / maxScrollLeft;
+                    activeIndex = Math.round(scrollRatio * (totalDots - 1));
+                }
+
+                Array.from(dotsContainer.children).forEach((dot, i) => {
+                    dot.className = `h-3 rounded-full transition-all duration-300 ${i === activeIndex ? 'bg-blue-900 w-8' : 'bg-gray-300 w-3'}`;
+                });
+            }
+
+            function initCarousel() {
+                // Hitung berapa halaman (dots) yang dibutuhkan
+                const itemWidth = getScrollAmount();
+                const totalItems = track.children.length;
+                const itemsPerView = Math.floor(track.clientWidth / itemWidth) || 1;
+                const totalPages = Math.ceil(totalItems / itemsPerView);
+
+                dotsContainer.innerHTML = '';
+                if (totalPages > 1) {
+                    for (let i = 0; i < totalPages; i++) {
+                        const dot = document.createElement('button');
+                        dot.className = `h-3 rounded-full transition-all duration-300 ${i === 0 ? 'bg-blue-900 w-8' : 'bg-gray-300 w-3'}`;
+                        dot.addEventListener('click', () => {
+                            track.scrollTo({ left: i * itemWidth * itemsPerView, behavior: 'smooth' });
+                            resetTimer();
+                        });
+                        dotsContainer.appendChild(dot);
+                    }
+                    dotsContainer.style.display = 'flex';
+                } else {
+                    dotsContainer.style.display = 'none';
+                }
+            }
+
+            function nextSlide() {
+                const maxScrollLeft = track.scrollWidth - track.clientWidth;
+                if (track.scrollLeft >= maxScrollLeft - 10) {
+                    track.scrollTo({ left: 0, behavior: 'smooth' }); // Loop back to start
+                } else {
+                    track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+                }
+            }
+
+            function prevSlide() {
+                if (track.scrollLeft <= 10) {
+                    track.scrollTo({ left: track.scrollWidth, behavior: 'smooth' }); // Loop to end
+                } else {
+                    track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+                }
+            }
+
+            function startTimer() {
+                autoPlayInterval = setInterval(nextSlide, 5000);
+            }
+
+            function resetTimer() {
+                clearInterval(autoPlayInterval);
+                startTimer();
+            }
+
+            if(nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    nextSlide();
+                    resetTimer();
+                });
+            }
+
+            if(prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    prevSlide();
+                    resetTimer();
+                });
+            }
+
+            track.addEventListener('scroll', updateDots);
+
+            if(container) {
+                container.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
+                container.addEventListener('mouseleave', () => startTimer());
+            }
+
+            window.addEventListener('resize', () => {
+                initCarousel();
+                updateDots();
+            });
+
+            initCarousel();
+            startTimer();
+        });
     </script>
 
             </div>
