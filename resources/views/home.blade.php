@@ -92,20 +92,14 @@
                             Semua
                         </button>
 
-                        <button class="tab-btn px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300"
-                            data-type="Indoor Vinyl">
-                            Indoor Vinyl
-                        </button>
-
-                        <button class="tab-btn px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300"
-                            data-type="Karpet Premium">
-                            Karpet Premium
-                        </button>
-
-                        <button class="tab-btn px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300"
-                            data-type="Indoor Basic">
-                            Indoor Basic
-                        </button>
+                        @foreach($lapangans->pluck('jenis_lantai')->unique() as $jenis)
+                            @if($jenis)
+                            <button class="tab-btn px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300"
+                                data-type="{{ $jenis }}">
+                                {{ $jenis }}
+                            </button>
+                            @endif
+                        @endforeach
 
                     </div>
 
@@ -117,7 +111,7 @@
                     <div id="track" class="flex transition-transform duration-500 ease-out">
 
                         @foreach ($lapangans as $index => $lapangan)
-                            <div class="min-w-full md:min-w-[33.33%] p-4">
+                            <div class="lapangan-item min-w-full md:min-w-[33.33%] p-4" data-tipe="{{ strtolower($lapangan->jenis_lantai) }}" data-nama="{{ strtolower($lapangan->nama_lapangan) }}">
                             <article class="bg-white rounded-lg overflow-hidden shadow-2xl max-w-sm mx-auto transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
 
                                 <img
