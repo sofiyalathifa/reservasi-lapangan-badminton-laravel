@@ -37,17 +37,20 @@ class PembayaranController extends Controller
         $imagePath = $request->file('bukti_pembayaran')->store('bukti_bayar', 'public');
 
         $idPembayaran = 'PAY-' . date('Ymd') . '-' . strtoupper(Str::random(4));
+        
+        // Sesuaikan dengan ENUM di database: 'QRIS','Transfer','Cash'
+        $metodeEnum = ($request->metode_pembayaran === 'QRIS') ? 'QRIS' : 'Transfer';
 
         Pembayaran::create([
             'id_pembayaran' => $idPembayaran,
             'id_reservasi' => $reservasi->id_reservasi,
-            'metode_pembayaran' => $request->metode_pembayaran,
+            'metode_pembayaran' => $metodeEnum,
             'jumlah_bayar' => $reservasi->total_biaya,
             'tanggal_bayar' => now(),
             'status_pembayaran' => 'pending',
             'bukti_pembayaran' => $imagePath,
         ]);
 
-        return redirect()->route('home')->with('success', 'Bukti pembayaran berhasil diunggah! Menunggu verifikasi admin.');
+        return redirect()->route('reservasi.riwayat')->with('payment_success', true);
     }
 }

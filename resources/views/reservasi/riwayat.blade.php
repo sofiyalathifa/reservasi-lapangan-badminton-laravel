@@ -128,4 +128,33 @@
 
     </div>
 </div>
+
+@if(session('payment_success'))
+<!-- Modal Sukses Pembayaran -->
+<div id="paymentSuccessModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
+    <div class="bg-white rounded-3xl p-8 max-w-sm w-full mx-4 shadow-2xl transform scale-100 animate-pop-in relative">
+        <button onclick="document.getElementById('paymentSuccessModal').style.display='none'" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <svg class="w-10 h-10 text-green-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+        </div>
+        <h3 class="text-2xl font-black text-center text-gray-900 mb-2">Berhasil!</h3>
+        <p class="text-center text-gray-500 font-medium mb-8 leading-relaxed">
+            Bukti pembayaran Anda telah terkirim. Admin kami akan segera memverifikasinya.
+        </p>
+        <button onclick="document.getElementById('paymentSuccessModal').style.display='none'" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-green-500/30">
+            Tutup & Pantau Pesanan
+        </button>
+    </div>
+</div>
+
+<style>
+    .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+    .animate-pop-in { animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+</style>
+@endif
+
 @endsection
