@@ -81,6 +81,12 @@
                                         <p class="text-sm font-semibold text-gray-800 truncate">{{ Auth::user()->name }}</p>
                                         <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
                                     </div>
+                                    <div class="py-1 border-b border-gray-100">
+                                        <a href="{{ route('reservasi.riwayat') }}" class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-green-600 transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                                            Pesanan Saya
+                                        </a>
+                                    </div>
                                     <form method="POST" action="{{ route('logout') }}" class="pt-1">
                                         @csrf
                                         <button type="submit" class="block w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition">
@@ -171,6 +177,15 @@
         {{ request()->routeIs('berita') ? 'bg-white/20' : 'hover:bg-white/20' }}">
                     Berita
                 </a>
+
+                @auth
+                <div class="my-2 border-t border-white/20"></div>
+                <a href="{{ route('reservasi.riwayat') }}"
+                    class="block w-full px-4 py-3 rounded-md font-bold text-yellow-300 transition duration-200
+        {{ request()->routeIs('reservasi.riwayat') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                    Pesanan Saya
+                </a>
+                @endauth
 
             </div>
 

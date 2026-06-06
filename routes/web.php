@@ -32,6 +32,9 @@ Route::post('/lapangan/{id}/booking', [ReservasiController::class, 'store'])->na
 Route::get('/pembayaran/{id_reservasi}', [PembayaranController::class, 'create'])->name('pembayaran.create')->middleware('auth');
 Route::post('/pembayaran/{id_reservasi}', [PembayaranController::class, 'store'])->name('pembayaran.store')->middleware('auth');
 
+Route::get('/pesanan-saya', [ReservasiController::class, 'riwayat'])->name('reservasi.riwayat')->middleware('auth');
+
+
 use App\Http\Controllers\Auth\RegisterController;
 
 Route::get('/registrasi', function () {

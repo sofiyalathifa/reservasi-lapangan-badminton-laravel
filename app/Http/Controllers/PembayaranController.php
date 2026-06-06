@@ -51,6 +51,6 @@ class PembayaranController extends Controller
             'bukti_pembayaran' => $imagePath,
         ]);
 
-        return redirect()->route('home')->with('success', 'Bukti pembayaran berhasil diunggah! Menunggu verifikasi admin.');
+        return redirect()->route('reservasi.riwayat')->with('payment_success', true);
     }
 }

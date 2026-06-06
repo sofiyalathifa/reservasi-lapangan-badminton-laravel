@@ -29,4 +29,9 @@ class Reservasi extends Model
     {
         return $this->belongsTo(Lapangan::class, 'id_lapangan', 'id_lapangan');
     }
+
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class, 'id_reservasi', 'id_reservasi');
+    }
 }

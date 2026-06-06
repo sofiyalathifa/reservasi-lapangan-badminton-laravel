@@ -85,4 +85,14 @@ class ReservasiController extends Controller
 
         return redirect()->route('pembayaran.create', $idReservasi)->with('success', 'Booking diamankan! Silakan selesaikan pembayaran Anda.');
     }
+
+    public function riwayat()
+    {
+        $reservasis = Reservasi::where('id_pengguna', auth()->id())
+            ->with(['lapangan', 'pembayaran'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('reservasi.riwayat', compact('reservasis'));
+    }
 }
