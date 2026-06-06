@@ -30,7 +30,7 @@ class PembayaranController extends Controller
         }
 
         $request->validate([
-            'metode_pembayaran' => 'required|in:QRIS,Transfer',
+            'metode_pembayaran' => 'required|in:BCA,Mandiri,BNI,QRIS',
             'bukti_pembayaran' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 

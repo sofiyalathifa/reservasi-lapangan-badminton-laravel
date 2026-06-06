@@ -16,8 +16,8 @@
 
                         <!-- Gambar Lapangan -->
                         <div class="mb-6">
-                            <img src="{{ asset('images/lap1.jpeg') }}"
-                                alt="Court A" class="w-full rounded-xl shadow-lg" style="height: 400px; object-fit: cover;">
+                            <img src="{{ asset('images/' . ($lapangan->foto ?? 'lap1.jpeg')) }}"
+                                alt="{{ $lapangan->nama_lapangan }}" class="w-full rounded-xl shadow-lg" style="height: 400px; object-fit: cover;">
                         </div>
 
                         <!-- Card Court Lainnya Full Width -->
@@ -46,29 +46,39 @@
                         <!-- Preview Lapangan Card -->
                         <div class="bg-gradient-to-br from-green-500 to-teal-500 p-6 rounded-xl shadow-lg text-white animate-slide-left" style="animation-delay: 0.5s">
                             <span class="text-sm uppercase bg-white/20 px-2 py-1 rounded-full inline-block mb-2">Preview Lapangan</span>
-                            <h3 class="text-2xl font-semibold mb-2">Court A - Arena Prime</h3>
+                            <h3 class="text-2xl font-semibold mb-2">{{ $lapangan->nama_lapangan }} ({{ $lapangan->id_lapangan }})</h3>
                             <p class="text-sm mb-4">
-                                Court premium untuk sesi after office, sparring kompetitif, atau latihan teknik dengan fasilitas yang nyaman.
+                                {{ $lapangan->deskripsi ?? 'Court premium untuk sesi after office, sparring kompetitif, atau latihan teknik dengan fasilitas yang nyaman.' }}
                             </p>
                             <div class="flex flex-wrap gap-3 text-white text-sm mb-4">
-                                <span class="inline-flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">Indoor Vinyl</span>
-                                <span class="inline-flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">Rp90.000 / jam</span>
-                                <span class="inline-flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">⭐ 4.9</span>
-                                <span class="inline-flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">06.00 - 23.00</span>
+                                <span class="inline-flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">{{ $lapangan->jenis_lantai }}</span>
+                                <span class="inline-flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">Rp{{ number_format($lapangan->harga_per_jam, 0, ',', '.') }} / jam</span>
+                                <span class="inline-flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full text-yellow-300 font-bold">⭐ {{ $lapangan->rating ?? 0 }} ({{ $lapangan->jumlah_ulasan ?? 0 }} Ulasan)</span>
+                                <span class="inline-flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">{{ date('H:i', strtotime($lapangan->jam_buka)) }} - {{ date('H:i', strtotime($lapangan->jam_tutup)) }}</span>
                             </div>
-                            <span class="inline-block mt-2 px-3 py-1 text-green-200 bg-green-800/30 rounded-full text-sm">Tersedia</span>
-                            <a href="{{ route('reservasi.create', ['id' => $id]) }}" class="mt-4 block text-center w-full bg-gradient-to-r from-green-400 to-green-500 font-medium py-2 rounded-lg shadow hover:from-green-500 hover:to-green-600 transition-colors">
+                            <span class="inline-block mt-2 px-3 py-1 text-green-200 {{ $lapangan->status == 'tersedia' ? 'bg-green-800/30' : 'bg-red-800/30 text-red-200' }} rounded-full text-sm">{{ ucfirst($lapangan->status) }}</span>
+                            
+                            @if($lapangan->status == 'tersedia')
+                            <a href="{{ route('reservasi.create', ['id' => $lapangan->id_lapangan]) }}" class="mt-4 block text-center w-full bg-gradient-to-r from-green-400 to-green-500 font-medium py-2 rounded-lg shadow hover:from-green-500 hover:to-green-600 transition-colors">
                                 Booking Sekarang
                             </a>
+                            @else
+                            <button disabled class="mt-4 block text-center w-full bg-gray-400 text-white font-medium py-2 rounded-lg shadow cursor-not-allowed">
+                                Sedang Perbaikan
+                            </button>
+                            @endif
                         </div>
 
                         <!-- Fasilitas -->
                         <div class="space-y-3 sm:space-y-4 animate-slide-left" style="animation-delay: 0.7s">
                             <h3 class="text-lg font-light text-gray-900">Fasilitas</h3>
                             <div class="flex flex-wrap gap-2">
-                                @foreach (['Indoor Vinyl','Net Standar','Lampu LED','Area Tunggu','Locker Room','AC'] as $facility)
+                                @php
+                                    $fasilitasArray = $lapangan->fasilitas ? explode(',', $lapangan->fasilitas) : ['Indoor Vinyl','Net Standar','Lampu LED','Area Tunggu','Locker Room','AC'];
+                                @endphp
+                                @foreach ($fasilitasArray as $facility)
                                 <span class="px-3 py-1 bg-gray-100 border border-gray-300 rounded-full text-sm text-gray-800 hover:text-gray-900 hover:border-green-500 transition duration-300">
-                                    {{ $facility }}
+                                    {{ trim($facility) }}
                                 </span>
                                 @endforeach
                             </div>

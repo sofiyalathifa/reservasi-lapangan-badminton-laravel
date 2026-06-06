@@ -116,33 +116,33 @@
                 <div class="overflow-hidden py-4">
                     <div id="track" class="flex transition-transform duration-500 ease-out">
 
-                        @for ($i = 1; $i <= 5; $i++)
+                        @foreach ($lapangans as $index => $lapangan)
                             <div class="min-w-full md:min-w-[33.33%] p-4">
                             <article class="bg-white rounded-lg overflow-hidden shadow-2xl max-w-sm mx-auto transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
 
                                 <img
                                     class="h-48 w-full object-cover object-center"
-                                    src="{{ asset('images/lap' . $i . '.jpeg') }}"
-                                    alt="Lapangan {{ $i }}" />
+                                    src="{{ asset('images/' . ($lapangan->foto ?? 'lap1.jpeg')) }}"
+                                    alt="{{ $lapangan->nama_lapangan }}" />
 
                                 <div class="p-6">
                                     <div class="flex items-baseline">
-                                        <span class="inline-block bg-teal-200 text-teal-800 py-1 px-4 text-xs rounded-full uppercase font-semibold tracking-wide">
-                                            Available
+                                        <span class="inline-block {{ $lapangan->status == 'tersedia' ? 'bg-teal-200 text-teal-800' : 'bg-red-200 text-red-800' }} py-1 px-4 text-xs rounded-full uppercase font-semibold tracking-wide">
+                                            {{ ucfirst($lapangan->status) }}
                                         </span>
 
                                         <div class="ml-2 text-gray-600 text-xs uppercase font-semibold tracking-wide">
-                                            Indoor &bull; Court {{ $i }}
+                                            {{ $lapangan->jenis_lantai }} &bull; {{ $lapangan->id_lapangan }}
                                         </div>
                                     </div>
 
-                                    <h4 class="mt-2 font-semibold text-lg leading-tight truncate">
-                                        Lapangan Badminton {{ $i }}
+                                    <h4 class="mt-2 font-semibold text-lg leading-tight truncate" title="{{ $lapangan->nama_lapangan }}">
+                                        {{ $lapangan->nama_lapangan }}
                                     </h4>
 
                                     <div class="mt-1">
                                         <span class="font-semibold text-gray-900">
-                                            Rp {{ 50000 + ($i * 10000) }}
+                                            Rp {{ number_format($lapangan->harga_per_jam, 0, ',', '.') }}
                                         </span>
                                         <span class="text-gray-600 text-sm">
                                             / jam
@@ -150,24 +150,39 @@
                                     </div>
 
                                     <div class="mt-2 flex items-center">
-                                        <span class="text-teal-600 font-semibold">
-                                            ★★★★☆
+                                        <span class="text-teal-600 font-semibold text-lg tracking-widest">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                @if($i <= floor($lapangan->rating))
+                                                    ★
+                                                @elseif($i == ceil($lapangan->rating) && strpos($lapangan->rating, '.') !== false && explode('.', $lapangan->rating)[1] >= 5)
+                                                    ★
+                                                @else
+                                                    ☆
+                                                @endif
+                                            @endfor
                                         </span>
 
-                                        <span class="ml-2 text-gray-600 text-sm">
-                                            {{ 20 + ($i * 4) }} reviews
+                                        <span class="ml-2 text-gray-600 text-sm font-medium">
+                                            {{ $lapangan->jumlah_ulasan ?? 0 }} reviews
                                         </span>
                                     </div>
 
-                                    <a href="{{ route('lapangan.detail', ['id' => $i]) }}"
+                                    @if($lapangan->status == 'tersedia')
+                                    <a href="{{ route('lapangan.detail', ['id' => $lapangan->id_lapangan]) }}"
                                         class="inline-block mt-5 w-full text-center bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium transition">
                                         Preview & Booking
                                     </a>
+                                    @else
+                                    <button disabled
+                                        class="inline-block mt-5 w-full text-center bg-gray-400 text-white py-3 rounded-lg font-medium cursor-not-allowed transition">
+                                        Sedang Perbaikan
+                                    </button>
+                                    @endif
                                 </div>
 
                             </article>
                     </div>
-                    @endfor
+                    @endforeach
 
                 </div>
             </div>

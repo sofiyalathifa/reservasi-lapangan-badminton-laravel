@@ -38,7 +38,11 @@
                                     'date' => date('d', $dateStr)
                                 ];
                             }
-                            $times = ['08:00', '09:00', '10:00', '13:00', '14:00', '15:00', '16:00', '19:00', '20:00', '21:00'];
+                            $times = [
+                                '08:00', '09:00', '10:00', '11:00', '12:00', 
+                                '13:00', '14:00', '15:00', '16:00', '17:00', 
+                                '18:00', '19:00', '20:00', '21:00'
+                            ];
                         @endphp
 
                         <div class="space-y-8">
@@ -183,7 +187,51 @@
     }
 </style>
 
+<div id="booking-data" data-booked-slots="{{ json_encode($bookedSlots) }}" style="display: none;"></div>
 <script>
+    const bookingDataElement = document.getElementById('booking-data');
+    const bookedSlots = JSON.parse(bookingDataElement.getAttribute('data-booked-slots'));
+
+    function renderTimeSlots(date) {
+        const booked = bookedSlots[date] || [];
+        const timeCards = document.querySelectorAll('.time-card');
+        
+        const selectedTimeInput = document.getElementById('selectedTime');
+        let currentSelectedTime = selectedTimeInput.value;
+        
+        timeCards.forEach(card => {
+            const timeVal = card.getAttribute('data-value');
+            
+            if (booked.includes(timeVal)) {
+                // Booked: abu-abu dan tidak bisa diklik
+                card.className = "time-card cursor-not-allowed rounded-xl border-2 border-gray-100 bg-gray-100 py-2 text-center font-bold text-gray-400 relative overflow-hidden group";
+                
+                if (!card.querySelector('.booked-overlay')) {
+                    card.innerHTML = timeVal + `<div class="booked-overlay absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-gray-100/90 transition-opacity" title="Sudah dipesan">
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </div>`;
+                }
+                
+                // Jika waktu ini sebelumnya dipilih lalu user ganti tanggal, reset pilihannya
+                if (currentSelectedTime === timeVal) {
+                    selectedTimeInput.value = "";
+                    currentSelectedTime = "";
+                }
+            } else {
+                // Tersedia
+                if (card.querySelector('.booked-overlay')) {
+                    card.innerHTML = timeVal;
+                }
+                
+                if (currentSelectedTime === timeVal) {
+                    card.className = "time-card cursor-pointer rounded-xl border-2 border-green-500 bg-green-500 py-2 text-center font-bold text-white shadow-md transform scale-105 transition-all";
+                } else {
+                    card.className = "time-card cursor-pointer rounded-xl border-2 border-gray-200 bg-white py-2 text-center font-bold text-gray-700 hover:border-green-400 hover:text-green-600 transition-all";
+                }
+            }
+        });
+    }
+
     function selectDate(element) {
         // Update hidden input
         const dateValue = element.getAttribute('data-value');
@@ -200,20 +248,21 @@
         element.className = "date-card cursor-pointer flex-shrink-0 w-16 h-20 rounded-2xl border-2 transition-all flex flex-col items-center justify-center border-green-500 bg-green-50 shadow-sm";
         element.children[0].className = "text-xs font-semibold text-green-600 uppercase";
         element.children[1].className = "text-xl font-bold text-green-700";
+
+        // Render ulang jam yang tersedia untuk tanggal ini
+        renderTimeSlots(dateValue);
     }
 
     function selectTime(element) {
+        if (element.classList.contains('cursor-not-allowed')) return; // Cegah klik jika dibooking
+
         // Update hidden input
         const timeValue = element.getAttribute('data-value');
         document.getElementById('selectedTime').value = timeValue;
 
-        // Reset all time cards
-        document.querySelectorAll('.time-card').forEach(card => {
-            card.className = "time-card cursor-pointer rounded-xl border-2 border-gray-200 bg-white py-2 text-center font-bold text-gray-700 hover:border-green-400 hover:text-green-600 transition-all";
-        });
-
-        // Set active time card
-        element.className = "time-card cursor-pointer rounded-xl border-2 border-green-500 bg-green-500 py-2 text-center font-bold text-white shadow-md transform scale-105 transition-all";
+        // Render ulang untuk mengubah style tombol aktif
+        const dateValue = document.getElementById('selectedDate').value;
+        renderTimeSlots(dateValue);
     }
 
     function updateTotal() {
@@ -228,5 +277,10 @@
         // Format to Rupiah
         document.getElementById('totalHarga').innerText = 'Rp ' + total.toLocaleString('id-ID');
     }
+
+    // Panggil saat halaman pertama kali dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        renderTimeSlots(document.getElementById('selectedDate').value);
+    });
 </script>
 @endsection

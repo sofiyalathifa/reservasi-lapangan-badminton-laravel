@@ -14,15 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('home');
+    $lapangans = \App\Models\Lapangan::all();
+    return view('home', compact('lapangans'));
 })->name('home');
 
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\PembayaranController;
 
 Route::get('/lapangan/{id}', function ($id) {
-    // Nanti bisa pakai Controller juga, tapi sementara biarkan view
-    return view('lapangan.detail_lapangan', compact('id'));
+    $lapangan = \App\Models\Lapangan::findOrFail($id);
+    return view('lapangan.detail_lapangan', compact('lapangan', 'id'));
 })->name('lapangan.detail');
 
 Route::get('/lapangan/{id}/booking', [ReservasiController::class, 'create'])->name('reservasi.create')->middleware('auth');

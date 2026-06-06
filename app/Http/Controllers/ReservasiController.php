@@ -15,7 +15,36 @@ class ReservasiController extends Controller
         if (!$lapangan) {
             $lapangan = Lapangan::first(); // Fallback karena view detail masih mockup
         }
-        return view('reservasi.create', compact('lapangan', 'id'));
+
+        // Ambil data reservasi 7 hari ke depan yang tidak dibatalkan
+        $startDate = date('Y-m-d');
+        $endDate = date('Y-m-d', strtotime('+6 days'));
+
+        $reservasis = Reservasi::where('id_lapangan', $lapangan->id_lapangan)
+            ->whereBetween('tanggal_booking', [$startDate, $endDate])
+            ->whereIn('status_reservasi', ['pending', 'dikonfirmasi'])
+            ->get();
+
+        $bookedSlots = [];
+        foreach ($reservasis as $res) {
+            $tanggal = date('Y-m-d', strtotime($res->tanggal_booking));
+            $startHour = (int) date('H', strtotime($res->jam_mulai));
+            $durasi = $res->durasi;
+
+            if (!isset($bookedSlots[$tanggal])) {
+                $bookedSlots[$tanggal] = [];
+            }
+
+            for ($i = 0; $i < $durasi; $i++) {
+                $h = $startHour + $i;
+                $timeString = sprintf('%02d:00', $h);
+                if (!in_array($timeString, $bookedSlots[$tanggal])) {
+                    $bookedSlots[$tanggal][] = $timeString;
+                }
+            }
+        }
+
+        return view('reservasi.create', compact('lapangan', 'id', 'bookedSlots'));
     }
 
     public function store(Request $request, $id)
