@@ -224,27 +224,6 @@
         'rating' => '4.9',
         ],
         ];
-
-        $partners = [
-        [
-        'name' => 'Raka, 26',
-        'city' => 'Rungkut, Surabaya',
-        'skill' => 'Intermediate',
-        'play' => 'Main santai dan sparring malam',
-        ],
-        [
-        'name' => 'Dina, 24',
-        'city' => 'Sukolilo, Surabaya',
-        'skill' => 'Beginner',
-        'play' => 'Butuh partner latihan weekend',
-        ],
-        [
-        'name' => 'Bagas, 29',
-        'city' => 'Wonokromo, Surabaya',
-        'skill' => 'Advanced',
-        'play' => 'Cari partner latihan kompetitif',
-        ],
-        ];
         @endphp
 
         <div class="mx-auto max-w-7xl px-6">
@@ -350,47 +329,77 @@
                         <p class="mt-3 text-slate-600">
                             Cari teman bermain berdasarkan level, lokasi, dan gaya bermain.
                         </p>
+                        
+                        <div class="mt-4">
+                            @auth
+                                <a href="{{ route('komunitas.index') }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 border border-blue-600 px-4 py-2 rounded-lg transition inline-block">
+                                    Buka Dashboard Komunitas
+                                </a>
+                            @else
+                                <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-600 hover:text-blue-600 transition inline-block">
+                                    Masuk untuk mencari teman
+                                </a>
+                            @endauth
+                        </div>
                     </div>
 
                     <div class="space-y-4">
-                        @foreach ($partners as $partner)
+                        @forelse ($partners as $partner)
                         <div
                             class="rounded-xl border border-slate-200 bg-teal-50/50 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-cyan-300 hover:shadow-lg">
 
                             <div class="flex items-start justify-between gap-4">
                                 <div>
                                     <h4 class="text-xl font-bold text-slate-900">
-                                        {{ $partner['name'] }}
+                                        {{ $partner->user->name }}
                                     </h4>
 
                                     <p class="mt-1 text-sm text-slate-500">
-                                        {{ $partner['city'] }}
+                                        {{ $partner->lokasi }}
                                     </p>
                                 </div>
 
                                 <span
                                     class="rounded-full bg-cyan-100 px-4 py-2 text-xs font-semibold text-cyan-700">
-                                    {{ $partner['skill'] }}
+                                    {{ $partner->level_kemampuan }}
                                 </span>
                             </div>
 
                             <p class="mt-4 text-sm leading-6 text-slate-600">
-                                {{ $partner['play'] }}
+                                "{{ $partner->gaya_bermain }}"
                             </p>
 
-                            <a href="#"
-                                class="mt-5 inline-flex items-center rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 px-5 py-3 text-sm font-semibold text-white transition">
-                                Ajak Main
+                            @auth
+                                @if($partner->id_pengguna != auth()->id())
+                                    <form action="{{ route('komunitas.ajak', $partner->id) }}" method="POST" class="mt-5">
+                                        @csrf
+                                        <button type="submit"
+                                            class="inline-flex items-center rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 px-5 py-3 text-sm font-semibold text-white transition">
+                                            Ajak Main
 
-                                <svg class="ml-3" width="4" height="8" viewBox="0 0 3 6"
-                                    fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M0 0L3 3L0 6"></path>
-                                </svg>
-                            </a>
+                                            <svg class="ml-3" width="4" height="8" viewBox="0 0 3 6"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M0 0L3 3L0 6"></path>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @else
+                                    <p class="mt-5 text-sm text-blue-600 font-semibold italic">Ini adalah profil Anda.</p>
+                                @endif
+                            @else
+                                <a href="{{ route('login') }}"
+                                    class="mt-5 inline-flex items-center rounded-full bg-gray-200 hover:bg-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 transition">
+                                    Login untuk Mengajak
+                                </a>
+                            @endauth
 
                         </div>
-                        @endforeach
+                        @empty
+                            <div class="p-6 text-center text-gray-500 border rounded-xl bg-gray-50">
+                                Saat ini belum ada yang memposting pencarian teman main.
+                            </div>
+                        @endforelse
                     </div>
 
                 </article>

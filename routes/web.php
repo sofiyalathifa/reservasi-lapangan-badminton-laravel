@@ -24,7 +24,9 @@ Route::get('/', function () {
         return true;
     });
 
-    return view('home', compact('lapangans', 'beritas', 'promos'));
+    $partners = \App\Models\CariTeman::with('user')->where('status', true)->latest()->take(3)->get();
+
+    return view('home', compact('lapangans', 'beritas', 'promos', 'partners'));
 })->name('home');
 
 use App\Http\Controllers\BeritaController;
@@ -63,6 +65,26 @@ Route::get('/login', function () {
 
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+use App\Http\Controllers\CariTemanController;
+use App\Http\Controllers\KomunikasiController;
+
+Route::middleware('auth')->group(function () {
+    // Komunitas / Teman Main
+    Route::get('/komunitas', [CariTemanController::class, 'index'])->name('komunitas.index');
+    Route::post('/komunitas/post', [CariTemanController::class, 'store'])->name('komunitas.post');
+    Route::post('/komunitas/close/{id}', [CariTemanController::class, 'close'])->name('komunitas.close');
+
+    // Ajak Main
+    Route::post('/komunitas/ajak/{id_cari_teman}', [KomunikasiController::class, 'kirimUndangan'])->name('komunitas.ajak');
+    Route::post('/komunitas/respon/{id_ajak_main}', [KomunikasiController::class, 'responUndangan'])->name('komunitas.respon');
+    
+    // Chat
+    Route::get('/komunitas/chat', [KomunikasiController::class, 'indexChat'])->name('komunitas.chat.index');
+    Route::get('/komunitas/chat/{id_ajak_main}', [KomunikasiController::class, 'ruangChat'])->name('komunitas.chat.room');
+    Route::post('/komunitas/chat/{id_ajak_main}', [KomunikasiController::class, 'kirimPesan'])->name('komunitas.chat.send');
+    Route::get('/komunitas/chat/{id_ajak_main}/messages', [KomunikasiController::class, 'getMessages'])->name('komunitas.chat.messages');
+});
 
 use App\Http\Controllers\AdminController;
 
