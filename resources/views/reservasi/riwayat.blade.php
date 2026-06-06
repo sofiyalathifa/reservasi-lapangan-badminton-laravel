@@ -146,6 +146,39 @@
                                     </div>
                                 @endif
                             </div>
+                        @elseif($res->status_reservasi == 'dikonfirmasi')
+                            @php
+                                $isPast = \Carbon\Carbon::parse($res->tanggal_booking . ' ' . $res->jam_selesai)->isPast();
+                            @endphp
+                            @if($isPast && !$res->ulasan)
+                            <div class="mt-6 pt-6 border-t border-gray-100">
+                                <div class="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-5 border border-green-100">
+                                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                        <div>
+                                            <h4 class="text-green-800 font-bold mb-1">Berikan Ulasan Lapangan</h4>
+                                            <p class="text-sm text-green-600">Jadwal main Anda telah selesai. Bagaimana pengalaman Anda bermain di lapangan ini?</p>
+                                        </div>
+                                        <button onclick="showReviewModal('{{ $res->id_reservasi }}', '{{ addslashes($res->lapangan->nama_lapangan) }}')" class="shrink-0 bg-white border border-green-200 text-green-600 hover:bg-green-600 hover:text-white hover:border-green-600 font-bold py-2.5 px-6 rounded-lg shadow-sm transition-all duration-200 transform hover:-translate-y-0.5">
+                                            Beri Rating ⭐
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            @elseif($isPast && $res->ulasan)
+                            <div class="mt-6 pt-6 border-t border-gray-100">
+                                <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-center justify-between">
+                                    <span class="text-gray-600 text-sm font-medium flex items-center gap-2">
+                                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        Anda sudah memberikan ulasan
+                                    </span>
+                                    <div class="flex text-yellow-400 text-sm">
+                                        @for($i=1; $i<=5; $i++)
+                                            @if($i <= $res->ulasan->rating) ★ @else <span class="text-gray-300">★</span> @endif
+                                        @endfor
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                         @endif
                     </div>
                 </div>
@@ -208,6 +241,40 @@
     </div>
 </div>
 
+<!-- Modal Ulasan -->
+<div id="reviewModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl transform scale-100 animate-pop-in relative">
+        <button onclick="closeReviewModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <h3 class="text-2xl font-black text-center text-gray-900 mb-2">Nilai Pengalaman Anda</h3>
+        <p class="text-center text-green-600 font-bold mb-6 text-lg" id="reviewModalTitle">Lapangan</p>
+        
+        <form id="reviewForm" method="POST" class="space-y-4">
+            @csrf
+            <div class="flex justify-center gap-2 mb-6" id="starContainer">
+                <button type="button" class="star-btn text-gray-300 hover:text-yellow-400 text-5xl transition-colors drop-shadow-sm" data-rating="1">★</button>
+                <button type="button" class="star-btn text-gray-300 hover:text-yellow-400 text-5xl transition-colors drop-shadow-sm" data-rating="2">★</button>
+                <button type="button" class="star-btn text-gray-300 hover:text-yellow-400 text-5xl transition-colors drop-shadow-sm" data-rating="3">★</button>
+                <button type="button" class="star-btn text-gray-300 hover:text-yellow-400 text-5xl transition-colors drop-shadow-sm" data-rating="4">★</button>
+                <button type="button" class="star-btn text-gray-300 hover:text-yellow-400 text-5xl transition-colors drop-shadow-sm" data-rating="5">★</button>
+            </div>
+            
+            <input type="hidden" id="reviewRatingInput" name="rating" value="0" required>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Ulasan Anda (Opsional)</label>
+                <textarea name="komentar" rows="4" class="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl focus:ring-green-500 focus:border-green-500 p-4 transition-all" placeholder="Bagaimana kondisi lapangan, sirkulasi udara, atau fasilitas lainnya?"></textarea>
+            </div>
+            
+            <div class="flex justify-end gap-3 mt-6 pt-2">
+                <button type="button" onclick="closeReviewModal()" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-3.5 px-6 rounded-xl transition-all duration-200">Nanti Saja</button>
+                <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-green-500/30 transition-all duration-200">Kirim Ulasan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     let currentCancelForm = null;
 
@@ -230,6 +297,84 @@
             currentCancelForm.submit();
         }
     }
+
+    // Modal Ulasan Logic
+    function showReviewModal(id, name) {
+        document.getElementById('reviewModalTitle').innerText = name;
+        const modal = document.getElementById('reviewModal');
+        
+        // Update Form Action
+        const form = document.getElementById('reviewForm');
+        form.action = `/reservasi/${id}/ulasan`;
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeReviewModal() {
+        const modal = document.getElementById('reviewModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        
+        // Reset stars
+        document.getElementById('reviewRatingInput').value = '0';
+        document.querySelectorAll('.star-btn').forEach(star => {
+            star.classList.remove('text-yellow-400', 'text-yellow-300');
+            star.classList.add('text-gray-300');
+        });
+        document.querySelector('textarea[name="komentar"]').value = '';
+    }
+
+    // Star rating hover & click logic
+    document.querySelectorAll('.star-btn').forEach(btn => {
+        // Hover effect
+        btn.addEventListener('mouseenter', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            const stars = this.parentElement.children;
+            for(let i=0; i<stars.length; i++) {
+                if(i < rating) {
+                    stars[i].classList.add('text-yellow-300');
+                }
+            }
+        });
+        
+        // Leave effect
+        btn.addEventListener('mouseleave', function() {
+            const currentRating = parseInt(document.getElementById('reviewRatingInput').value);
+            const stars = this.parentElement.children;
+            for(let i=0; i<stars.length; i++) {
+                stars[i].classList.remove('text-yellow-300');
+                if(i >= currentRating) {
+                    stars[i].classList.remove('text-yellow-400');
+                    stars[i].classList.add('text-gray-300');
+                }
+            }
+        });
+
+        // Click effect
+        btn.addEventListener('click', function() {
+            const rating = this.getAttribute('data-rating');
+            document.getElementById('reviewRatingInput').value = rating;
+            
+            const stars = this.parentElement.children;
+            for(let i=0; i<stars.length; i++) {
+                if(i < rating) {
+                    stars[i].classList.remove('text-gray-300', 'text-yellow-300');
+                    stars[i].classList.add('text-yellow-400');
+                } else {
+                    stars[i].classList.remove('text-yellow-400', 'text-yellow-300');
+                    stars[i].classList.add('text-gray-300');
+                }
+            }
+        });
+    });
+
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+        if(document.getElementById('reviewRatingInput').value === '0') {
+            e.preventDefault();
+            alert('Mohon pilih rating bintang terlebih dahulu.');
+        }
+    });
 </script>
 
 @if(session('success_review'))
