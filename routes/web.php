@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +28,8 @@ Route::get('/registrasi', function () {
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
+Route::get('/admin/laporan', [LaporanController::class, 'index'])
+    ->name('admin.laporan');
+
+Route::get('/admin/laporan/export', [LaporanController::class, 'exportCsv'])
+    ->name('admin.laporan.export');
