@@ -94,3 +94,28 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Route::post('/reservasi/{id}/konfirmasi', [AdminController::class, 'konfirmasi'])->name('reservasi.konfirmasi');
     // Route::post('/reservasi/{id}/tolak', [AdminController::class, 'tolak'])->name('reservasi.tolak');
 });
+
+// Admin Dashboard Routes (from hafida/admin/dashboard)
+Route::get('/dashboard', function () {
+    return view('dashboard.dashboard');
+})->name('dashboard');
+
+Route::get('/reservasi-admin', function () {
+    return view('dashboard.reservasi.index');
+})->name('admin.reservasi.index');
+
+Route::get('/pembayaran-admin', function () {
+    return view('dashboard.pembayaran.index');
+})->name('admin.pembayaran.index');
+
+Route::get('/pelanggan', function () {
+    return view('dashboard.pelanggan.index');
+})->name('pelanggan.index');
+
+Route::get('/pelatih-admin', function () {
+    return view('dashboard.pelatih.index');
+})->name('admin.pelatih.index');
+
+Route::get('/lapangan-admin', function () {       
+    return view('dashboard.lapangan.index');
+})->name('admin.lapangan.index');

@@ -22,9 +22,10 @@
 
                     <!-- Logo -->
                     <a href="/" class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12" style=" rounded-full">
+                        <!-- <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl">
                             🏸
-                        </div>
+                        </div> -->
 
                         <div>
                             <h1 class="font-bold text-lg text-gray-800">
