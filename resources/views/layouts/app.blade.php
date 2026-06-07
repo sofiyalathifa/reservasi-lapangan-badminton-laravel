@@ -39,27 +39,27 @@
                     <!-- Menu Desktop -->
                     <div class="hidden md:flex items-center gap-8">
 
-                        <a href=" {{ route('home') }}#lapangan-populer"
+                        <a href="{{ url('/') }}#lapangan-populer"
                             class="text-gray-700 hover:text-green-500 font-medium transition">
                             Lapangan
                         </a>
 
-                        <a href="#pelatih"
+                        <a href="{{ url('/') }}#pelatih"
                             class="text-gray-700 hover:text-green-500 font-medium transition">
                             Pelatih
                         </a>
 
-                        <a href="#cari-teman"
+                        <a href="{{ url('/') }}#teman-main"
                             class="text-gray-700 hover:text-green-500 font-medium transition">
                             Cari Teman
                         </a>
 
-                        <a href="#promo"
+                        <a href="{{ url('/') }}#promo"
                             class="text-gray-700 hover:text-green-500 font-medium transition">
                             Promo
                         </a>
 
-                        <a href="#berita"
+                        <a href="{{ url('/') }}#berita"
                             class="text-gray-700 hover:text-green-500 font-medium transition">
                             Berita
                         </a>
@@ -154,33 +154,28 @@
                     Home
                 </a>
 
-                <a href="/lapangan"
-                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
-        {{ request()->routeIs('lapangan') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                <a href="{{ url('/') }}#lapangan-populer"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200 hover:bg-white/20">
                     Lapangan
                 </a>
 
-                <a href="/pelatih"
-                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
-        {{ request()->routeIs('pelatih') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                <a href="{{ url('/') }}#pelatih"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200 hover:bg-white/20">
                     Pelatih
                 </a>
 
-                <a href="/cari-teman"
-                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
-        {{ request()->routeIs('cari-teman') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                <a href="{{ url('/') }}#teman-main"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200 hover:bg-white/20">
                     Cari Teman
                 </a>
 
-                <a href="/promo"
-                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
-        {{ request()->routeIs('promo') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                <a href="{{ url('/') }}#promo"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200 hover:bg-white/20">
                     Promo
                 </a>
 
-                <a href="/berita"
-                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
-        {{ request()->routeIs('berita') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                <a href="{{ url('/') }}#berita"
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200 hover:bg-white/20">
                     Berita
                 </a>
 
