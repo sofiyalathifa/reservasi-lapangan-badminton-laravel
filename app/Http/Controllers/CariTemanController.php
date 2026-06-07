@@ -18,12 +18,30 @@ class CariTemanController extends Controller
             ->latest()
             ->get();
             
-        $incomingRequests = AjakMain::with('pengirim', 'cariTeman')
+        $rawIncomingRequests = AjakMain::with('pengirim', 'cariTeman')
             ->where('penerima_id', auth()->id())
             ->latest()
             ->get();
 
-        return view('komunitas.dashboard', compact('myPost', 'allPartners', 'myRequests', 'incomingRequests'));
+        // Hilangkan duplikat dari pengirim yang sama (hanya ambil yang terbaru)
+        $seenIncoming = [];
+        $incomingRequests = $rawIncomingRequests->filter(function($req) use (&$seenIncoming) {
+            if (in_array($req->pengirim_id, $seenIncoming)) {
+                return false;
+            }
+            $seenIncoming[] = $req->pengirim_id;
+            return true;
+        });
+
+        // Ambil semua chat aktif (accepted) milik user saat ini
+        $activeChats = AjakMain::where('status', 'accepted')
+            ->where(function($q) {
+                $q->where('pengirim_id', auth()->id())
+                  ->orWhere('penerima_id', auth()->id());
+            })
+            ->get();
+
+        return view('komunitas.dashboard', compact('myPost', 'allPartners', 'myRequests', 'incomingRequests', 'activeChats'));
     }
 
     public function store(Request $request)

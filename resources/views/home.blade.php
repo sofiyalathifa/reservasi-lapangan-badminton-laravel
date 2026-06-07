@@ -318,7 +318,7 @@
                     class="rounded-2xl border border-slate-200 bg-white p-6 shadow-md md:p-8">
 
                     <div class="mb-8">
-                        <p class="mb-2 text-sm font-semibold uppercase tracking-[3px] text-cyan-500">
+                        <p class="mb-2 text-sm font-semibold uppercase tracking-[3px]" style="color: #16a34a;">
                             Cari Teman Main
                         </p>
 
@@ -332,7 +332,7 @@
                         
                         <div class="mt-4">
                             @auth
-                                <a href="{{ route('komunitas.index') }}" class="text-sm font-semibold text-blue-600 hover:text-blue-800 border border-blue-600 px-4 py-2 rounded-lg transition inline-block">
+                                <a href="{{ route('komunitas.index') }}" class="text-sm font-semibold px-4 py-2 rounded-lg transition inline-block" style="color: #16a34a; border: 1px solid #16a34a; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f0fdf4'" onmouseout="this.style.backgroundColor='transparent'">
                                     Buka Dashboard Komunitas
                                 </a>
                             @else
@@ -360,7 +360,7 @@
                                 </div>
 
                                 <span
-                                    class="rounded-full bg-cyan-100 px-4 py-2 text-xs font-semibold text-cyan-700">
+                                    class="rounded-full px-4 py-2 text-xs font-semibold" style="background-color: #dcfce7; color: #15803d;">
                                     {{ $partner->level_kemampuan }}
                                 </span>
                             </div>
@@ -385,7 +385,7 @@
                                         </button>
                                     </form>
                                 @else
-                                    <p class="mt-5 text-sm text-blue-600 font-semibold italic">Ini adalah profil Anda.</p>
+                                    <p class="mt-5 text-sm font-semibold italic" style="color: #16a34a;">Ini adalah profil Anda.</p>
                                 @endif
                             @else
                                 <a href="{{ route('login') }}"
@@ -460,7 +460,7 @@
 
                     @foreach($promos as $promo)
                     <article class="carousel-item group flex min-h-[370px] flex-col rounded-md bg-white p-10 shadow-lg transition-all duration-300 hover:-translate-y-3 hover:shadow-2xl">
-                        <span class="w-fit rounded-full bg-orange-100 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-orange-600">
+                        <span class="w-fit rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide" style="background-color: #dcfce7; color: #15803d;">
                             {{ $promo->tag }}
                         </span>
                         <h3 class="mt-5 text-3xl font-bold leading-tight text-slate-900">
@@ -486,11 +486,11 @@
 
                 <!-- Tombol Navigasi Carousel -->
                 <button id="promoPrevBtn"
-                    class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-2 md:-translate-x-6 bg-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg text-blue-900 border border-gray-100 hover:bg-blue-50 z-10 transition">
+                    class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-2 md:-translate-x-6 bg-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg border border-gray-100 z-10 transition" style="color: #16a34a;" onmouseover="this.style.backgroundColor='#f0fdf4'" onmouseout="this.style.backgroundColor='white'">
                     ‹
                 </button>
                 <button id="promoNextBtn"
-                    class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-2 md:translate-x-6 bg-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg text-blue-900 border border-gray-100 hover:bg-blue-50 z-10 transition">
+                    class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-2 md:translate-x-6 bg-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg border border-gray-100 z-10 transition" style="color: #16a34a;" onmouseover="this.style.backgroundColor='#f0fdf4'" onmouseout="this.style.backgroundColor='white'">
                     ›
                 </button>
             </div>
