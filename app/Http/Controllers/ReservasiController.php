@@ -53,8 +53,9 @@ class ReservasiController extends Controller
             }
         }
         $promos = collect($validPromos);
+        $pelatihs = \App\Models\Pelatih::where('status_aktif', true)->get();
 
-        return view('reservasi.create', compact('lapangan', 'bookedSlots', 'id', 'promos'));
+        return view('reservasi.create', compact('lapangan', 'bookedSlots', 'id', 'promos', 'pelatihs'));
     }
 
     public function store(Request $request, $id)
@@ -77,6 +78,16 @@ class ReservasiController extends Controller
         // Hitung jam_selesai
         $jamSelesaiStr = date('H:i:s', strtotime($jam_mulai . " + $durasi hours"));
         $totalBiaya = $durasi * $harga_per_jam;
+
+        $id_pelatih = $request->id_pelatih;
+        if ($id_pelatih) {
+            $pelatih = \App\Models\Pelatih::find($id_pelatih);
+            if ($pelatih) {
+                $totalBiaya += ($pelatih->harga_per_sesi * $durasi);
+            } else {
+                $id_pelatih = null;
+            }
+        }
 
         $diskon = 0;
         $kode_promo = $request->kode_promo;
@@ -125,6 +136,7 @@ class ReservasiController extends Controller
             'jam_mulai' => $jam_mulai,
             'jam_selesai' => $jamSelesaiStr,
             'durasi' => $durasi,
+            'id_pelatih' => $id_pelatih,
             'kode_promo' => $kode_promo,
             'diskon' => $diskon,
             'total_biaya' => $totalBiaya,

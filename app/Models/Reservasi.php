@@ -39,4 +39,9 @@ class Reservasi extends Model
     {
         return $this->hasOne(Ulasan::class, 'id_reservasi', 'id_reservasi');
     }
+
+    public function pelatih()
+    {
+        return $this->belongsTo(Pelatih::class, 'id_pelatih', 'id_pelatih');
+    }
 }

@@ -25,8 +25,9 @@ Route::get('/', function () {
     });
 
     $partners = \App\Models\CariTeman::with('user')->where('status', true)->latest()->take(3)->get();
+    $pelatihs = \App\Models\Pelatih::where('status_aktif', true)->get();
 
-    return view('home', compact('lapangans', 'beritas', 'promos', 'partners'));
+    return view('home', compact('lapangans', 'beritas', 'promos', 'partners', 'pelatihs'));
 })->name('home');
 
 use App\Http\Controllers\BeritaController;

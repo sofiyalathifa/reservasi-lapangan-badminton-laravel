@@ -110,11 +110,28 @@
                                 <!-- Catatan -->
                                 <div>
                                     <label class="block text-sm font-semibold text-gray-800 mb-2">Catatan Tambahan</label>
-                                    <textarea name="catatan" rows="1" placeholder="Cth: Sewa 2 sepatu..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-gray-50 hover:bg-white font-medium text-gray-700"></textarea>
+                                    <textarea name="catatan" rows="1" placeholder="Cth: Bersihkan lapangannya..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-gray-50 hover:bg-white font-medium text-gray-700"></textarea>
                                 </div>
                             </div>
+                            <!-- Pilih Pelatih (Opsional) -->
+                            <div class="pt-4 border-t border-gray-100">
+                                <label class="block text-sm font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                                    Tambahkan Pelatih <span class="bg-gray-200 text-gray-600 text-[10px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">Opsional</span>
+                                </label>
+                                <div class="relative">
+                                    <select name="id_pelatih" id="pelatihSelect" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-gray-50 hover:bg-white appearance-none font-medium text-gray-700" onchange="updateTotal()">
+                                        <option value="" data-harga="0">Tidak, terima kasih</option>
+                                        @foreach($pelatihs as $pelatih)
+                                            <option value="{{ $pelatih->id_pelatih }}" data-harga="{{ $pelatih->harga_per_sesi }}">{{ $pelatih->nama_pelatih }} ({{ $pelatih->spesialisasi }}) - Rp {{ number_format($pelatih->harga_per_sesi, 0, ',', '.') }}/jam</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <input type="hidden" name="kode_promo" id="hiddenKodePromo">
-
                         </div>
                     </form>
                 </div>
@@ -156,7 +173,12 @@
                             </span>
                             <span class="font-bold text-green-500">Gratis</span>
                         </div>
-
+                        
+                        <!-- Rincian Pelatih -->
+                        <div class="flex justify-between text-sm items-center pb-2 hidden" id="pelatihContainer">
+                            <span class="text-gray-500">Biaya Pelatih</span>
+                            <span class="font-semibold text-gray-900" id="displayBiayaPelatih">Rp 0</span>
+                        </div>
                         <!-- Promo Input -->
                         <div class="pt-2 pb-5 border-b border-gray-100">
                             <label class="block text-sm font-semibold text-gray-800 mb-2">Punya Kode Promo?</label>
@@ -400,6 +422,19 @@
         const harga = parseInt(hargaElement.getAttribute('data-harga'));
         
         let total = durasi * harga;
+
+        // Tambah biaya pelatih
+        const pelatihSelect = document.getElementById('pelatihSelect');
+        const hargaPelatih = parseInt(pelatihSelect.options[pelatihSelect.selectedIndex].getAttribute('data-harga'));
+        
+        if (hargaPelatih > 0) {
+            const totalHargaPelatih = hargaPelatih * durasi;
+            document.getElementById('pelatihContainer').classList.remove('hidden');
+            document.getElementById('displayBiayaPelatih').innerText = 'Rp ' + totalHargaPelatih.toLocaleString('id-ID');
+            total += totalHargaPelatih;
+        } else {
+            document.getElementById('pelatihContainer').classList.add('hidden');
+        }
         
         const hiddenKode = document.getElementById('hiddenKodePromo').value;
         if (hiddenKode) {

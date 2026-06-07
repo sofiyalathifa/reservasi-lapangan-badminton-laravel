@@ -200,31 +200,7 @@
     {{-- PELATIH & TEMAN MAIN SECTION --}}
     <section id="komunitas" class="relative bg-white py-24">
 
-        @php
-        $coaches = [
-        [
-        'name' => 'Coach Ardi',
-        'specialty' => 'Footwork & Singles',
-        'level' => 'Advanced',
-        'price' => 'Mulai Rp150.000/sesi',
-        'rating' => '4.9',
-        ],
-        [
-        'name' => 'Coach Nabila',
-        'specialty' => 'Beginner Clinic',
-        'level' => 'Beginner',
-        'price' => 'Mulai Rp120.000/sesi',
-        'rating' => '4.8',
-        ],
-        [
-        'name' => 'Coach Reza',
-        'specialty' => 'Doubles Strategy',
-        'level' => 'Intermediate',
-        'price' => 'Mulai Rp135.000/sesi',
-        'rating' => '4.9',
-        ],
-        ];
-        @endphp
+
 
         <div class="mx-auto max-w-7xl px-6">
 
@@ -266,36 +242,36 @@
                     </div>
 
                     <div class="space-y-4">
-                        @foreach ($coaches as $coach)
+                        @foreach ($pelatihs as $pelatih)
                         <div
                             class="flex flex-col justify-between gap-5 rounded-xl border border-slate-200 bg-green-50/50 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-green-300 hover:shadow-lg sm:flex-row sm:items-center">
 
                             <div>
                                 <span
                                     class="inline-flex rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
-                                    {{ $coach['level'] }}
+                                    {{ $pelatih->target_level }}
                                 </span>
 
                                 <h4 class="mt-3 text-xl font-bold text-slate-900">
-                                    {{ $coach['name'] }}
+                                    {{ $pelatih->nama_pelatih }}
                                 </h4>
 
                                 <p class="mt-1 text-sm text-slate-600">
-                                    {{ $coach['specialty'] }}
+                                    {{ $pelatih->spesialisasi }}
                                 </p>
 
                                 <p class="mt-2 text-sm font-semibold text-green-500">
-                                    {{ $coach['price'] }}
+                                    Mulai Rp{{ number_format($pelatih->harga_per_sesi, 0, ',', '.') }}/jam
                                 </p>
                             </div>
 
                             <div class="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
                                 <span class="text-sm font-semibold text-amber-500">
-                                    ★ {{ $coach['rating'] }}
+                                    ★ {{ number_format($pelatih->rating, 1) }}
                                 </span>
 
-                                <a href="#"
-                                    class="inline-flex items-center rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 px-5 py-3 text-sm font-semibold text-white transition">
+                                <button type="button" onclick="openCoachModal('{{ $pelatih->nama_pelatih }}')"
+                                    class="inline-flex items-center rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 px-5 py-3 text-sm font-semibold text-white transition cursor-pointer">
                                     Booking Coach
 
                                     <svg class="ml-3" width="4" height="8" viewBox="0 0 3 6"
@@ -303,7 +279,7 @@
                                         stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M0 0L3 3L0 6"></path>
                                     </svg>
-                                </a>
+                                </button>
                             </div>
 
                         </div>
@@ -796,5 +772,66 @@
 
 </main>
 
+    <!-- Modal Konfirmasi Pelatih -->
+    <div id="coachModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="relative transform rounded-2xl bg-white p-6 shadow-2xl transition-transform duration-300 scale-95" id="coachModalContent" style="width: 90%; max-width: 450px;">
+            <!-- Icon -->
+            <div class="text-center mb-4">
+                <div style="width: 56px; height: 56px; display: inline-flex;" class="items-center justify-center rounded-full bg-green-100">
+                    <svg style="width: 32px; height: 32px;" class="text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+            </div>
+            
+            <h3 class="text-center text-xl font-bold text-slate-900">Pilih Lapangan Terlebih Dahulu</h3>
+            <p class="mt-2 text-center text-sm text-slate-500 leading-relaxed">
+                Untuk mem-booking <strong id="modalCoachName" class="text-green-600"></strong>, Anda harus memilih jadwal dan lapangan badminton terlebih dahulu. Apakah Anda ingin diarahkan ke daftar lapangan sekarang?
+            </p>
+            
+            <div class="mt-8 flex gap-3 justify-center" style="justify-content: center;">
+                <button type="button" onclick="closeCoachModal()" class="rounded-xl bg-slate-100 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 cursor-pointer" style="padding: 12px 20px;">
+                    Tidak, Batal
+                </button>
+                <button type="button" onclick="proceedToCourt()" class="rounded-xl text-sm font-semibold text-white shadow-md transition hover:opacity-90 cursor-pointer" style="padding: 12px 20px; background-color: #16a34a;">
+                    Ya, Pilih Lapangan
+                </button>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        const coachModal = document.getElementById('coachModal');
+        const coachModalContent = document.getElementById('coachModalContent');
+        const modalCoachName = document.getElementById('modalCoachName');
+
+        function openCoachModal(coachName) {
+            modalCoachName.innerText = coachName;
+            coachModal.classList.remove('hidden');
+            coachModal.classList.add('flex');
+            
+            // Trigger animation
+            setTimeout(() => {
+                coachModal.classList.remove('opacity-0');
+                coachModalContent.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeCoachModal() {
+            coachModal.classList.add('opacity-0');
+            coachModalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                coachModal.classList.remove('flex');
+                coachModal.classList.add('hidden');
+            }, 300);
+        }
+
+        function proceedToCourt() {
+            closeCoachModal();
+            // Scroll ke bagian lapangan populer secara mulus
+            const lapanganSection = document.getElementById('lapangan-populer');
+            if (lapanganSection) {
+                lapanganSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
 @endsection
