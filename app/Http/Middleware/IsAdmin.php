@@ -15,10 +15,12 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role === 'admin') {
+        $allowedRoles = ['admin', 'kasir', 'owner'];
+        
+        if (auth()->check() && in_array(auth()->user()->role, $allowedRoles)) {
             return $next($request);
         }
 
-        abort(403, 'Akses Ditolak: Anda bukan Admin.');
+        abort(403, 'Akses Ditolak: Anda tidak memiliki hak akses ke Dashboard.');
     }
 }

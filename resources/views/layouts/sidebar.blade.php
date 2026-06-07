@@ -40,19 +40,27 @@
         <!-- Navigasi Utama -->
         <nav class="flex flex-col overflow-hidden w-full flex-1 px-4 text-sm bg-white pb-4">
 
+            @php
+                $role = auth()->user()->role ?? 'user';
+            @endphp
+
             <!-- Jarak antar menu vertikal dipadatkan (space-y-0.5) agar tombol logout naik ke atas layar -->
             <div class="flex flex-col h-full flex-1 space-y-0.5">
 
-                <!-- Padding vertikal menu dikurangi dari py-2 menjadi py-1.5 agar hemat ruang -->
                 <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Dashboard
                 </a>
+
+                @if(in_array($role, ['admin', 'kasir']))
                 <a href="{{ route('admin.reservasi.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Data Reservasi
                 </a>
                 <a href="{{ route('admin.pembayaran.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Data Pembayaran
                 </a>
+                @endif
+
+                @if($role === 'admin')
                 <a href="{{ route('pelanggan.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Pelanggan
                 </a>
@@ -62,12 +70,16 @@
                 <a href="{{ route('admin.lapangan.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Lapangan
                 </a>
+                @endif
+
+                @if($role === 'owner')
                 <a href="#" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Laporan Reservasi
                 </a>
                 <a href="#" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Laporan Pembayaran
                 </a>
+                @endif
 
                 <div class="mt-auto pt-2 px-4 w-full">
                     <form action="{{ route('logout') }}" method="POST" class="w-full">
@@ -94,8 +106,8 @@
                         <li class="flex items-center pl-4 lg:hidden"> <a href="javascript:;" class="block p-0 text-sm text-white transition-all ease-nav-brand" sidenav-trigger>
                                 <div class="w-4.5 overflow-hidden"> <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i> <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i> <i class="ease relative block h-0.5 rounded-sm bg-white transition-all"></i> </div>
                             </a> </li> <!-- notifications -->
-                        <div class="flex items-center space-x-4"> <!-- Foto profil --> <img src="{{ asset('images/logo.png') }}" alt="Admin Profile" class="w-10 h-10 rounded-full border-2 border-white shadow-md"> <!-- Nama dan role -->
-                            <div class="flex flex-col"> <span class="text-sm font-semibold text-white">Admin</span> <span class="text-xs text-gray-200">Administrator</span> </div> <!-- Icon notifikasi -->
+                        <div class="flex items-center space-x-4"> <!-- Foto profil --> <img src="{{ asset('images/logo.png') }}" alt="User Profile" class="w-10 h-10 rounded-full border-2 border-white shadow-md"> <!-- Nama dan role -->
+                            <div class="flex flex-col"> <span class="text-sm font-semibold text-white">{{ auth()->check() ? auth()->user()->name : 'User' }}</span> <span class="text-xs text-gray-200 capitalize">{{ auth()->check() ? auth()->user()->role : 'Guest' }}</span> </div> <!-- Icon notifikasi -->
                             <div class="flex items-center space-x-3 ml-4"> <button class="text-white hover:text-gray-200 relative"> <i class="fas fa-bell"></i> <!-- tanda notifikasi merah --> <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span> </button> </div>
                         </div>
                     </ul>
