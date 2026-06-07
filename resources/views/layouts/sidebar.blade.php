@@ -69,11 +69,13 @@
                     Laporan Pembayaran
                 </a>
 
-                <!-- Tombol Logout terdorong ke bawah dan dijamin terlihat -->
-                <div class="mt-auto pt-2">
-                    <a href="#" class="flex justify-center items-center px-4 py-2 w-full text-white font-semibold rounded-lg shadow-md bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 transition">
-                        Logout
-                    </a>
+                <div class="mt-auto pt-2 px-4 w-full">
+                    <form action="{{ route('logout') }}" method="POST" class="w-full">
+                        @csrf
+                        <button type="submit" class="flex justify-center items-center px-4 py-2 w-full text-white font-semibold rounded-lg shadow-md bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 transition border-0 cursor-pointer">
+                            Logout
+                        </button>
+                    </form>
                 </div>
             </div>
 
