@@ -1,7 +1,7 @@
 @extends ('layouts.sidebar')
 
 @section('content')
-<main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl">
+<main class="relative h-full max-h-screen transition-all duration-200 ease-in-out lg:ml-68 rounded-xl">
 
 
     <!-- cards -->
@@ -10,18 +10,18 @@
         <div class="flex flex-wrap -mx-3">
 
             <!-- Card 1: Pendapatan Hari Ini -->
-            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 xl:w-1/4">
+            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 lg:w-1/4">
                 <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl bg-clip-border">
                     <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
+                        <div class="flex flex-row justify-between items-center">
+                            <div class="flex-1 pr-2">
                                 <p class="mb-0 text-sm font-semibold uppercase text-gray-500">Pendapatan Hari Ini</p>
-                                <h5 class="mb-2 font-bold text-gray-800">Rp 2.500.000</h5>
-                                <p class="mb-0 text-sm text-green-500">+12% dibanding kemarin</p>
+                                <h5 class="mb-1 font-bold text-gray-800 text-xl">Rp 2.500.000</h5>
+                                <p class="mb-0 text-sm text-green-500 font-semibold">+12% <span class="font-normal text-gray-500">dibanding kemarin</span></p>
                             </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div class="inline-block w-12 h-12 text-center rounded-circle bg-gradient-to-tl from-blue-500 to-violet-500">
-                                    <i class="ni ni-money-coins text-white text-lg relative top-3.5"></i>
+                            <div class="flex-none">
+                                <div class="inline-flex items-center justify-center w-12 h-12 text-center rounded-xl bg-gradient-to-tl from-blue-500 to-violet-500 shadow-md">
+                                    <i class="ni ni-money-coins text-white text-lg"></i>
                                 </div>
                             </div>
                         </div>
@@ -30,18 +30,18 @@
             </div>
 
             <!-- Card 2: Booking Hari Ini -->
-            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 xl:w-1/4">
+            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 lg:w-1/4">
                 <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl bg-clip-border">
                     <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
+                        <div class="flex flex-row justify-between items-center">
+                            <div class="flex-1 pr-2">
                                 <p class="mb-0 text-sm font-semibold uppercase text-gray-500">Booking Hari Ini</p>
-                                <h5 class="mb-2 font-bold text-gray-800">35 Slot</h5>
-                                <p class="mb-0 text-sm text-green-500">+8% dibanding kemarin</p>
+                                <h5 class="mb-1 font-bold text-gray-800 text-xl">35 Slot</h5>
+                                <p class="mb-0 text-sm text-green-500 font-semibold">+8% <span class="font-normal text-gray-500">dibanding kemarin</span></p>
                             </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div class="inline-block w-12 h-12 text-center rounded-circle bg-gradient-to-tl from-red-600 to-orange-600">
-                                    <i class="ni ni-calendar-grid-58 text-white text-lg relative top-3.5"></i>
+                            <div class="flex-none">
+                                <div class="inline-flex items-center justify-center w-12 h-12 text-center rounded-xl bg-gradient-to-tl from-red-600 to-orange-600 shadow-md">
+                                    <i class="ni ni-calendar-grid-58 text-white text-lg"></i>
                                 </div>
                             </div>
                         </div>
@@ -50,18 +50,18 @@
             </div>
 
             <!-- Card 3: Lapangan Terpakai -->
-            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 xl:w-1/4">
+            <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 lg:w-1/4">
                 <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl bg-clip-border">
                     <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
+                        <div class="flex flex-row justify-between items-center">
+                            <div class="flex-1 pr-2">
                                 <p class="mb-0 text-sm font-semibold uppercase text-gray-500">Lapangan Terpakai</p>
-                                <h5 class="mb-2 font-bold text-gray-800">70%</h5>
-                                <p class="mb-0 text-sm text-green-500">Slot terpakai hari ini</p>
+                                <h5 class="mb-1 font-bold text-gray-800 text-xl">70%</h5>
+                                <p class="mb-0 text-sm text-gray-500">Slot terpakai hari ini</p>
                             </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div class="inline-block w-12 h-12 text-center rounded-circle bg-gradient-to-tl from-emerald-500 to-teal-400">
-                                    <i class="ni ni-app text-white text-lg relative top-3.5"></i>
+                            <div class="flex-none">
+                                <div class="inline-flex items-center justify-center w-12 h-12 text-center rounded-xl bg-gradient-to-tl from-emerald-500 to-teal-400 shadow-md">
+                                    <i class="ni ni-app text-white text-lg"></i>
                                 </div>
                             </div>
                         </div>
@@ -70,18 +70,18 @@
             </div>
 
             <!-- Card 4: Total Transaksi Bulanan -->
-            <div class="w-full max-w-full px-3 sm:w-1/2 xl:w-1/4">
+            <div class="w-full max-w-full px-3 sm:w-1/2 lg:w-1/4 mb-6">
                 <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl rounded-2xl bg-clip-border">
                     <div class="flex-auto p-4">
-                        <div class="flex flex-row -mx-3">
-                            <div class="flex-none w-2/3 max-w-full px-3">
-                                <p class="mb-0 text-sm font-semibold uppercase text-gray-500">Total Transaksi Bulanan</p>
-                                <h5 class="mb-2 font-bold text-gray-800">Rp 20.000.000</h5>
-                                <p class="mb-0 text-sm text-green-500">+15% dibanding bulan lalu</p>
+                        <div class="flex flex-row justify-between items-center">
+                            <div class="flex-1 pr-2">
+                                <p class="mb-0 text-sm font-semibold uppercase text-gray-500" style="font-size: 0.75rem;">Total Transaksi Bulanan</p>
+                                <h5 class="mb-1 font-bold text-gray-800 text-xl">Rp 20.000.000</h5>
+                                <p class="mb-0 text-sm text-green-500 font-semibold">+15% <span class="font-normal text-gray-500">dibulan lalu</span></p>
                             </div>
-                            <div class="px-3 text-right basis-1/3">
-                                <div class="inline-block w-12 h-12 text-center rounded-circle bg-gradient-to-tl from-orange-500 to-yellow-500">
-                                    <i class="ni ni-cart text-white text-lg relative top-3.5"></i>
+                            <div class="flex-none">
+                                <div class="inline-flex items-center justify-center w-12 h-12 text-center rounded-xl bg-gradient-to-tl from-orange-500 to-yellow-500 shadow-md">
+                                    <i class="ni ni-cart text-white text-lg"></i>
                                 </div>
                             </div>
                         </div>
@@ -94,12 +94,12 @@
         <!-- cards row 2 -->
         <div class="flex flex-wrap mt-6 -mx-3">
             <div class="w-full max-w-full px-3 mt-0 lg:w-7/12 lg:flex-none">
-                <div class="border-black/12.5 dark:bg-slate-850 dark:shadow-dark-xl shadow-xl relative z-20 flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
+                <div class="border-black/12.5 dark:bg-slate-800 dark:shadow-dark-xl shadow-xl relative z-20 flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
                     <div class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid p-6 pt-4 pb-0">
                         <h6 class="capitalize dark:text-white">Pendapatan Perminggu</h6>
                         <p class="mb-0 text-sm leading-normal dark:text-white dark:opacity-60">
                             <i class="fa fa-arrow-up text-emerald-500"></i>
-                            <span class="font-semibold">+12%</span> dibanding minggu lalu
+                            <span class="font-semibold text-emerald-500">+12%</span> dibanding minggu lalu
                         </p>
                     </div>
                     <div class="flex-auto p-4">
@@ -232,11 +232,11 @@
                         const slide = document.createElement('div');
                         slide.className = index === 0 ? 'slide' : 'slide hidden'; // slide pertama visible, lainnya hidden
                         slide.innerHTML = `
-                                <div class="bg-white rounded-2xl shadow-xl p-6 h-[300px] flex flex-col justify-start">
-                                    <h4 class="font-semibold mb-4 text-lg">Lapangan ${lapangan.id}</h4>
-                                    <div class="flex flex-wrap gap-2 overflow-auto">
+                                <div class="bg-white dark:bg-slate-800 dark:text-white rounded-2xl shadow-xl p-6 h-full min-h-[300px] flex flex-col justify-start items-start text-left">
+                                    <h4 class="font-bold mb-6 text-xl text-slate-700">Lapangan ${lapangan.id}</h4>
+                                    <div class="flex flex-nowrap gap-3 overflow-x-auto justify-start pb-2 w-full">
                                     ${lapangan.slots.map(slot => `
-                                        <button class="px-3 py-1 rounded-full ${slot.status === 'booked' ? 'bg-green-500 text-white cursor-not-allowed' : 'bg-white shadow-md hover:bg-gray-100 text-slate-700'}" ${slot.status === 'booked' ? 'disabled' : ''}>${slot.jam}</button>
+                                        <button class="px-4 py-1.5 text-sm font-semibold rounded-full whitespace-nowrap flex-shrink-0 ${slot.status === 'booked' ? 'bg-emerald-500 text-white shadow-md cursor-not-allowed' : 'bg-white dark:bg-slate-700 dark:text-white dark:hover:bg-slate-600 shadow-sm border border-gray-100 hover:bg-gray-50 text-slate-700'}" ${slot.status === 'booked' ? 'disabled' : ''}>${slot.jam}</button>
                                     `).join('')}
                                     </div>
                                 </div>
@@ -261,7 +261,7 @@
         <div class="flex flex-wrap mt-6 -mx-3">
             <!-- Kolom 1: Ringkasan Lapangan -->
             <div class="w-full px-3 mt-0 lg:w-1/2">
-                <div class="shadow-xl dark:bg-slate-850 dark:shadow-dark-xl relative flex flex-col break-words rounded-2xl border-0 bg-white bg-clip-border">
+                <div class="shadow-xl dark:bg-slate-800 dark:shadow-dark-xl relative flex flex-col break-words rounded-2xl border-0 bg-white bg-clip-border">
                     <div class="p-4 pb-0 rounded-t-4">
                         <h6 class="mb-0 dark:text-white font-semibold">Ringkasan Lapangan</h6>
                     </div>
@@ -282,7 +282,7 @@
 
                         <ul class="flex flex-col pl-0 mb-0 rounded-lg space-y-2">
                             @foreach($lapanganData as $lap)
-                            <li class="flex justify-between items-center p-4 bg-white rounded-lg shadow-sm border">
+                            <li class="flex justify-between items-center p-4 bg-white dark:bg-slate-700 rounded-lg shadow-sm border dark:border-slate-600">
                                 <div class="flex items-center gap-2">
                                     <!-- Icon Lapangan -->
                                     <div class="w-10 h-10 flex items-center justify-center bg-teal-500 text-white rounded-lg">
@@ -326,7 +326,7 @@
 
             <!-- Kolom 2: Detail Lapangan -->
             <div class="w-full px-3 mt-0 lg:w-1/2">
-                <div class="shadow-xl dark:bg-slate-850 dark:shadow-dark-xl relative flex flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
+                <div class="shadow-xl dark:bg-slate-800 dark:shadow-dark-xl relative flex flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
                     <div class="p-4 pb-0 rounded-t-4">
                         <h6 class="mb-0 dark:text-white">Lapangan</h6>
                     </div>

@@ -1,5 +1,97 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============================================
+   Argon Dashboard Custom Utilities
+   Kelas-kelas kustom dari template Argon yang
+   tidak tersedia di Tailwind CSS v4 standar
+   ============================================ */
+
+/* Rounded circle for icon badges */
+.rounded-circle {
+  border-radius: 50%;
+}
+
+/* Custom z-index for sidebar */
+.z-990 {
+  z-index: 990;
+}
+
+/* Sidebar width offset for main content */
+@media (min-width: 1280px) {
+  .xl\:ml-68 {
+    margin-left: 17rem; /* 272px = sidebar width 256px + margin */
+  }
+}
+
+/* Custom transition easing for sidebar brand */
+.ease-nav-brand {
+  transition-timing-function: cubic-bezier(0.685, 0.0473, 0.346, 1);
+}
+
+/* Custom height for sidebar header */
+.h-19 {
+  height: 4.75rem; /* 76px */
+}
+
+/* Min height for green header background */
+.min-h-75 {
+  min-height: 18.75rem; /* 300px */
+}
+
+/* Default line height */
+.leading-default {
+  line-height: 1.6;
+}
+
+/* Custom leading */
+.leading-5\.6 {
+  line-height: 1.4rem;
+}
+
+/* Custom width fraction */
+.w-1\/100 {
+  width: 1%;
+}
+
+/* Custom width */
+.w-4\.5 {
+  width: 1.125rem;
+}
+
+/* Custom margin-bottom */
+.mb-0\.75 {
+  margin-bottom: 0.1875rem;
+}
+
+/* Custom top positioning */
+.top-3\.5 {
+  top: 0.875rem;
+}
+
+/* Dark shadow for cards */
+.shadow-dark-xl {
+  box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Primary outline shadow for inputs */
+.focus\:shadow-primary-outline:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Rounded top-4 */
+.rounded-t-4 {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+/* Max width for sidebar */
+.max-w-64 {
+  max-width: 16rem; /* 256px */
+}
+
 body {
   font-family: 'Poppins', sans-serif;
 }
