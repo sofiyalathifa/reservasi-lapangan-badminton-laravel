@@ -14,7 +14,7 @@
             rounded-full bg-gray-200">
         </div>
 
-        <div class="absolute top-8 right-[-120px] w-[300px] h-[300px]
+        <div class="absolute top-8 right-[-120px] w-[320px] h-[320px]
             lg:-top-24 lg:right-[-100px] lg:w-[620px] lg:h-[620px]
             rounded-full overflow-hidden">
             <img src="{{ asset('images/banner1.jpeg') }}"
