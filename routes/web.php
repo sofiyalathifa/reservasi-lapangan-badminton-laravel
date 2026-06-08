@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     $lapangans = \App\Models\Lapangan::all();
     $beritas = \App\Models\Berita::latest('tanggal_publikasi')->take(6)->get();
-    
+
     // Hanya tampilkan promo aktif, kuota masih ada, dan belum kadaluarsa
     $promos = \App\Models\Promo::where('status', true)->get()->filter(function ($promo) {
         if ($promo->tanggal_berakhir && $promo->tanggal_berakhir->isPast()) return false;
@@ -31,7 +31,9 @@ Route::get('/', function () {
 })->name('home');
 
 use App\Http\Controllers\BeritaController;
+
 Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('berita.show');
+
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\PembayaranController;
 
@@ -58,6 +60,7 @@ Route::get('/registrasi', function () {
 })->name('register');
 
 Route::post('/registrasi', [RegisterController::class, 'store'])->name('register.store');
+
 use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/login', function () {
@@ -79,7 +82,7 @@ Route::middleware('auth')->group(function () {
     // Ajak Main
     Route::post('/komunitas/ajak/{id_cari_teman}', [KomunikasiController::class, 'kirimUndangan'])->name('komunitas.ajak');
     Route::post('/komunitas/respon/{id_ajak_main}', [KomunikasiController::class, 'responUndangan'])->name('komunitas.respon');
-    
+
     // Chat
     Route::get('/komunitas/chat', [KomunikasiController::class, 'indexChat'])->name('komunitas.chat.index');
     Route::get('/komunitas/chat/{id_ajak_main}', [KomunikasiController::class, 'ruangChat'])->name('komunitas.chat.room');
@@ -271,7 +274,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::put('/pelatih-admin/{id}', [\App\Http\Controllers\AdminPelatihController::class, 'update'])->name('admin.pelatih.update');
     Route::delete('/pelatih-admin/{id}', [\App\Http\Controllers\AdminPelatihController::class, 'destroy'])->name('admin.pelatih.destroy');
 
-    Route::get('/lapangan-admin', function () {       
-        return view('dashboard.lapangan.index');
-    })->name('admin.lapangan.index');
+    Route::get('/lapangan-admin', [\App\Http\Controllers\LapanganController::class, 'index'])->name('admin.lapangan.index');
+    Route::get('/lapangan-admin/create', [\App\Http\Controllers\LapanganController::class, 'create'])->name('admin.lapangan.create');
+    Route::post('/lapangan-admin', [\App\Http\Controllers\LapanganController::class, 'store'])->name('admin.lapangan.store');
+    Route::get('/lapangan-admin/{id}/edit', [\App\Http\Controllers\LapanganController::class, 'edit'])->name('admin.lapangan.edit');
+    Route::put('/lapangan-admin/{id}', [\App\Http\Controllers\LapanganController::class, 'update'])->name('admin.lapangan.update');
+    Route::delete('/lapangan-admin/{id}', [\App\Http\Controllers\LapanganController::class, 'destroy'])->name('admin.lapangan.destroy');
 });

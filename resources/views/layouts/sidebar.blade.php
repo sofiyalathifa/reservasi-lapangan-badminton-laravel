@@ -114,13 +114,13 @@
     </main>
     <script>
         // Sidebar Toggle Script
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const sidenav = document.querySelector('aside');
             const trigger = document.querySelector('[sidenav-trigger]');
             const closeBtn = document.querySelector('[sidenav-close]');
 
             if (trigger) {
-                trigger.addEventListener('click', function () {
+                trigger.addEventListener('click', function() {
                     sidenav.classList.remove('-translate-x-full');
                     sidenav.classList.add('translate-x-0');
                     sidenav.setAttribute('aria-expanded', 'true');
@@ -128,7 +128,7 @@
             }
 
             if (closeBtn) {
-                closeBtn.addEventListener('click', function () {
+                closeBtn.addEventListener('click', function() {
                     sidenav.classList.add('-translate-x-full');
                     sidenav.classList.remove('translate-x-0');
                     sidenav.setAttribute('aria-expanded', 'false');
