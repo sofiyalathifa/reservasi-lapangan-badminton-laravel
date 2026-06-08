@@ -43,6 +43,7 @@
             <!-- Jarak antar menu vertikal dipadatkan (space-y-0.5) agar tombol logout naik ke atas layar -->
             <div class="flex flex-col h-full flex-1 space-y-0.5">
 
+
                 <!-- Padding vertikal menu dikurangi dari py-2 menjadi py-1.5 agar hemat ruang -->
                 <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Dashboard
@@ -93,8 +94,7 @@
                                 <div class="w-4.5 overflow-hidden"> <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i> <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i> <i class="ease relative block h-0.5 rounded-sm bg-white transition-all"></i> </div>
                             </a> </li> <!-- notifications -->
                         <div class="flex items-center space-x-4"> <!-- Foto profil --> <img src="{{ asset('images/logo.png') }}" alt="Admin Profile" class="w-10 h-10 rounded-full border-2 border-white shadow-md"> <!-- Nama dan role -->
-                            <div class="flex flex-col"> <span class="text-sm font-semibold text-white">Admin</span> <span class="text-xs text-gray-200">Administrator</span> </div> <!-- Icon notifikasi -->
-                            <div class="flex items-center space-x-3 ml-4"> <button class="text-white hover:text-gray-200 relative"> <i class="fas fa-bell"></i> <!-- tanda notifikasi merah --> <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span> </button> </div>
+                            <div class="flex flex-col"> <span class="text-sm font-semibold text-white">Admin</span> <span class="text-xs text-gray-200">Administrator</span> </div>
                         </div>
                     </ul>
                 </div>

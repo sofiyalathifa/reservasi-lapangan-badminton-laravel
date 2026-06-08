@@ -145,3 +145,9 @@ Route::prefix('admin')->group(function () {
     Route::delete('/lapangan/{id}', [LapanganController::class, 'destroy'])
         ->name('admin.lapangan.destroy');
 });
+
+Route::prefix('owner')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard.owner.dashboard');
+    })->name('owner.dashboard');
+});
