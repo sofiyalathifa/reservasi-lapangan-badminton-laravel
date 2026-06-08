@@ -20,6 +20,15 @@ class AdminPelatihController extends Controller
             });
         }
 
+        if ($request->has('status') && $request->status != '') {
+            $status = $request->status == 'aktif' ? 1 : 0;
+            $query->where('status_aktif', $status);
+        }
+
+        if ($request->has('level') && $request->level != '') {
+            $query->where('target_level', $request->level);
+        }
+
         $pelatihs = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         
         return view('dashboard.pelatih.index', compact('pelatihs'));

@@ -54,9 +54,11 @@
                                     </div>
                                 </form>
 
+                                @if(auth()->check() && auth()->user()->role != 'owner')
                                 <a href="{{ route('admin.lapangan.create') }}" class="inline-block px-5 py-2 font-bold leading-normal text-center text-white align-middle transition-all rounded-lg cursor-pointer text-sm ease-in shadow-md hover:shadow-xs hover:-translate-y-px active:opacity-85 m-0 whitespace-nowrap" style="background: linear-gradient(135deg, #10b981, #14b8a6); border: none;">
                                     <i class="fas fa-plus mr-1"></i> Tambah Lapangan
                                 </a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -69,8 +71,10 @@
                                         <th style="width: 15%" class="px-2 py-3 font-bold text-left uppercase align-middle bg-transparent border-b shadow-none text-xxs tracking-none text-slate-400 opacity-70">Jenis Lantai</th>
                                         <th style="width: 15%" class="px-2 py-3 font-bold text-center uppercase align-middle bg-transparent border-b shadow-none text-xxs tracking-none text-slate-400 opacity-70">Tarif / Jam</th>
                                         <th style="width: 12%" class="px-2 py-3 font-bold text-center uppercase align-middle bg-transparent border-b shadow-none text-xxs tracking-none text-slate-400 opacity-70">Status</th>
-                                        <th style="width: 13%" class="px-2 py-3 font-bold text-center uppercase align-middle bg-transparent border-b shadow-none text-xxs tracking-none text-slate-400 opacity-70">Rating & Ulasan</th>
+                                        <th style="width: 15%" class="px-2 py-3 font-bold text-center uppercase align-middle bg-transparent border-b shadow-none text-xxs tracking-none text-slate-400 opacity-70">Rating & Ulasan</th>
+                                        @if(auth()->check() && auth()->user()->role != 'owner')
                                         <th style="width: 15%" class="px-2 py-3 font-bold text-center uppercase align-middle bg-transparent border-b shadow-none text-xxs tracking-none text-slate-400 opacity-70">Aksi</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -106,6 +110,7 @@
                                                 <p class="mb-0 text-xs leading-tight text-slate-400 whitespace-nowrap">{{ $item->jumlah_ulasan ?? 0 }} Ulasan</p>
                                             </div>
                                         </td>
+                                        @if(auth()->check() && auth()->user()->role != 'owner')
                                         <td class="p-4 px-2 text-center align-middle bg-transparent border-b shadow-transparent">
                                             <div class="flex items-center justify-center gap-3">
                                                 <a href="{{ route('admin.lapangan.edit', $item->id_lapangan) }}" class="text-sm font-semibold leading-tight text-blue-500 hover:text-blue-700 cursor-pointer transition-colors">
@@ -116,6 +121,7 @@
                                                 </button>
                                             </div>
                                         </td>
+                                        @endif
                                     </tr>
                                     @empty
                                     <tr>

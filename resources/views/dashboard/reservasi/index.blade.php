@@ -45,10 +45,12 @@
                                 <!-- Tombol hidden untuk submit search dari input text ketika di-enter -->
                                 <button type="submit" class="hidden"></button>
                             </form>
-                            <button onclick="document.getElementById('modal-booking-offline').classList.remove('hidden')" class="bg-gradient-to-tl from-emerald-500 to-teal-400 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all whitespace-nowrap">
-                                <i class="fas fa-plus mr-1"></i> Booking Offline
-                            </button>
-                        </div>
+                                @if(auth()->check() && auth()->user()->role != 'owner')
+                                <button onclick="document.getElementById('modal-booking-offline').classList.remove('hidden')" class="bg-gradient-to-tl from-emerald-500 to-teal-400 text-white font-bold text-xs px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all whitespace-nowrap">
+                                    <i class="fas fa-plus mr-1"></i> Booking Offline
+                                </button>
+                                @endif
+                            </div>
                     </div>
 
                     <!-- Modal Booking Offline -->
@@ -244,13 +246,15 @@
                                                         {{ $statusResConfig['text'] }}
                                                     </span>
                                                     
-                                                    @if($r->status_reservasi == 'pending' && !$r->pembayaran)
-                                                        <button type="submit" name="status_reservasi" value="bayar_tunai" class="text-[10px] font-bold px-2 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded hover:bg-emerald-100 transition-colors w-full text-center" onclick="return confirm('Pindahkan pesanan pelanggan ini ke menu Data Pembayaran untuk diproses tunai secara DP/Lunas?')">
-                                                            <i class="fas fa-hand-holding-usd mr-1"></i> Proses Tunai
-                                                        </button>
-                                                        <button type="submit" name="status_reservasi" value="dibatalkan" class="text-[10px] font-bold px-2 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded hover:bg-red-100 transition-colors w-full text-center" onclick="return confirm('Batalkan pesanan yang belum dibayar ini?')">
-                                                            <i class="fas fa-times mr-1"></i> Batalkan
-                                                        </button>
+                                                    @if(auth()->check() && auth()->user()->role != 'owner')
+                                                        @if($r->status_reservasi == 'pending' && !$r->pembayaran)
+                                                            <button type="submit" name="status_reservasi" value="bayar_tunai" class="text-[10px] font-bold px-2 py-1.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded hover:bg-emerald-100 transition-colors w-full text-center" onclick="return confirm('Pindahkan pesanan pelanggan ini ke menu Data Pembayaran untuk diproses tunai secara DP/Lunas?')">
+                                                                <i class="fas fa-hand-holding-usd mr-1"></i> Proses Tunai
+                                                            </button>
+                                                            <button type="submit" name="status_reservasi" value="dibatalkan" class="text-[10px] font-bold px-2 py-1.5 bg-red-50 text-red-600 border border-red-200 rounded hover:bg-red-100 transition-colors w-full text-center" onclick="return confirm('Batalkan pesanan yang belum dibayar ini?')">
+                                                                <i class="fas fa-times mr-1"></i> Batalkan
+                                                            </button>
+                                                        @endif
                                                     @endif
                                                 </div>
                                             </form>

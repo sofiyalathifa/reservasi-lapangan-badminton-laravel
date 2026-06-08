@@ -22,7 +22,7 @@ class LoginController extends Controller
 
             $dashboardRoles = ['admin', 'kasir', 'owner'];
             if (in_array(Auth::user()->role, $dashboardRoles)) {
-                return redirect()->intended(route('dashboard'))->with('success', 'Berhasil login ke Dashboard!');
+                return redirect()->route('dashboard')->with('success', 'Berhasil login ke Dashboard!');
             }
 
             return redirect()->intended(route('home'))->with('success', 'Berhasil login!');
@@ -35,9 +35,15 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        $role = Auth::check() ? Auth::user()->role : null;
+        
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        if (in_array($role, ['admin', 'kasir', 'owner'])) {
+            return redirect()->route('login')->with('success', 'Berhasil logout.');
+        }
 
         return redirect('/');
     }

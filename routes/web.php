@@ -254,7 +254,7 @@ Route::middleware(['auth', 'role:admin,kasir,owner'])->group(function () {
     })->name('dashboard');
 });
 
-Route::middleware(['auth', 'role:admin,kasir'])->group(function () {
+Route::middleware(['auth', 'role:admin,kasir,owner'])->group(function () {
     Route::get('/reservasi-admin', [\App\Http\Controllers\AdminReservasiController::class, 'index'])->name('admin.reservasi.index');
     Route::post('/reservasi-admin/offline', [\App\Http\Controllers\AdminReservasiController::class, 'storeOffline'])->name('admin.reservasi.offline');
     Route::put('/reservasi-admin/{id}/status', [\App\Http\Controllers\AdminReservasiController::class, 'updateStatus'])->name('admin.reservasi.status');
@@ -263,7 +263,7 @@ Route::middleware(['auth', 'role:admin,kasir'])->group(function () {
     Route::put('/pembayaran-admin/{id}/verifikasi', [\App\Http\Controllers\AdminPembayaranController::class, 'verifikasi'])->name('admin.pembayaran.verifikasi');
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::get('/pelanggan', [\App\Http\Controllers\AdminPelangganController::class, 'index'])->name('pelanggan.index');
     Route::post('/pelanggan', [\App\Http\Controllers\AdminPelangganController::class, 'store'])->name('pelanggan.store');
     Route::put('/pelanggan/{id}', [\App\Http\Controllers\AdminPelangganController::class, 'update'])->name('pelanggan.update');

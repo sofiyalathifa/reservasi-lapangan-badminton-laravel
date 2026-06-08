@@ -51,7 +51,7 @@
                     Dashboard
                 </a>
 
-                @if(in_array($role, ['admin', 'kasir']))
+                @if(in_array($role, ['admin', 'kasir', 'owner']))
                 <a href="{{ route('admin.reservasi.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Data Reservasi
                 </a>
@@ -60,7 +60,7 @@
                 </a>
                 @endif
 
-                @if($role === 'admin')
+                @if(in_array($role, ['admin', 'owner']))
                 <a href="{{ route('pelanggan.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Pelanggan
                 </a>
@@ -69,15 +69,6 @@
                 </a>
                 <a href="{{ route('admin.lapangan.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Lapangan
-                </a>
-                @endif
-
-                @if($role === 'owner')
-                <a href="#" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
-                    Laporan Reservasi
-                </a>
-                <a href="#" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
-                    Laporan Pembayaran
                 </a>
                 @endif
 
@@ -104,8 +95,7 @@
                                 <div class="w-4.5 overflow-hidden"> <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i> <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i> <i class="ease relative block h-0.5 rounded-sm bg-white transition-all"></i> </div>
                             </a> </li> <!-- notifications -->
                         <div class="flex items-center space-x-4"> <!-- Foto profil --> <img src="{{ asset('images/logo.png') }}" alt="User Profile" class="w-10 h-10 rounded-full border-2 border-white shadow-md"> <!-- Nama dan role -->
-                            <div class="flex flex-col"> <span class="text-sm font-semibold text-white">{{ auth()->check() ? auth()->user()->name : 'User' }}</span> <span class="text-xs text-gray-200 capitalize">{{ auth()->check() ? auth()->user()->role : 'Guest' }}</span> </div> <!-- Icon notifikasi -->
-                            <div class="flex items-center space-x-3 ml-4"> <button class="text-white hover:text-gray-200 relative"> <i class="fas fa-bell"></i> <!-- tanda notifikasi merah --> <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span> </button> </div>
+                            <div class="flex flex-col"> <span class="text-sm font-semibold text-white">{{ auth()->check() ? auth()->user()->name : 'User' }}</span> <span class="text-xs text-gray-200 capitalize">{{ auth()->check() ? auth()->user()->role : 'Guest' }}</span> </div>
                         </div>
                     </ul>
                 </div>

@@ -25,13 +25,29 @@
                 <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl rounded-2xl bg-clip-border">
                     <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
                         <div class="flex flex-wrap -mx-3 items-center justify-between">
-                            <div class="flex items-center flex-none w-1/2 max-w-full px-3">
+                            <div class="flex items-center flex-none w-1/3 max-w-full px-3">
                                 <h6 class="mb-0">Data Pelatih</h6>
                             </div>
-                            <div class="flex items-center justify-end flex-none w-1/2 max-w-full px-3">
+                            <div class="flex items-center justify-end flex-none w-2/3 max-w-full px-3 gap-3">
+                                <form action="{{ route('admin.pelatih.index') }}" method="GET" class="flex items-center m-0 gap-2">
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                                            <i class="fas fa-search text-sm"></i>
+                                        </div>
+                                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari pelatih..." class="pl-9 text-sm border border-slate-300 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all w-full max-w-[160px]">
+                                    </div>
+                                    <select name="status" class="text-sm border border-slate-300 rounded-lg px-2 py-2 outline-none focus:ring-2 focus:ring-emerald-500 bg-white" onchange="this.form.submit()">
+                                        <option value="">Semua Status</option>
+                                        <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                                        <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Non-aktif</option>
+                                    </select>
+                                    <button type="submit" class="hidden"></button>
+                                </form>
+                                @if(auth()->check() && auth()->user()->role != 'owner')
                                 <button onclick="openAddModal()" class="inline-block px-5 py-2.5 font-bold leading-normal text-center text-white align-middle transition-all bg-transparent rounded-lg cursor-pointer text-sm ease-in shadow-md bg-150 bg-gradient-to-tl from-emerald-500 to-teal-400 hover:shadow-xs hover:-translate-y-px active:opacity-85">
-                                    <i class="fas fa-plus mr-2"></i> Tambah Pelatih
+                                    <i class="fas fa-plus mr-2"></i> Tambah
                                 </button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -44,7 +60,9 @@
                                         <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Spesialisasi</th>
                                         <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Tarif</th>
                                         <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Status</th>
+                                        @if(auth()->check() && auth()->user()->role != 'owner')
                                         <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Aksi</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -73,6 +91,7 @@
                                                 {{ $pelatih->status_aktif ? 'Aktif' : 'Non-aktif' }}
                                             </span>
                                         </td>
+                                        @if(auth()->check() && auth()->user()->role != 'owner')
                                         <td class="p-4 px-6 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                             <button onclick="openEditModal(this)" data-pelatih="{{ json_encode($pelatih) }}" class="text-sm font-semibold leading-tight text-blue-500 hover:text-blue-700 mr-4 cursor-pointer">
                                                 <i class="fas fa-edit mr-1"></i> Edit
@@ -81,6 +100,7 @@
                                                 <i class="fas fa-trash mr-1"></i> Hapus
                                             </button>
                                         </td>
+                                        @endif
                                     </tr>
                                     @empty
                                     <tr>

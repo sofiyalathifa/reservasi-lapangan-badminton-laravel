@@ -57,7 +57,11 @@
                                         <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-500">Transaksi</th>
                                         <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-500">Nominal & Metode</th>
                                         <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-500">Status</th>
+                                        @if(auth()->check() && auth()->user()->role == 'owner')
+                                        <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-500">Bukti Pembayaran</th>
+                                        @else
                                         <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-500">Verifikasi (1-Klik)</th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -101,11 +105,16 @@
                                         <td class="p-4 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap">
                                             <div class="flex flex-col gap-2 items-center min-w-[140px]">
                                                 @if($p->bukti_pembayaran && $p->bukti_pembayaran !== 'offline_payment')
-                                                    <a href="{{ asset('storage/' . $p->bukti_pembayaran) }}" target="_blank" class="w-full mb-2 text-center px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 transition-colors block">
+                                                    <a href="{{ asset('storage/' . $p->bukti_pembayaran) }}" target="_blank" style="display: block; width: 100%; text-align: center; background-color: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 8px 12px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 12px; margin-bottom: 8px;">
                                                         <i class="fas fa-search-plus mr-1"></i> Cek Bukti
                                                     </a>
+                                                @else
+                                                    @if(auth()->check() && auth()->user()->role == 'owner')
+                                                        <span style="display: block; width: 100%; text-align: center; background-color: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 11px;">Tidak ada bukti (bayar di kasir)</span>
+                                                    @endif
                                                 @endif
 
+                                                @if(auth()->check() && auth()->user()->role != 'owner')
                                                 <div class="w-full mb-2 border-b border-slate-200 pb-2 dark:border-slate-700">
                                                     <form action="{{ route('admin.pembayaran.verifikasi', $p->id_pembayaran) }}" method="POST" class="flex flex-col gap-1 w-full">
                                                         @csrf
@@ -134,6 +143,7 @@
                                                     </form>
                                                     @endif
                                                 </div>
+                                                @endif
                                                 
                                                 <!-- Aksi Lapangan dihapus karena akan diotomatisasi -->
                                             </div>
