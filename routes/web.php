@@ -243,6 +243,10 @@ Route::middleware(['auth', 'role:admin,kasir,owner'])->group(function () {
             ];
         }
 
+        if (auth()->check() && auth()->user()->role === 'owner') {
+            return view('dashboard.owner.dashboard');
+        }
+
         return view('dashboard.dashboard', compact(
             'pendapatanHariIni', 'persenPendapatan',
             'bookingHariIni', 'persenBooking',
