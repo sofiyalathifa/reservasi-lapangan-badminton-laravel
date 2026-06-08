@@ -74,10 +74,10 @@
                                             </span>
                                         </td>
                                         <td class="p-4 px-6 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                            <button onclick="openEditModal({{ $pelatih->id_pelatih }}, '{{ addslashes($pelatih->nama_pelatih) }}', '{{ addslashes($pelatih->spesialisasi) }}', '{{ addslashes($pelatih->target_level) }}', {{ $pelatih->harga_per_sesi }}, {{ $pelatih->rating }}, {{ $pelatih->status_aktif }}, '{{ addslashes(str_replace(array("\r", "\n"), array('', '\n'), $pelatih->deskripsi)) }}')" class="text-sm font-semibold leading-tight text-blue-500 hover:text-blue-700 mr-4 cursor-pointer">
+                                            <button onclick="openEditModal(this)" data-pelatih="{{ json_encode($pelatih) }}" class="text-sm font-semibold leading-tight text-blue-500 hover:text-blue-700 mr-4 cursor-pointer">
                                                 <i class="fas fa-edit mr-1"></i> Edit
                                             </button>
-                                            <button type="button" onclick="openDeleteModal({{ $pelatih->id_pelatih }}, '{{ addslashes($pelatih->nama_pelatih) }}')" class="text-sm font-semibold leading-tight text-red-500 hover:text-red-700 cursor-pointer">
+                                            <button type="button" onclick="openDeleteModal(this)" data-pelatih="{{ json_encode($pelatih) }}" class="text-sm font-semibold leading-tight text-red-500 hover:text-red-700 cursor-pointer">
                                                 <i class="fas fa-trash mr-1"></i> Hapus
                                             </button>
                                         </td>
@@ -291,30 +291,34 @@
         document.body.appendChild(clone);
     }
 
-    function openEditModal(id, nama, spesialisasi, target, harga, rating, status, deskripsi) {
+    function openEditModal(btn) {
         closeModal('editModal'); // cleanup if exists
         var tpl = document.getElementById('editModalTemplate');
         var clone = tpl.content.cloneNode(true);
         document.body.appendChild(clone);
 
-        document.getElementById('editForm').action = '/pelatih-admin/' + id;
-        document.getElementById('edit_nama').value = nama;
-        document.getElementById('edit_spesialisasi').value = spesialisasi;
-        document.getElementById('edit_target').value = target;
-        document.getElementById('edit_harga').value = harga;
-        document.getElementById('edit_rating').value = rating;
-        document.getElementById('edit_status').value = status;
-        document.getElementById('edit_deskripsi').value = deskripsi;
+        var data = JSON.parse(btn.getAttribute('data-pelatih'));
+
+        document.getElementById('editForm').action = '/pelatih-admin/' + data.id_pelatih;
+        document.getElementById('edit_nama').value = data.nama_pelatih;
+        document.getElementById('edit_spesialisasi').value = data.spesialisasi;
+        document.getElementById('edit_target').value = data.target_level;
+        document.getElementById('edit_harga').value = data.harga_per_sesi;
+        document.getElementById('edit_rating').value = data.rating;
+        document.getElementById('edit_status').value = data.status_aktif;
+        document.getElementById('edit_deskripsi').value = data.deskripsi || '';
     }
 
-    function openDeleteModal(id, nama) {
+    function openDeleteModal(btn) {
         closeModal('deleteModal'); // cleanup if exists
         var tpl = document.getElementById('deleteModalTemplate');
         var clone = tpl.content.cloneNode(true);
         document.body.appendChild(clone);
 
-        document.getElementById('deleteForm').action = '/pelatih-admin/' + id;
-        document.getElementById('delete_nama').textContent = nama;
+        var data = JSON.parse(btn.getAttribute('data-pelatih'));
+
+        document.getElementById('deleteForm').action = '/pelatih-admin/' + data.id_pelatih;
+        document.getElementById('delete_nama').textContent = data.nama_pelatih;
     }
 
     function closeModal(id) {

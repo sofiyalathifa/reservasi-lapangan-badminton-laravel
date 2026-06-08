@@ -63,10 +63,10 @@
                                             <span class="text-sm font-semibold leading-tight text-slate-400">{{ \Carbon\Carbon::parse($pelanggan->created_at)->format('d M Y') }}</span>
                                         </td>
                                         <td class="p-4 px-6 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                            <button onclick="openEditModal({{ $pelanggan->id }}, '{{ addslashes($pelanggan->name) }}', '{{ $pelanggan->email }}')" class="text-sm font-semibold leading-tight text-blue-500 hover:text-blue-700 mr-4 cursor-pointer">
+                                            <button onclick="openEditModal('{{ $pelanggan->id }}', '{{ addslashes($pelanggan->name) }}', '{{ $pelanggan->email }}')" class="text-sm font-semibold leading-tight text-blue-500 hover:text-blue-700 mr-4 cursor-pointer">
                                                 <i class="fas fa-edit mr-1"></i> Edit
                                             </button>
-                                            <button type="button" onclick="openDeleteModal({{ $pelanggan->id }}, '{{ addslashes($pelanggan->name) }}')" class="text-sm font-semibold leading-tight text-red-500 hover:text-red-700 cursor-pointer">
+                                            <button type="button" onclick="openDeleteModal('{{ $pelanggan->id }}', '{{ addslashes($pelanggan->name) }}')" class="text-sm font-semibold leading-tight text-red-500 hover:text-red-700 cursor-pointer">
                                                 <i class="fas fa-trash mr-1"></i> Hapus
                                             </button>
                                         </td>
