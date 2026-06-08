@@ -22,7 +22,7 @@
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                             <span>Export CSV</span>
                         </button>
-                        <button type="button" onclick="const filterVal = document.querySelector('select[name=filter]').value; window.open('{{ route('laporan.print') }}?filter=' + filterVal, '_blank');" class="whitespace-nowrap inline-flex items-center justify-center gap-2 bg-gradient-to-tl from-slate-800 to-slate-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                        <button type="button" onclick="cetakLaporan()" class="whitespace-nowrap inline-flex items-center justify-center gap-2 bg-gradient-to-tl from-slate-800 to-slate-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
                             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                             <span>Print</span>
                         </button>
@@ -359,4 +359,12 @@
     </script>
     </div>
 </main>
+
+<script>
+    function cetakLaporan() {
+        var filterVal = document.querySelector('select[name=filter]').value;
+        var printUrl = "{{ route('laporan.print') }}?filter=" + filterVal;
+        window.open(printUrl, '_blank');
+    }
+</script>
 @endsection

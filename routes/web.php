@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\Admin\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -268,36 +268,36 @@ Route::middleware(['auth', 'role:admin,kasir,owner'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin,kasir,owner'])->group(function () {
-    Route::get('/reservasi-admin', [\App\Http\Controllers\AdminReservasiController::class, 'index'])->name('admin.reservasi.index');
-    Route::post('/reservasi-admin/offline', [\App\Http\Controllers\AdminReservasiController::class, 'storeOffline'])->name('admin.reservasi.offline');
-    Route::put('/reservasi-admin/{id}/status', [\App\Http\Controllers\AdminReservasiController::class, 'updateStatus'])->name('admin.reservasi.status');
+    Route::get('/reservasi-admin', [\App\Http\Controllers\Admin\AdminReservasiController::class, 'index'])->name('admin.reservasi.index');
+    Route::post('/reservasi-admin/offline', [\App\Http\Controllers\Admin\AdminReservasiController::class, 'storeOffline'])->name('admin.reservasi.offline');
+    Route::put('/reservasi-admin/{id}/status', [\App\Http\Controllers\Admin\AdminReservasiController::class, 'updateStatus'])->name('admin.reservasi.status');
 
-    Route::get('/pembayaran-admin', [\App\Http\Controllers\AdminPembayaranController::class, 'index'])->name('admin.pembayaran.index');
-    Route::put('/pembayaran-admin/{id}/verifikasi', [\App\Http\Controllers\AdminPembayaranController::class, 'verifikasi'])->name('admin.pembayaran.verifikasi');
+    Route::get('/pembayaran-admin', [\App\Http\Controllers\Admin\AdminPembayaranController::class, 'index'])->name('admin.pembayaran.index');
+    Route::put('/pembayaran-admin/{id}/verifikasi', [\App\Http\Controllers\Admin\AdminPembayaranController::class, 'verifikasi'])->name('admin.pembayaran.verifikasi');
 });
 
 Route::middleware(['auth', 'role:admin,owner'])->group(function () {
-    Route::get('/pelanggan', [\App\Http\Controllers\AdminPelangganController::class, 'index'])->name('pelanggan.index');
-    Route::post('/pelanggan', [\App\Http\Controllers\AdminPelangganController::class, 'store'])->name('pelanggan.store');
-    Route::put('/pelanggan/{id}', [\App\Http\Controllers\AdminPelangganController::class, 'update'])->name('pelanggan.update');
-    Route::delete('/pelanggan/{id}', [\App\Http\Controllers\AdminPelangganController::class, 'destroy'])->name('pelanggan.destroy');
+    Route::get('/pelanggan', [\App\Http\Controllers\Admin\AdminPelangganController::class, 'index'])->name('pelanggan.index');
+    Route::post('/pelanggan', [\App\Http\Controllers\Admin\AdminPelangganController::class, 'store'])->name('pelanggan.store');
+    Route::put('/pelanggan/{id}', [\App\Http\Controllers\Admin\AdminPelangganController::class, 'update'])->name('pelanggan.update');
+    Route::delete('/pelanggan/{id}', [\App\Http\Controllers\Admin\AdminPelangganController::class, 'destroy'])->name('pelanggan.destroy');
 
-    Route::get('/pelatih-admin', [\App\Http\Controllers\AdminPelatihController::class, 'index'])->name('admin.pelatih.index');
-    Route::post('/pelatih-admin', [\App\Http\Controllers\AdminPelatihController::class, 'store'])->name('admin.pelatih.store');
-    Route::put('/pelatih-admin/{id}', [\App\Http\Controllers\AdminPelatihController::class, 'update'])->name('admin.pelatih.update');
-    Route::delete('/pelatih-admin/{id}', [\App\Http\Controllers\AdminPelatihController::class, 'destroy'])->name('admin.pelatih.destroy');
+    Route::get('/pelatih-admin', [\App\Http\Controllers\Admin\AdminPelatihController::class, 'index'])->name('admin.pelatih.index');
+    Route::post('/pelatih-admin', [\App\Http\Controllers\Admin\AdminPelatihController::class, 'store'])->name('admin.pelatih.store');
+    Route::put('/pelatih-admin/{id}', [\App\Http\Controllers\Admin\AdminPelatihController::class, 'update'])->name('admin.pelatih.update');
+    Route::delete('/pelatih-admin/{id}', [\App\Http\Controllers\Admin\AdminPelatihController::class, 'destroy'])->name('admin.pelatih.destroy');
 
     // Laporan
-    Route::get('/laporan', [\App\Http\Controllers\LaporanController::class, 'index'])->name('laporan');
-    Route::get('/laporan/export', [\App\Http\Controllers\LaporanController::class, 'exportCsv'])->name('laporan.export');
-    Route::get('/laporan/print', [\App\Http\Controllers\LaporanController::class, 'print'])->name('laporan.print');
+    Route::get('/laporan', [\App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan');
+    Route::get('/laporan/export', [\App\Http\Controllers\Admin\LaporanController::class, 'exportCsv'])->name('laporan.export');
+    Route::get('/laporan/print', [\App\Http\Controllers\Admin\LaporanController::class, 'print'])->name('laporan.print');
 
-    Route::get('/lapangan-admin', [\App\Http\Controllers\LapanganController::class, 'index'])->name('admin.lapangan.index');
-    Route::get('/lapangan-admin/create', [\App\Http\Controllers\LapanganController::class, 'create'])->name('admin.lapangan.create');
-    Route::post('/lapangan-admin', [\App\Http\Controllers\LapanganController::class, 'store'])->name('admin.lapangan.store');
-    Route::get('/lapangan-admin/{id}/edit', [\App\Http\Controllers\LapanganController::class, 'edit'])->name('admin.lapangan.edit');
-    Route::put('/lapangan-admin/{id}', [\App\Http\Controllers\LapanganController::class, 'update'])->name('admin.lapangan.update');
-    Route::delete('/lapangan-admin/{id}', [\App\Http\Controllers\LapanganController::class, 'destroy'])->name('admin.lapangan.destroy');
+    Route::get('/lapangan-admin', [\App\Http\Controllers\Admin\LapanganController::class, 'index'])->name('admin.lapangan.index');
+    Route::get('/lapangan-admin/create', [\App\Http\Controllers\Admin\LapanganController::class, 'create'])->name('admin.lapangan.create');
+    Route::post('/lapangan-admin', [\App\Http\Controllers\Admin\LapanganController::class, 'store'])->name('admin.lapangan.store');
+    Route::get('/lapangan-admin/{id}/edit', [\App\Http\Controllers\Admin\LapanganController::class, 'edit'])->name('admin.lapangan.edit');
+    Route::put('/lapangan-admin/{id}', [\App\Http\Controllers\Admin\LapanganController::class, 'update'])->name('admin.lapangan.update');
+    Route::delete('/lapangan-admin/{id}', [\App\Http\Controllers\Admin\LapanganController::class, 'destroy'])->name('admin.lapangan.destroy');
 });
 
 Route::prefix('owner')->group(function () {
