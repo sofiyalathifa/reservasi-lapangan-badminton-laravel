@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Reservasi</title>
+@extends ('layouts.sidebar')
 
-    @vite(['resources/css/app.css'])
-
-</head>
-<body class="bg-slate-100">
-
-    <div class="max-w-7xl mx-auto py-8 px-4">
-
-        <!-- Header -->
+@section('content')
+<main class="relative h-full max-h-screen transition-all duration-200 ease-in-out lg:ml-68 rounded-xl">
+    <div class="w-full px-6 py-6 mx-auto">        <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-slate-800">
                 Laporan Reservasi Badminton Hall
@@ -342,6 +332,6 @@
             }
         );
     </script>
-</body>
-</html>
-
+    </div>
+</main>
+@endsection
