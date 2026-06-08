@@ -44,12 +44,12 @@ class LaporanController extends Controller
 
         // PELANGGAN PALING AKTIF
         $pelangganAktif = DB::table('reservasi')
-            ->join('pengguna', 'reservasi.id_pengguna', '=', 'pengguna.id_pengguna')
+            ->join('users', 'reservasi.id_pengguna', '=', 'users.id')
             ->select(
-                'pengguna.nama_lengkap',
+                'users.name as nama_lengkap',
                 DB::raw('COUNT(*) as total_booking')
             )
-            ->groupBy('pengguna.nama_lengkap')
+            ->groupBy('users.name')
             ->orderByDesc('total_booking')
             ->first();
 
