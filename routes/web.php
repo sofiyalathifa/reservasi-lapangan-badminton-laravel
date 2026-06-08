@@ -292,7 +292,7 @@ Route::prefix('owner')->group(function () {
         return view('dashboard.owner.dashboard');
     })->name('owner.dashboard');
 });
-Route::middleware(['auth', 'role:admin,owner'])->group(function () {
+Route::middleware(['auth', 'role:owner'])->group(function () {
     Route::get('/admin/laporan', [LaporanController::class, 'index'])
         ->name('admin.laporan');
 
