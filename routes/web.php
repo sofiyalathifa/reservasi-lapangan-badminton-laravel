@@ -98,16 +98,164 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 // Admin Dashboard Routes (from hafida/admin/dashboard)
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard.dashboard');
+        $today = \Carbon\Carbon::today();
+        $yesterday = \Carbon\Carbon::yesterday();
+        $thisMonth = \Carbon\Carbon::now()->startOfMonth();
+        $lastMonth = \Carbon\Carbon::now()->subMonth()->startOfMonth();
+
+        // 1. Pendapatan Hari Ini
+        $pendapatanHariIni = \App\Models\Pembayaran::whereIn('status_pembayaran', ['lunas', 'DP'])
+            ->whereDate('tanggal_bayar', $today)
+            ->sum('jumlah_bayar');
+
+        $pendapatanKemarin = \App\Models\Pembayaran::whereIn('status_pembayaran', ['lunas', 'DP'])
+            ->whereDate('tanggal_bayar', $yesterday)
+            ->sum('jumlah_bayar');
+
+        $persenPendapatan = $pendapatanKemarin > 0 ? (($pendapatanHariIni - $pendapatanKemarin) / $pendapatanKemarin) * 100 : ($pendapatanHariIni > 0 ? 100 : 0);
+
+        // 2. Booking Hari Ini
+        $bookingHariIni = \App\Models\Reservasi::whereDate('tanggal_booking', $today)
+            ->where('status_reservasi', '!=', 'dibatalkan')
+            ->count();
+            
+        $bookingKemarin = \App\Models\Reservasi::whereDate('tanggal_booking', $yesterday)
+            ->where('status_reservasi', '!=', 'dibatalkan')
+            ->count();
+
+        $persenBooking = $bookingKemarin > 0 ? (($bookingHariIni - $bookingKemarin) / $bookingKemarin) * 100 : ($bookingHariIni > 0 ? 100 : 0);
+
+        // 3. Lapangan Terpakai
+        $totalLapangan = \App\Models\Lapangan::count();
+        $jamOperasional = 15; // Asumsi 15 jam buka per hari (misal jam 8 pagi - 11 malam)
+        $totalSlot = $totalLapangan * $jamOperasional;
+        
+        $slotTerpakai = \App\Models\Reservasi::whereDate('tanggal_booking', $today)
+            ->where('status_reservasi', '!=', 'dibatalkan')
+            ->sum('durasi');
+            
+        $persenLapangan = $totalSlot > 0 ? ($slotTerpakai / $totalSlot) * 100 : 0;
+
+        // 4. Total Transaksi Bulanan
+        $transaksiBulanIni = \App\Models\Pembayaran::whereIn('status_pembayaran', ['lunas', 'DP'])
+            ->whereBetween('tanggal_bayar', [$thisMonth, \Carbon\Carbon::now()])
+            ->sum('jumlah_bayar');
+
+        $transaksiBulanLalu = \App\Models\Pembayaran::whereIn('status_pembayaran', ['lunas', 'DP'])
+            ->whereBetween('tanggal_bayar', [$lastMonth, $thisMonth->copy()->subSecond()])
+            ->sum('jumlah_bayar');
+
+        $persenTransaksi = $transaksiBulanLalu > 0 ? (($transaksiBulanIni - $transaksiBulanLalu) / $transaksiBulanLalu) * 100 : ($transaksiBulanIni > 0 ? 100 : 0);
+
+        // 5. Data Jadwal Lapangan Real-time
+        $lapangans = \App\Models\Lapangan::all();
+        $reservasiHariIni = \App\Models\Reservasi::whereDate('tanggal_booking', $today)
+            ->where('status_reservasi', '!=', 'dibatalkan')
+            ->get();
+
+        $jadwalLapangan = [];
+        $startHour = 7; // 07:00
+        $endHour = 23;  // 23:00
+
+        foreach ($lapangans as $lapangan) {
+            $slots = [];
+            for ($i = $startHour; $i < $endHour; $i++) {
+                $jamMulai = sprintf('%02d:00', $i);
+                $jamMulaiCek = sprintf('%02d:00:00', $i);
+                
+                $isBooked = $reservasiHariIni->where('id_lapangan', $lapangan->id_lapangan)
+                    ->contains(function ($res) use ($jamMulaiCek) {
+                        return $res->jam_mulai <= $jamMulaiCek && $res->jam_selesai > $jamMulaiCek;
+                    });
+                
+                $slots[] = [
+                    'jam' => $jamMulai,
+                    'status' => $isBooked ? 'booked' : 'available'
+                ];
+            }
+            
+            $jadwalLapangan[] = [
+                'id' => $lapangan->nama_lapangan,
+                'slots' => $slots
+            ];
+        }
+
+        // 6. Data Grafik Pendapatan Perminggu (Senin - Minggu)
+        $startOfWeek = \Carbon\Carbon::now()->startOfWeek();
+        $endOfWeek = \Carbon\Carbon::now()->endOfWeek();
+        
+        $startOfLastWeek = \Carbon\Carbon::now()->subWeek()->startOfWeek();
+        $endOfLastWeek = \Carbon\Carbon::now()->subWeek()->endOfWeek();
+
+        $pendapatanMingguIni = \App\Models\Pembayaran::whereIn('status_pembayaran', ['lunas', 'DP'])
+            ->whereBetween('tanggal_bayar', [$startOfWeek, $endOfWeek])
+            ->get();
+            
+        $pendapatanMingguLalu = \App\Models\Pembayaran::whereIn('status_pembayaran', ['lunas', 'DP'])
+            ->whereBetween('tanggal_bayar', [$startOfLastWeek, $endOfLastWeek])
+            ->sum('jumlah_bayar');
+
+        $totalMingguIni = $pendapatanMingguIni->sum('jumlah_bayar');
+        $persenMingguan = $pendapatanMingguLalu > 0 ? (($totalMingguIni - $pendapatanMingguLalu) / $pendapatanMingguLalu) * 100 : ($totalMingguIni > 0 ? 100 : 0);
+
+        // Group pendapatan minggu ini berdasarkan hari (0 = Senin, 6 = Minggu)
+        $chartData = [0, 0, 0, 0, 0, 0, 0];
+        foreach ($pendapatanMingguIni as $p) {
+            $dayIndex = \Carbon\Carbon::parse($p->tanggal_bayar)->dayOfWeekIso - 1;
+            $chartData[$dayIndex] += $p->jumlah_bayar;
+        }
+
+        // 7. Ringkasan Lapangan (Status & Ketersediaan)
+        $reservasiHariIni->load('pembayaran'); // Pastikan relasi pembayaran diload
+        $ringkasanLapangan = [];
+        
+        foreach ($lapangans as $lapangan) {
+            $resLapangan = $reservasiHariIni->where('id_lapangan', $lapangan->id_lapangan);
+            
+            // Hitung status pembayaran
+            $countPending = $resLapangan->filter(function($r) { 
+                return !$r->pembayaran || $r->pembayaran->status_pembayaran == 'pending'; 
+            })->count();
+            
+            $countDP = $resLapangan->filter(function($r) { 
+                return $r->pembayaran && $r->pembayaran->status_pembayaran == 'DP'; 
+            })->count();
+            
+            $countLunas = $resLapangan->filter(function($r) { 
+                return $r->pembayaran && $r->pembayaran->status_pembayaran == 'lunas'; 
+            })->count();
+
+            // Hitung slot
+            $bookedToday = $resLapangan->sum('durasi');
+            $availableToday = $jamOperasional - $bookedToday;
+            if ($availableToday < 0) $availableToday = 0;
+
+            $ringkasanLapangan[] = [
+                'name' => $lapangan->nama_lapangan,
+                'pending' => $countPending,
+                'dp' => $countDP,
+                'lunas' => $countLunas,
+                'booked' => $bookedToday,
+                'available' => $availableToday
+            ];
+        }
+
+        return view('dashboard.dashboard', compact(
+            'pendapatanHariIni', 'persenPendapatan',
+            'bookingHariIni', 'persenBooking',
+            'slotTerpakai', 'persenLapangan',
+            'transaksiBulanIni', 'persenTransaksi',
+            'jadwalLapangan', 'chartData', 'persenMingguan',
+            'ringkasanLapangan'
+        ));
     })->name('dashboard');
 
-    Route::get('/reservasi-admin', function () {
-        return view('dashboard.reservasi.index');
-    })->name('admin.reservasi.index');
+    Route::get('/reservasi-admin', [\App\Http\Controllers\AdminReservasiController::class, 'index'])->name('admin.reservasi.index');
+    Route::post('/reservasi-admin/offline', [\App\Http\Controllers\AdminReservasiController::class, 'storeOffline'])->name('admin.reservasi.offline');
+    Route::put('/reservasi-admin/{id}/status', [\App\Http\Controllers\AdminReservasiController::class, 'updateStatus'])->name('admin.reservasi.status');
 
-    Route::get('/pembayaran-admin', function () {
-        return view('dashboard.pembayaran.index');
-    })->name('admin.pembayaran.index');
+    Route::get('/pembayaran-admin', [\App\Http\Controllers\AdminPembayaranController::class, 'index'])->name('admin.pembayaran.index');
+    Route::put('/pembayaran-admin/{id}/verifikasi', [\App\Http\Controllers\AdminPembayaranController::class, 'verifikasi'])->name('admin.pembayaran.verifikasi');
 
     Route::get('/pelanggan', function () {
         return view('dashboard.pelanggan.index');

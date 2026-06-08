@@ -22,7 +22,7 @@ class Reservasi extends Model
     public function user()
     {
         // Menyambung ke tabel users yang baru
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'id_pengguna', 'id');
     }
 
     public function lapangan()
