@@ -110,7 +110,7 @@
                                 <!-- Catatan -->
                                 <div>
                                     <label class="block text-sm font-semibold text-gray-800 mb-2">Catatan Tambahan</label>
-                                    <textarea name="catatan" rows="1" placeholder="Cth: Bersihkan lapangannya..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-gray-50 hover:bg-white font-medium text-gray-700"></textarea>
+                                    <input type="text" name="catatan" placeholder="Cth: Bersihkan lapangannya..." class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors bg-gray-50 hover:bg-white font-medium text-gray-700">
                                 </div>
                             </div>
                             <!-- Pilih Pelatih (Opsional) -->
