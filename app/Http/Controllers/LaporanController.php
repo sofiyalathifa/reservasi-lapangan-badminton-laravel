@@ -10,21 +10,23 @@ class LaporanController extends Controller
     {
         // CARD LAPORAN
         $reservasiHariIni = DB::table('reservasi')
+            ->where('status_reservasi', '!=', 'dibatalkan')
             ->whereDate('tanggal_booking', now())
             ->count();
 
         $pemasukanHariIni = DB::table('pembayaran')
-            ->where('status_pembayaran', 'lunas')
+            ->whereIn('status_pembayaran', ['lunas', 'DP'])
             ->whereDate('tanggal_bayar', now())
             ->sum('jumlah_bayar');
 
         $reservasiBulanIni = DB::table('reservasi')
+            ->where('status_reservasi', '!=', 'dibatalkan')
             ->whereMonth('tanggal_booking', now()->month)
             ->whereYear('tanggal_booking', now()->year)
             ->count();
 
         $pemasukanBulanIni = DB::table('pembayaran')
-            ->where('status_pembayaran', 'lunas')
+            ->whereIn('status_pembayaran', ['lunas', 'DP'])
             ->whereMonth('tanggal_bayar', now()->month)
             ->whereYear('tanggal_bayar', now()->year)
             ->sum('jumlah_bayar');
@@ -32,6 +34,7 @@ class LaporanController extends Controller
         // LAPANGAN FAVORIT
         $lapanganFavorit = DB::table('reservasi')
             ->join('lapangan', 'reservasi.id_lapangan', '=', 'lapangan.id_lapangan')
+            ->where('status_reservasi', '!=', 'dibatalkan')
             ->select(
                 'lapangan.nama_lapangan',
                 DB::raw('COUNT(*) as total_booking')
@@ -45,6 +48,7 @@ class LaporanController extends Controller
         // PELANGGAN PALING AKTIF
         $pelangganAktif = DB::table('reservasi')
             ->join('users', 'reservasi.id_pengguna', '=', 'users.id')
+            ->where('status_reservasi', '!=', 'dibatalkan')
             ->select(
                 'users.name as nama_lengkap',
                 DB::raw('COUNT(*) as total_booking')
