@@ -20,8 +20,10 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            $dashboardRoles = ['admin', 'kasir', 'owner'];
-            if (in_array(Auth::user()->role, $dashboardRoles)) {
+            $role = strtolower(Auth::user()->role);
+            if ($role === 'owner') {
+                return redirect()->route('owner.dashboard')->with('success', 'Berhasil login ke Dashboard Owner!');
+            } elseif (in_array($role, ['admin', 'kasir'])) {
                 return redirect()->route('dashboard')->with('success', 'Berhasil login ke Dashboard!');
             }
 
@@ -41,6 +43,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
+        $role = $role ? strtolower($role) : null;
         if (in_array($role, ['admin', 'kasir', 'owner'])) {
             return redirect()->route('login')->with('success', 'Berhasil logout.');
         }
