@@ -77,6 +77,9 @@
                 <a href="{{ route('admin.berita.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Berita
                 </a>
+                <a href="{{ route('admin.ulasan.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
+                    Ulasan
+                </a>
                 @if($role === 'owner')
                 <a href="{{ route('admin.laporan') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Laporan Keuangan
