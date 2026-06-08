@@ -95,6 +95,17 @@
                                                 </div>
                                             </div>
 
+                                            <!-- Nomor Telepon -->
+                                            <div>
+                                                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-2">Nomor Telepon / WhatsApp</label>
+                                                <div class="relative">
+                                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                                                        <i class="fas fa-phone text-sm"></i>
+                                                    </div>
+                                                    <input type="text" name="nomor_telepon" placeholder="Contoh: 08123456789 (Opsional)" class="pl-10 w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm font-medium rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 block p-3 transition-all dark:bg-slate-800 dark:border-slate-600 dark:placeholder-slate-500 dark:text-white outline-none">
+                                                </div>
+                                            </div>
+
                                             <!-- Lapangan -->
                                             <div>
                                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-2">Pilih Lapangan</label>

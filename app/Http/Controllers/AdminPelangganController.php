@@ -30,12 +30,14 @@ class AdminPelangganController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'nomor_telepon' => 'nullable|string|max:20',
             'password' => 'required|string|min:6',
         ]);
 
         User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'nomor_telepon' => $request->nomor_telepon,
             'password' => Hash::make($request->password),
             'role' => 'user'
         ]);
@@ -50,11 +52,13 @@ class AdminPelangganController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $pelanggan->id . ',id',
+            'nomor_telepon' => 'nullable|string|max:20',
             'password' => 'nullable|string|min:6',
         ]);
 
         $pelanggan->name = $request->name;
         $pelanggan->email = $request->email;
+        $pelanggan->nomor_telepon = $request->nomor_telepon;
         
         if ($request->filled('password')) {
             $pelanggan->password = Hash::make($request->password);

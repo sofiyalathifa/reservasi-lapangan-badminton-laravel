@@ -69,6 +69,11 @@
                                                 <div class="flex flex-col justify-center">
                                                     <h6 class="mb-0 text-base leading-normal font-semibold">{{ $pelanggan->name }}</h6>
                                                     <p class="mb-0 text-sm leading-tight text-slate-400">{{ $pelanggan->email }}</p>
+                                                    @if($pelanggan->nomor_telepon)
+                                                        <p class="mb-0 text-xs leading-tight text-emerald-500 font-medium"><i class="fas fa-phone-alt mr-1"></i>{{ $pelanggan->nomor_telepon }}</p>
+                                                    @else
+                                                        <p class="mb-0 text-xs leading-tight text-slate-300 italic">No. Telp belum diisi</p>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </td>
@@ -77,7 +82,7 @@
                                         </td>
                                         @if(auth()->check() && auth()->user()->role != 'owner')
                                         <td class="p-4 px-6 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                            <button onclick="openEditModal('{{ $pelanggan->id }}', '{{ addslashes($pelanggan->name) }}', '{{ $pelanggan->email }}')" class="text-sm font-semibold leading-tight text-blue-500 hover:text-blue-700 mr-4 cursor-pointer">
+                                            <button onclick="openEditModal('{{ $pelanggan->id }}', '{{ addslashes($pelanggan->name) }}', '{{ $pelanggan->email }}', '{{ $pelanggan->nomor_telepon ?? '' }}')" class="text-sm font-semibold leading-tight text-blue-500 hover:text-blue-700 mr-4 cursor-pointer">
                                                 <i class="fas fa-edit mr-1"></i> Edit
                                             </button>
                                             <button type="button" onclick="openDeleteModal('{{ $pelanggan->id }}', '{{ addslashes($pelanggan->name) }}')" class="text-sm font-semibold leading-tight text-red-500 hover:text-red-700 cursor-pointer">
@@ -128,6 +133,10 @@
                     <label style="display:block;margin-bottom:6px;font-size:0.875rem;font-weight:600;color:#374151;">Email</label>
                     <input type="email" name="email" required style="width:100%;padding:10px 14px;border:1.5px solid #d1d5db;border-radius:10px;font-size:0.9rem;outline:none;transition:border .2s;box-sizing:border-box;" onfocus="this.style.borderColor='#3b82f6';this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'" placeholder="contoh@email.com" autocomplete="off">
                 </div>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:6px;font-size:0.875rem;font-weight:600;color:#374151;">Nomor Telepon</label>
+                    <input type="text" name="nomor_telepon" style="width:100%;padding:10px 14px;border:1.5px solid #d1d5db;border-radius:10px;font-size:0.9rem;outline:none;transition:border .2s;box-sizing:border-box;" onfocus="this.style.borderColor='#3b82f6';this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'" placeholder="Contoh: 08123456789" autocomplete="off">
+                </div>
                 <div style="margin-bottom:24px;">
                     <label style="display:block;margin-bottom:6px;font-size:0.875rem;font-weight:600;color:#374151;">Password</label>
                     <input type="password" name="password" required minlength="6" style="width:100%;padding:10px 14px;border:1.5px solid #d1d5db;border-radius:10px;font-size:0.9rem;outline:none;transition:border .2s;box-sizing:border-box;" onfocus="this.style.borderColor='#3b82f6';this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'" placeholder="Minimal 6 karakter" autocomplete="new-password">
@@ -163,6 +172,10 @@
                 <div style="margin-bottom:16px;">
                     <label style="display:block;margin-bottom:6px;font-size:0.875rem;font-weight:600;color:#374151;">Email</label>
                     <input type="email" name="email" id="edit_email" required style="width:100%;padding:10px 14px;border:1.5px solid #d1d5db;border-radius:10px;font-size:0.9rem;outline:none;transition:border .2s;box-sizing:border-box;" onfocus="this.style.borderColor='#3b82f6';this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'" autocomplete="off">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block;margin-bottom:6px;font-size:0.875rem;font-weight:600;color:#374151;">Nomor Telepon</label>
+                    <input type="text" name="nomor_telepon" id="edit_nomor_telepon" style="width:100%;padding:10px 14px;border:1.5px solid #d1d5db;border-radius:10px;font-size:0.9rem;outline:none;transition:border .2s;box-sizing:border-box;" onfocus="this.style.borderColor='#3b82f6';this.style.boxShadow='0 0 0 3px rgba(59,130,246,0.1)'" onblur="this.style.borderColor='#d1d5db';this.style.boxShadow='none'" placeholder="Contoh: 08123456789" autocomplete="off">
                 </div>
                 <div style="margin-bottom:24px;">
                     <label style="display:block;margin-bottom:6px;font-size:0.875rem;font-weight:600;color:#374151;">Password <span style="font-weight:400;color:#9ca3af;">(Kosongkan jika tidak diubah)</span></label>
@@ -219,7 +232,7 @@
         document.body.appendChild(clone);
     }
 
-    function openEditModal(id, nama, email) {
+    function openEditModal(id, nama, email, nomor_telepon) {
         closeModal('editModal'); // cleanup if exists
         var tpl = document.getElementById('editModalTemplate');
         var clone = tpl.content.cloneNode(true);
@@ -228,6 +241,7 @@
         document.getElementById('editForm').action = '/pelanggan/' + id;
         document.getElementById('edit_nama').value = nama;
         document.getElementById('edit_email').value = email;
+        document.getElementById('edit_nomor_telepon').value = nomor_telepon || '';
         document.getElementById('edit_password').value = '';
     }
 

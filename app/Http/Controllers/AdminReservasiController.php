@@ -69,6 +69,7 @@ class AdminReservasiController extends Controller
     {
         $request->validate([
             'nama_pelanggan' => 'required|string|max:255',
+            'nomor_telepon' => 'nullable|string|max:20',
             'id_lapangan' => 'required|exists:lapangan,id_lapangan',
             'tanggal_booking' => 'required|date',
             'jam_mulai' => 'required',
@@ -82,9 +83,15 @@ class AdminReservasiController extends Controller
             [
                 'email' => strtolower(str_replace(' ', '', $request->nama_pelanggan)) . '_' . time() . '@guest.com',
                 'password' => \Illuminate\Support\Facades\Hash::make('guest123'),
-                'role' => 'user'
+                'role' => 'user',
+                'nomor_telepon' => $request->nomor_telepon
             ]
         );
+
+        // Jika user sudah ada tapi nomor telepon diupdate
+        if ($request->nomor_telepon && $user->nomor_telepon !== $request->nomor_telepon) {
+            $user->update(['nomor_telepon' => $request->nomor_telepon]);
+        }
 
         $jam_selesai = \Carbon\Carbon::parse($request->jam_mulai)->addHours($request->durasi)->format('H:i');
         
