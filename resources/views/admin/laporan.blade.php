@@ -245,9 +245,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        const reservasiPerHari = @json($reservasiPerHari);
-        const lapanganChart = @json($lapanganChart);
-        const statusReservasi = @json($statusReservasi);
+        const reservasiPerHari = {!! json_encode($reservasiPerHari) !!};
+        const lapanganChart = {!! json_encode($lapanganChart) !!};
+        const statusReservasi = {!! json_encode($statusReservasi) !!};
 
         const reservasiData = reservasiPerHari.map(i => i.total);
         const reservasiColors = reservasiData.map((value, index) => {
