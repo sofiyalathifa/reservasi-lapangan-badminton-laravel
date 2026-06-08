@@ -41,13 +41,8 @@
 
                 <div class="flex gap-3 mt-10">
                     <a href="#lapangan-populer"
-                        class="bg-gradient-to-r from-green-500 to-teal-500 hover:bg-green-600 text-white px-4 py-3 lg:px-8 lg:py-4 text-sm lg:text-base rounded-full font-medium transition">
+                        class="bg-gradient-to-r from-green-500 to-teal-500 hover:bg-green-600 text-white px-8 py-4 text-base rounded-full font-medium transition shadow-lg inline-block">
                         Booking Sekarang
-                    </a>
-
-                    <a href="#lapangan-populer"
-                        class="border border-gray-300 px-4 py-3 lg:px-8 lg:py-4 text-sm lg:text-base rounded-full hover:bg-gray-200 transition">
-                        Lihat Lapangan
                     </a>
                 </div>
 
