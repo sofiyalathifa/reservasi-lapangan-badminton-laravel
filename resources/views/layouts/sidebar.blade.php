@@ -71,6 +71,9 @@
                 <a href="{{ route('admin.lapangan.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Lapangan
                 </a>
+                <a href="{{ route('admin.promo.index') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
+                    Promo
+                </a>
                 @if($role === 'owner')
                 <a href="{{ route('admin.laporan') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Laporan Keuangan

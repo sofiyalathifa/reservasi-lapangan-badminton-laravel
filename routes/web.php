@@ -20,7 +20,7 @@ Route::get('/', function () {
 
     // Hanya tampilkan promo aktif, kuota masih ada, dan belum kadaluarsa
     $promos = \App\Models\Promo::where('status', true)->get()->filter(function ($promo) {
-        if ($promo->tanggal_berakhir && $promo->tanggal_berakhir->isPast()) return false;
+        if ($promo->tanggal_berakhir && $promo->tanggal_berakhir->endOfDay()->isPast()) return false;
         if ($promo->kuota_total !== null && $promo->kuota_total <= 0) return false;
         return true;
     });
@@ -286,6 +286,12 @@ Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::post('/pelatih-admin', [\App\Http\Controllers\Admin\AdminPelatihController::class, 'store'])->name('admin.pelatih.store');
     Route::put('/pelatih-admin/{id}', [\App\Http\Controllers\Admin\AdminPelatihController::class, 'update'])->name('admin.pelatih.update');
     Route::delete('/pelatih-admin/{id}', [\App\Http\Controllers\Admin\AdminPelatihController::class, 'destroy'])->name('admin.pelatih.destroy');
+
+    // Promo
+    Route::get('/promo-admin', [\App\Http\Controllers\Admin\AdminPromoController::class, 'index'])->name('admin.promo.index');
+    Route::post('/promo-admin', [\App\Http\Controllers\Admin\AdminPromoController::class, 'store'])->name('admin.promo.store');
+    Route::put('/promo-admin/{id}', [\App\Http\Controllers\Admin\AdminPromoController::class, 'update'])->name('admin.promo.update');
+    Route::delete('/promo-admin/{id}', [\App\Http\Controllers\Admin\AdminPromoController::class, 'destroy'])->name('admin.promo.destroy');
 
     // Laporan
     Route::get('/laporan', [\App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan');
