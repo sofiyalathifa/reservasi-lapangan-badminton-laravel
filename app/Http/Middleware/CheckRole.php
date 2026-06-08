@@ -13,8 +13,16 @@ class CheckRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        return $next($request);
+        if (!auth()->check()) {
+            return redirect('/login');
+        }
+
+        if (in_array(auth()->user()->role, $roles)) {
+            return $next($request);
+        }
+
+        abort(403, 'Akses Ditolak: Anda tidak memiliki hak akses untuk halaman ini.');
     }
 }

@@ -136,6 +136,7 @@
             }
         });
     </script>
+    @yield('modals')
 </body>
 
 </html>

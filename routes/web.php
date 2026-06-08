@@ -96,7 +96,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 // Admin Dashboard Routes (from hafida/admin/dashboard)
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'role:admin,kasir,owner'])->group(function () {
     Route::get('/dashboard', function () {
         $today = \Carbon\Carbon::today();
         $yesterday = \Carbon\Carbon::yesterday();
@@ -249,21 +249,27 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'ringkasanLapangan'
         ));
     })->name('dashboard');
+});
 
+Route::middleware(['auth', 'role:admin,kasir'])->group(function () {
     Route::get('/reservasi-admin', [\App\Http\Controllers\AdminReservasiController::class, 'index'])->name('admin.reservasi.index');
     Route::post('/reservasi-admin/offline', [\App\Http\Controllers\AdminReservasiController::class, 'storeOffline'])->name('admin.reservasi.offline');
     Route::put('/reservasi-admin/{id}/status', [\App\Http\Controllers\AdminReservasiController::class, 'updateStatus'])->name('admin.reservasi.status');
 
     Route::get('/pembayaran-admin', [\App\Http\Controllers\AdminPembayaranController::class, 'index'])->name('admin.pembayaran.index');
     Route::put('/pembayaran-admin/{id}/verifikasi', [\App\Http\Controllers\AdminPembayaranController::class, 'verifikasi'])->name('admin.pembayaran.verifikasi');
+});
 
-    Route::get('/pelanggan', function () {
-        return view('dashboard.pelanggan.index');
-    })->name('pelanggan.index');
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/pelanggan', [\App\Http\Controllers\AdminPelangganController::class, 'index'])->name('pelanggan.index');
+    Route::post('/pelanggan', [\App\Http\Controllers\AdminPelangganController::class, 'store'])->name('pelanggan.store');
+    Route::put('/pelanggan/{id}', [\App\Http\Controllers\AdminPelangganController::class, 'update'])->name('pelanggan.update');
+    Route::delete('/pelanggan/{id}', [\App\Http\Controllers\AdminPelangganController::class, 'destroy'])->name('pelanggan.destroy');
 
-    Route::get('/pelatih-admin', function () {
-        return view('dashboard.pelatih.index');
-    })->name('admin.pelatih.index');
+    Route::get('/pelatih-admin', [\App\Http\Controllers\AdminPelatihController::class, 'index'])->name('admin.pelatih.index');
+    Route::post('/pelatih-admin', [\App\Http\Controllers\AdminPelatihController::class, 'store'])->name('admin.pelatih.store');
+    Route::put('/pelatih-admin/{id}', [\App\Http\Controllers\AdminPelatihController::class, 'update'])->name('admin.pelatih.update');
+    Route::delete('/pelatih-admin/{id}', [\App\Http\Controllers\AdminPelatihController::class, 'destroy'])->name('admin.pelatih.destroy');
 
     Route::get('/lapangan-admin', function () {       
         return view('dashboard.lapangan.index');
