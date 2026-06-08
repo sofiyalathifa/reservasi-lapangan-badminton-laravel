@@ -75,7 +75,7 @@
                                 
                                 <!-- Body -->
                                 <div class="px-6 py-6">
-                                    <form action="{{ route('admin.reservasi.offline') }}" method="POST" onsubmit="this.querySelector('button[type=submit]').disabled = true; this.querySelector('button[type=submit]').classList.add('opacity-70', 'cursor-not-allowed'); this.querySelector('button[type=submit]').innerHTML = '<i class=\'fas fa-spinner fa-spin mr-1.5\'></i> Menyimpan...';">
+                                    <form action="{{ route('admin.reservasi.offline') }}" method="POST" onsubmit="return validateBookingAdmin(this);">
                                         @csrf
                                         <div class="space-y-5">
                                             <!-- Pelanggan -->
@@ -122,7 +122,7 @@
                                                             $dayNum = $date->format('d');
                                                         @endphp
                                                         <label class="relative cursor-pointer snap-start flex-shrink-0">
-                                                            <input type="radio" name="tanggal_booking" value="{{ $fullDate }}" class="peer sr-only" {{ $i == 0 ? 'checked' : '' }}>
+                                                            <input type="radio" name="tanggal_booking" value="{{ $fullDate }}" onchange="checkRealtimeAdmin()" class="peer sr-only date-radio-admin" {{ $i == 0 ? 'checked' : '' }}>
                                                             <div class="w-16 h-20 rounded-xl border-2 border-slate-200 bg-white flex flex-col items-center justify-center gap-1 transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 hover:border-emerald-300 dark:bg-slate-800 dark:border-slate-700 dark:peer-checked:bg-emerald-900/30">
                                                                 <span class="text-xs font-extrabold text-slate-500 peer-checked:text-emerald-600 dark:peer-checked:text-emerald-400">{{ $dayName }}</span>
                                                                 <span class="text-xl font-black text-slate-800 peer-checked:text-emerald-600 dark:text-white dark:peer-checked:text-emerald-400">{{ $dayNum }}</span>
@@ -135,15 +135,15 @@
                                             <!-- Waktu -->
                                             <div>
                                                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wide mb-2">Pilih Waktu</label>
-                                                <div class="grid grid-cols-4 sm:grid-cols-5 gap-2">
-                                                    @for($h = 8; $h <= 21; $h++)
+                                                <div class="grid grid-cols-4 sm:grid-cols-5 gap-2" id="admin-time-container">
+                                                    @for($h = 7; $h <= 22; $h++)
                                                         @php
                                                             $timeStr = sprintf('%02d:00', $h);
                                                         @endphp
-                                                        <label class="relative cursor-pointer">
-                                                            <input type="radio" name="jam_mulai" value="{{ $timeStr }}" class="peer sr-only" required>
-                                                            <div class="px-2 py-2.5 rounded-lg border-2 border-slate-200 bg-white text-center transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 hover:border-emerald-300 dark:bg-slate-800 dark:border-slate-700 dark:peer-checked:bg-emerald-900/30">
-                                                                <span class="text-sm font-black text-slate-700 peer-checked:text-emerald-600 dark:text-slate-300 dark:peer-checked:text-emerald-400">{{ $timeStr }}</span>
+                                                        <label class="relative cursor-pointer time-label-admin">
+                                                            <input type="radio" name="jam_mulai" value="{{ $timeStr }}" class="peer sr-only time-radio-admin">
+                                                            <div class="time-card-admin px-2 py-2.5 rounded-lg border-2 border-slate-200 bg-white text-center transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 hover:border-emerald-300 dark:bg-slate-800 dark:border-slate-700 dark:peer-checked:bg-emerald-900/30">
+                                                                <span class="text-sm font-black text-slate-700 peer-checked:text-emerald-600 dark:text-slate-300 dark:peer-checked:text-emerald-400 time-text-admin">{{ $timeStr }}</span>
                                                             </div>
                                                         </label>
                                                     @endfor
@@ -189,6 +189,21 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Modal Error Waktu -->
+                    <div id="modal-error-waktu" class="fixed inset-0 hidden items-center justify-center transition-opacity duration-300 opacity-0" style="z-index: 999999; background-color: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);">
+                        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 border border-red-100 text-center">
+                            <div class="w-16 h-16 rounded-full mx-auto flex items-center justify-center mb-4" style="background-color: #fee2e2; color: #ef4444;">
+                                <i class="fas fa-exclamation-triangle text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 mb-2">Pilih Waktu</h3>
+                            <p class="text-sm text-slate-500 mb-6" id="error-waktu-msg">Silakan pilih jam yang tersedia terlebih dahulu!</p>
+                            <button type="button" onclick="closeErrorModal()" class="w-full py-3 text-white rounded-xl font-bold shadow-md transition-all" style="background-color: #ef4444;">
+                                Mengerti
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div class="flex-auto p-4 px-0 pb-2">
                         <div class="overflow-x-auto">
                             <table class="items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500">
@@ -315,6 +330,100 @@
         
         // Initial calculation on load
         calculateTotal();
+
+        // Initial check realtime
+        checkRealtimeAdmin();
     });
+
+    function checkRealtimeAdmin() {
+        const selectedDateInput = document.querySelector('input[name="tanggal_booking"]:checked');
+        if(!selectedDateInput) return;
+        
+        const selectedDate = selectedDateInput.value;
+        const now = new Date();
+        const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+        const isToday = selectedDate === todayStr;
+        const currentHourStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        
+        const timeRadios = document.querySelectorAll('.time-radio-admin');
+        const timeLabels = document.querySelectorAll('.time-label-admin');
+        const timeCards = document.querySelectorAll('.time-card-admin');
+        const timeTexts = document.querySelectorAll('.time-text-admin');
+        
+        for (let i = 0; i < timeRadios.length; i++) {
+            const radio = timeRadios[i];
+            const label = timeLabels[i];
+            const card = timeCards[i];
+            const text = timeTexts[i];
+            
+            const timeVal = radio.value;
+            const isPassed = isToday && timeVal < currentHourStr;
+            
+            if (isPassed) {
+                // Disable and gray out
+                radio.disabled = true;
+                if (radio.checked) radio.checked = false; // Uncheck if passed
+                
+                label.classList.remove('cursor-pointer');
+                label.classList.add('cursor-not-allowed', 'opacity-50');
+                
+                // Keep classes but remove hover and checked states visually
+                card.className = "time-card-admin px-2 py-2.5 rounded-lg border-2 border-slate-200 bg-slate-100 text-center dark:bg-slate-800 dark:border-slate-700";
+                text.className = "text-sm font-black text-slate-400 dark:text-slate-500 time-text-admin";
+                
+                label.title = "Waktu Terlewat";
+            } else {
+                // Re-enable
+                radio.disabled = false;
+                label.classList.add('cursor-pointer');
+                label.classList.remove('cursor-not-allowed', 'opacity-50');
+                
+                // Restore original classes for active
+                card.className = "time-card-admin px-2 py-2.5 rounded-lg border-2 border-slate-200 bg-white text-center transition-all peer-checked:border-emerald-500 peer-checked:bg-emerald-50 hover:border-emerald-300 dark:bg-slate-800 dark:border-slate-700 dark:peer-checked:bg-emerald-900/30";
+                text.className = "text-sm font-black text-slate-700 peer-checked:text-emerald-600 dark:text-slate-300 dark:peer-checked:text-emerald-400 time-text-admin";
+                
+                label.title = "";
+            }
+        }
+    }
+
+    function validateBookingAdmin(form) {
+        const selectedTime = form.querySelector('input[name="jam_mulai"]:checked');
+        if (!selectedTime || selectedTime.disabled) {
+            showErrorModal("Silakan pilih jam yang tersedia terlebih dahulu sebelum menyimpan reservasi.");
+            return false;
+        }
+        
+        const btn = form.querySelector('button[type=submit]');
+        btn.disabled = true;
+        btn.classList.add('opacity-70', 'cursor-not-allowed');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1.5"></i> Menyimpan...';
+        return true;
+    }
+
+    function showErrorModal(message) {
+        document.getElementById('error-waktu-msg').innerText = message;
+        const modal = document.getElementById('modal-error-waktu');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        
+        // Timeout for fade-in effect
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modal.querySelector('div').classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeErrorModal() {
+        const modal = document.getElementById('modal-error-waktu');
+        modal.classList.add('opacity-0');
+        modal.querySelector('div').classList.add('scale-95');
+        
+        // Wait for transition before hiding
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300);
+    }
 </script>
 @endsection
