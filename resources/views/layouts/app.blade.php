@@ -27,9 +27,6 @@
                     <!-- Logo -->
                     <a href="/" class="flex items-center gap-3">
                         <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 rounded-full">
-                            🏸
-                        </div> -->
-
                         <div>
                             <h1 class="font-bold text-lg text-gray-800">
                                 Badminton
