@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Reservasi Lapangan Badminton')</title>
 
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -16,14 +19,14 @@
 
         <div class="max-w-7xl mx-auto px-4 lg:px-6">
 
-            <div id="navbarContainer" class="bg-white shadow-lg rounded-full px-6 lg:px-8 transition-all duration-300">
+            <div id="navbarContainer"
+                class="bg-white shadow-lg rounded-full px-6 lg:px-8 transition-all duration-300">
 
                 <div class="flex justify-between items-center h-20">
 
                     <!-- Logo -->
                     <a href="/" class="flex items-center gap-3">
                         <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 rounded-full">
-                        <!-- <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-xl">
                             🏸
                         </div> -->
 
@@ -40,7 +43,7 @@
                     <!-- Menu Desktop -->
                     <div class="hidden md:flex items-center gap-8">
 
-                        <a href="{{ url('/') }}#lapangan-populer"
+                        <a href="{{ route('home') }}#lapangan-populer"
                             class="text-gray-700 hover:text-green-500 font-medium transition">
                             Lapangan
                         </a>
@@ -63,6 +66,12 @@
                         <a href="{{ url('/') }}#berita"
                             class="text-gray-700 hover:text-green-500 font-medium transition">
                             Berita
+                        </a>
+
+                        <!-- Dashboard Admin -->
+                        <a href="{{ url('/admin/laporan') }}"
+                            class="text-gray-700 hover:text-green-500 font-medium transition">
+                            Dashboard
                         </a>
 
                     </div>
@@ -132,11 +141,10 @@
     <!-- Sidebar Mobile -->
     <div id="mobileSidebar"
         class="fixed top-0 right-0 h-screen w-[80%] max-w-xs
-           bg-gradient-to-b from-green-400 via-teal-500 to-cyan-600
-           z-50 transform translate-x-full
-           transition-transform duration-300 md:hidden">
+        bg-gradient-to-b from-green-400 via-teal-500 to-cyan-600
+        z-50 transform translate-x-full
+        transition-transform duration-300 md:hidden">
 
-        <!-- Close Button -->
         <div class="p-6">
             <button id="closeMenu"
                 class="text-white text-3xl">
@@ -144,14 +152,12 @@
             </button>
         </div>
 
-        <!-- Menu -->
         <div class="px-8">
 
             <div class="flex flex-col space-y-2">
 
                 <a href="/"
-                    class="block w-full px-4 py-3 rounded-md font-semibold text-white transition duration-200
-        {{ request()->routeIs('home') ? 'bg-white/20' : 'hover:bg-white/20' }}">
+                    class="block w-full px-4 py-3 rounded-md font-semibold text-white hover:bg-white/20">
                     Home
                 </a>
 
@@ -201,7 +207,6 @@
 
         </div>
 
-        <!-- Footer -->
         <div class="absolute bottom-8 left-0 right-0">
 
             <div class="flex justify-center gap-4">
@@ -237,28 +242,33 @@
         @yield('content')
     </main>
 
-    <!-- Script Sidebar -->
+    <!-- Sidebar Script -->
     <script>
-        // Sidebar
         const menuBtn = document.getElementById('menuBtn');
         const closeMenu = document.getElementById('closeMenu');
         const sidebar = document.getElementById('mobileSidebar');
         const overlay = document.getElementById('overlay');
 
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.remove('translate-x-full');
-            overlay.classList.remove('hidden');
-        });
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                sidebar.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+            });
+        }
 
-        closeMenu.addEventListener('click', () => {
-            sidebar.classList.add('translate-x-full');
-            overlay.classList.add('hidden');
-        });
+        if (closeMenu) {
+            closeMenu.addEventListener('click', () => {
+                sidebar.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            });
+        }
 
-        overlay.addEventListener('click', () => {
-            sidebar.classList.add('translate-x-full');
-            overlay.classList.add('hidden');
-        });
+        if (overlay) {
+            overlay.addEventListener('click', () => {
+                sidebar.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            });
+        }
 
         // Navbar Scroll Effect
         const navbar = document.getElementById('navbar');
@@ -291,9 +301,13 @@
         });
     </script>
 
+    <!-- Tempat Script Chart -->
+    @stack('scripts')
+
     @if(isset($showFooter) && $showFooter)
-    @include('partials.footer')
+        @include('partials.footer')
     @endif
+
 </body>
 
 </html>

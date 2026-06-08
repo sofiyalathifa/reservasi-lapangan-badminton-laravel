@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -290,4 +291,11 @@ Route::prefix('owner')->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard.owner.dashboard');
     })->name('owner.dashboard');
+});
+Route::middleware(['auth', 'role:admin,owner'])->group(function () {
+    Route::get('/admin/laporan', [LaporanController::class, 'index'])
+        ->name('admin.laporan');
+
+    Route::get('/admin/laporan/export', [LaporanController::class, 'exportCsv'])
+        ->name('admin.laporan.export');
 });
