@@ -95,13 +95,8 @@
                         <li class="flex items-center pl-4 lg:hidden"> <a href="javascript:;" class="block p-0 text-sm text-white transition-all ease-nav-brand" sidenav-trigger>
                                 <div class="w-4.5 overflow-hidden"> <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i> <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i> <i class="ease relative block h-0.5 rounded-sm bg-white transition-all"></i> </div>
                             </a> </li> <!-- notifications -->
-<<<<<<< HEAD
                         <div class="flex items-center space-x-4"> <!-- Foto profil --> <img src="{{ asset('images/logo.png') }}" alt="User Profile" class="w-10 h-10 rounded-full border-2 border-white shadow-md"> <!-- Nama dan role -->
                             <div class="flex flex-col"> <span class="text-sm font-semibold text-white">{{ auth()->check() ? auth()->user()->name : 'User' }}</span> <span class="text-xs text-gray-200 capitalize">{{ auth()->check() ? auth()->user()->role : 'Guest' }}</span> </div>
-=======
-                        <div class="flex items-center space-x-4"> <!-- Foto profil --> <img src="{{ asset('images/logo.png') }}" alt="Admin Profile" class="w-10 h-10 rounded-full border-2 border-white shadow-md"> <!-- Nama dan role -->
-                            <div class="flex flex-col"> <span class="text-sm font-semibold text-white">Admin</span> <span class="text-xs text-gray-200">Administrator</span> </div>
->>>>>>> origin/hafida/dashboardowner
                         </div>
                     </ul>
                 </div>
