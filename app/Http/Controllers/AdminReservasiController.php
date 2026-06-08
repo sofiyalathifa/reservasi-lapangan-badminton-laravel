@@ -31,7 +31,38 @@ class AdminReservasiController extends Controller
             
         $lapangans = \App\Models\Lapangan::all();
             
-        return view('dashboard.reservasi.index', compact('reservasis', 'lapangans'));
+        // Ambil data reservasi aktif 7 hari ke depan untuk semua lapangan
+        $startDate = date('Y-m-d');
+        $endDate = date('Y-m-d', strtotime('+6 days'));
+        
+        $activeReservations = \App\Models\Reservasi::whereBetween('tanggal_booking', [$startDate, $endDate])
+            ->whereIn('status_reservasi', ['pending', 'dikonfirmasi'])
+            ->get();
+            
+        $bookedSlotsAdmin = [];
+        foreach ($activeReservations as $res) {
+            $lapId = $res->id_lapangan;
+            $tanggal = date('Y-m-d', strtotime($res->tanggal_booking));
+            $startHour = (int) date('H', strtotime($res->jam_mulai));
+            $durasi = $res->durasi;
+
+            if (!isset($bookedSlotsAdmin[$lapId])) {
+                $bookedSlotsAdmin[$lapId] = [];
+            }
+            if (!isset($bookedSlotsAdmin[$lapId][$tanggal])) {
+                $bookedSlotsAdmin[$lapId][$tanggal] = [];
+            }
+
+            for ($i = 0; $i < $durasi; $i++) {
+                $h = $startHour + $i;
+                $timeString = sprintf('%02d:00', $h);
+                if (!in_array($timeString, $bookedSlotsAdmin[$lapId][$tanggal])) {
+                    $bookedSlotsAdmin[$lapId][$tanggal][] = $timeString;
+                }
+            }
+        }
+            
+        return view('dashboard.reservasi.index', compact('reservasis', 'lapangans', 'bookedSlotsAdmin'));
     }
 
     public function storeOffline(Request $request)
@@ -61,14 +92,8 @@ class AdminReservasiController extends Controller
         $overlap = \App\Models\Reservasi::where('id_lapangan', $request->id_lapangan)
             ->where('tanggal_booking', $request->tanggal_booking)
             ->where('status_reservasi', '!=', 'dibatalkan')
-            ->where(function ($query) use ($request, $jam_selesai) {
-                $query->whereBetween('jam_mulai', [$request->jam_mulai, $jam_selesai])
-                      ->orWhereBetween('jam_selesai', [$request->jam_mulai, $jam_selesai])
-                      ->orWhere(function ($q) use ($request, $jam_selesai) {
-                          $q->where('jam_mulai', '<=', $request->jam_mulai)
-                            ->where('jam_selesai', '>=', $jam_selesai);
-                      });
-            })
+            ->where('jam_mulai', '<', $jam_selesai)
+            ->where('jam_selesai', '>', $request->jam_mulai)
             ->exists();
 
         if ($overlap) {
@@ -77,31 +102,40 @@ class AdminReservasiController extends Controller
 
         $id_reservasi = 'RES-' . strtoupper(uniqid());
 
-        $reservasi = \App\Models\Reservasi::create([
-            'id_reservasi' => $id_reservasi,
-            'id_pengguna' => $user->id,
-            'id_lapangan' => $request->id_lapangan,
-            'tanggal_booking' => $request->tanggal_booking,
-            'jam_mulai' => $request->jam_mulai,
-            'jam_selesai' => $jam_selesai,
-            'durasi' => $request->durasi,
-            'total_biaya' => $request->total_biaya,
-            'status_reservasi' => 'pending' // Awalnya pending menunggu bayar DP/Lunas
-        ]);
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($request, $user, $jam_selesai, $id_reservasi) {
+                $reservasi = \App\Models\Reservasi::create([
+                    'id_reservasi' => $id_reservasi,
+                    'id_pengguna' => $user->id,
+                    'id_lapangan' => $request->id_lapangan,
+                    'tanggal_booking' => $request->tanggal_booking,
+                    'jam_mulai' => $request->jam_mulai,
+                    'jam_selesai' => $jam_selesai,
+                    'durasi' => $request->durasi,
+                    'total_biaya' => $request->total_biaya,
+                    'status_reservasi' => 'pending' // Awalnya pending menunggu bayar DP/Lunas
+                ]);
 
-        // Buat antrean pembayaran tunai di kasir
-        \App\Models\Pembayaran::create([
-            'id_pembayaran' => 'PAY-' . strtoupper(uniqid()),
-            'id_reservasi' => $id_reservasi,
-            'metode_pembayaran' => 'Cash',
-            'jumlah_bayar' => $request->total_biaya,
-            'tanggal_bayar' => now(),
-            'status_pembayaran' => 'pending',
-            'bukti_pembayaran' => 'offline_payment',
-            'id_admin_verifikasi' => null,
-            'verified_at' => null,
-            'verification_note' => 'Booking Offline Kasir - Menunggu Pembayaran'
-        ]);
+                // simulasi acid!
+                // throw new \Exception("Simulasi sistem down/listrik mati saat memproses pembayaran!");
+
+                // Buat antrean pembayaran tunai di kasir
+                \App\Models\Pembayaran::create([
+                    'id_pembayaran' => 'PAY-' . strtoupper(uniqid()),
+                    'id_reservasi' => $id_reservasi,
+                    'metode_pembayaran' => 'Cash',
+                    'jumlah_bayar' => $request->total_biaya,
+                    'tanggal_bayar' => now(),
+                    'status_pembayaran' => 'pending',
+                    'bukti_pembayaran' => 'offline_payment',
+                    'id_admin_verifikasi' => null,
+                    'verified_at' => null,
+                    'verification_note' => 'Booking Offline Kasir - Menunggu Pembayaran'
+                ]);
+            });
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menyimpan data (Rollback). Terjadi kesalahan sistem: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.pembayaran.index')->with('success', 'Booking berhasil dicatat. Silakan atur pembayaran tunai (DP/Lunas) di sini.');
     }

@@ -8,6 +8,12 @@
             <span class="font-medium">Berhasil!</span> {{ session('success') }}
         </div>
         @endif
+        
+        @if(session('error'))
+        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+            <span class="font-medium">Gagal!</span> {{ session('error') }}
+        </div>
+        @endif
 
         <div class="flex flex-wrap -mx-3">
             <div class="w-full max-w-full px-3 mt-0 mb-6 lg:mb-0 lg:w-full lg:flex-none">
@@ -325,7 +331,13 @@
             displayTotal.value = new Intl.NumberFormat('id-ID').format(total);
         }
 
-        if(lapanganSelect) lapanganSelect.addEventListener('change', calculateTotal);
+        // Add event listener to lapangan to recheck booked slots when court changes
+        if(lapanganSelect) {
+            lapanganSelect.addEventListener('change', function() {
+                calculateTotal();
+                checkRealtimeAdmin();
+            });
+        }
         if(durasiSelect) durasiSelect.addEventListener('change', calculateTotal);
         
         // Initial calculation on load
@@ -335,15 +347,26 @@
         checkRealtimeAdmin();
     });
 
+    const bookedSlotsAdmin = JSON.parse('{!! json_encode($bookedSlotsAdmin ?? []) !!}');
+
     function checkRealtimeAdmin() {
         const selectedDateInput = document.querySelector('input[name="tanggal_booking"]:checked');
-        if(!selectedDateInput) return;
+        const lapanganSelect = document.querySelector('select[name="id_lapangan"]');
+        
+        if(!selectedDateInput || !lapanganSelect) return;
         
         const selectedDate = selectedDateInput.value;
+        const selectedLapId = lapanganSelect.value;
+        
         const now = new Date();
         const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
         const isToday = selectedDate === todayStr;
         const currentHourStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        
+        // Dapatkan jadwal terbooking untuk lapangan dan tanggal ini
+        const bookedForDate = (bookedSlotsAdmin[selectedLapId] && bookedSlotsAdmin[selectedLapId][selectedDate]) 
+                              ? bookedSlotsAdmin[selectedLapId][selectedDate] 
+                              : [];
         
         const timeRadios = document.querySelectorAll('.time-radio-admin');
         const timeLabels = document.querySelectorAll('.time-label-admin');
@@ -358,20 +381,26 @@
             
             const timeVal = radio.value;
             const isPassed = isToday && timeVal < currentHourStr;
+            const isBooked = bookedForDate.includes(timeVal);
             
-            if (isPassed) {
+            if (isPassed || isBooked) {
                 // Disable and gray out
                 radio.disabled = true;
-                if (radio.checked) radio.checked = false; // Uncheck if passed
+                if (radio.checked) radio.checked = false; // Uncheck if passed or booked
                 
                 label.classList.remove('cursor-pointer');
                 label.classList.add('cursor-not-allowed', 'opacity-50');
                 
-                // Keep classes but remove hover and checked states visually
-                card.className = "time-card-admin px-2 py-2.5 rounded-lg border-2 border-slate-200 bg-slate-100 text-center dark:bg-slate-800 dark:border-slate-700";
-                text.className = "text-sm font-black text-slate-400 dark:text-slate-500 time-text-admin";
-                
-                label.title = "Waktu Terlewat";
+                // Styling form disabled state
+                if (isBooked) {
+                    card.className = "time-card-admin px-2 py-2.5 rounded-lg border-2 border-red-200 bg-red-50 text-center dark:bg-red-900/30 dark:border-red-800/50";
+                    text.className = "text-sm font-black text-red-400 dark:text-red-500 time-text-admin";
+                    label.title = "Sudah Dipesan";
+                } else {
+                    card.className = "time-card-admin px-2 py-2.5 rounded-lg border-2 border-slate-200 bg-slate-100 text-center dark:bg-slate-800 dark:border-slate-700";
+                    text.className = "text-sm font-black text-slate-400 dark:text-slate-500 time-text-admin";
+                    label.title = "Waktu Terlewat";
+                }
             } else {
                 // Re-enable
                 radio.disabled = false;
