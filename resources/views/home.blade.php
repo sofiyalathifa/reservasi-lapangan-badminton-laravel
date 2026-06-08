@@ -79,7 +79,7 @@
                         <input
                             id="searchInput"
                             type="text"
-                            placeholder="Cari nama venue atau lokasi"
+                            placeholder="Cari nama lapangan badminton"
                             class="w-full bg-transparent outline-none text-gray-700 placeholder:text-gray-400">
                     </div>
 
@@ -93,12 +93,12 @@
                         </button>
 
                         @foreach($lapangans->pluck('jenis_lantai')->unique() as $jenis)
-                            @if($jenis)
-                            <button class="tab-btn px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300"
-                                data-type="{{ $jenis }}">
-                                {{ $jenis }}
-                            </button>
-                            @endif
+                        @if($jenis)
+                        <button class="tab-btn px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300"
+                            data-type="{{ $jenis }}">
+                            {{ $jenis }}
+                        </button>
+                        @endif
                         @endforeach
 
                     </div>
@@ -111,7 +111,7 @@
                     <div id="track" class="flex transition-transform duration-500 ease-out">
 
                         @foreach ($lapangans as $index => $lapangan)
-                            <div class="lapangan-item min-w-full md:min-w-[33.33%] p-4" data-tipe="{{ strtolower($lapangan->jenis_lantai) }}" data-nama="{{ strtolower($lapangan->nama_lapangan) }}">
+                        <div class="lapangan-item min-w-full md:min-w-[33.33%] p-4" data-tipe="{{ strtolower($lapangan->jenis_lantai) }}" data-nama="{{ strtolower($lapangan->nama_lapangan) }}">
                             <article class="bg-white rounded-lg overflow-hidden shadow-2xl max-w-sm mx-auto transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
 
                                 <img
@@ -146,14 +146,14 @@
                                     <div class="mt-2 flex items-center">
                                         <span class="text-teal-600 font-semibold text-lg tracking-widest">
                                             @for($i = 1; $i <= 5; $i++)
-                                                @if($i <= floor($lapangan->rating))
-                                                    ★
+                                                @if($i <=floor($lapangan->rating))
+                                                ★
                                                 @elseif($i == ceil($lapangan->rating) && strpos($lapangan->rating, '.') !== false && explode('.', $lapangan->rating)[1] >= 5)
-                                                    ★
+                                                ★
                                                 @else
-                                                    ☆
+                                                ☆
                                                 @endif
-                                            @endfor
+                                                @endfor
                                         </span>
 
                                         <span class="ml-2 text-gray-600 text-sm font-medium">
@@ -175,24 +175,24 @@
                                 </div>
 
                             </article>
-                    </div>
-                    @endforeach
+                        </div>
+                        @endforeach
 
+                    </div>
                 </div>
+
+                <button id="prevBtn"
+                    class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-2 md:-translate-x-6 bg-white p-3 rounded-full shadow-lg text-blue-900 hover:bg-blue-50 z-10 transition">
+                    ‹
+                </button>
+
+                <button id="nextBtn"
+                    class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-2 md:translate-x-6 bg-white p-3 rounded-full shadow-lg text-blue-900 hover:bg-blue-50 z-10 transition">
+                    ›
+                </button>
             </div>
 
-            <button id="prevBtn"
-                class="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-2 md:-translate-x-6 bg-white p-3 rounded-full shadow-lg text-blue-900 hover:bg-blue-50 z-10 transition">
-                ‹
-            </button>
-
-            <button id="nextBtn"
-                class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-2 md:translate-x-6 bg-white p-3 rounded-full shadow-lg text-blue-900 hover:bg-blue-50 z-10 transition">
-                ›
-            </button>
-        </div>
-
-        <div class="flex justify-center mt-8 space-x-2" id="indicators"></div>
+            <div class="flex justify-center mt-8 space-x-2" id="indicators"></div>
 
         </div>
     </section>
@@ -305,16 +305,16 @@
                         <p class="mt-3 text-slate-600">
                             Cari teman bermain berdasarkan level, lokasi, dan gaya bermain.
                         </p>
-                        
+
                         <div class="mt-4">
                             @auth
-                                <a href="{{ route('komunitas.index') }}" class="text-sm font-semibold px-4 py-2 rounded-lg transition inline-block" style="color: #16a34a; border: 1px solid #16a34a; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f0fdf4'" onmouseout="this.style.backgroundColor='transparent'">
-                                    Buka Dashboard Komunitas
-                                </a>
+                            <a href="{{ route('komunitas.index') }}" class="text-sm font-semibold px-4 py-2 rounded-lg transition inline-block" style="color: #16a34a; border: 1px solid #16a34a; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f0fdf4'" onmouseout="this.style.backgroundColor='transparent'">
+                                Buka Dashboard Komunitas
+                            </a>
                             @else
-                                <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-600 hover:text-blue-600 transition inline-block">
-                                    Masuk untuk mencari teman
-                                </a>
+                            <a href="{{ route('login') }}" class="text-sm font-semibold text-gray-600 hover:text-blue-600 transition inline-block">
+                                Masuk untuk mencari teman
+                            </a>
                             @endauth
                         </div>
                     </div>
@@ -346,35 +346,35 @@
                             </p>
 
                             @auth
-                                @if($partner->id_pengguna != auth()->id())
-                                    <form action="{{ route('komunitas.ajak', $partner->id) }}" method="POST" class="mt-5">
-                                        @csrf
-                                        <button type="submit"
-                                            class="inline-flex items-center rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 px-5 py-3 text-sm font-semibold text-white transition">
-                                            Ajak Main
+                            @if($partner->id_pengguna != auth()->id())
+                            <form action="{{ route('komunitas.ajak', $partner->id) }}" method="POST" class="mt-5">
+                                @csrf
+                                <button type="submit"
+                                    class="inline-flex items-center rounded-full bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 px-5 py-3 text-sm font-semibold text-white transition">
+                                    Ajak Main
 
-                                            <svg class="ml-3" width="4" height="8" viewBox="0 0 3 6"
-                                                fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M0 0L3 3L0 6"></path>
-                                            </svg>
-                                        </button>
-                                    </form>
-                                @else
-                                    <p class="mt-5 text-sm font-semibold italic" style="color: #16a34a;">Ini adalah profil Anda.</p>
-                                @endif
+                                    <svg class="ml-3" width="4" height="8" viewBox="0 0 3 6"
+                                        fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M0 0L3 3L0 6"></path>
+                                    </svg>
+                                </button>
+                            </form>
                             @else
-                                <a href="{{ route('login') }}"
-                                    class="mt-5 inline-flex items-center rounded-full bg-gray-200 hover:bg-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 transition">
-                                    Login untuk Mengajak
-                                </a>
+                            <p class="mt-5 text-sm font-semibold italic" style="color: #16a34a;">Ini adalah profil Anda.</p>
+                            @endif
+                            @else
+                            <a href="{{ route('login') }}"
+                                class="mt-5 inline-flex items-center rounded-full bg-gray-200 hover:bg-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 transition">
+                                Login untuk Mengajak
+                            </a>
                             @endauth
 
                         </div>
                         @empty
-                            <div class="p-6 text-center text-gray-500 border rounded-xl bg-gray-50">
-                                Saat ini belum ada yang memposting pencarian teman main.
-                            </div>
+                        <div class="p-6 text-center text-gray-500 border rounded-xl bg-gray-50">
+                            Saat ini belum ada yang memposting pencarian teman main.
+                        </div>
                         @endforelse
                     </div>
 
@@ -393,32 +393,43 @@
                 .custom-carousel {
                     display: flex;
                     overflow-x: auto;
-                    gap: 1.5rem; /* 24px */
+                    gap: 1.5rem;
+                    /* 24px */
                     padding-bottom: 2rem;
                     scroll-snap-type: x mandatory;
                     scroll-behavior: smooth;
                     -ms-overflow-style: none;
                     scrollbar-width: none;
                 }
+
                 .custom-carousel::-webkit-scrollbar {
                     display: none;
                 }
+
                 .carousel-item {
                     flex: 0 0 auto;
                     width: 100%;
                     max-width: 320px;
                     scroll-snap-align: start;
                 }
+
                 @media (min-width: 768px) {
-                    .carousel-item { width: calc(50% - 0.75rem); max-width: none; }
+                    .carousel-item {
+                        width: calc(50% - 0.75rem);
+                        max-width: none;
+                    }
                 }
+
                 @media (min-width: 1024px) {
-                    .carousel-item { width: calc(25% - 1.125rem); max-width: none; }
+                    .carousel-item {
+                        width: calc(25% - 1.125rem);
+                        max-width: none;
+                    }
                 }
             </style>
 
             <div class="relative" id="promo-carousel-container">
-                
+
                 <div id="promoTrack" class="custom-carousel">
 
                     {{-- INTRO PROMO --}}
@@ -481,12 +492,12 @@
         function salinPromo(btn, kode) {
             navigator.clipboard.writeText(kode).then(() => {
                 const originalContent = btn.innerHTML;
-                
+
                 // Ubah tampilan tombol menjadi sukses
                 btn.innerHTML = `<svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Tersalin!`;
                 btn.classList.add('text-green-600', 'scale-105');
                 btn.classList.remove('hover:text-green-600');
-                
+
                 // Kembalikan ke semula setelah 2.5 detik
                 setTimeout(() => {
                     btn.innerHTML = originalContent;
@@ -509,7 +520,7 @@
             const container = document.getElementById('promo-carousel-container');
 
             let autoPlayInterval;
-            
+
             function getScrollAmount() {
                 const item = track.querySelector('.carousel-item');
                 if (item) {
@@ -523,7 +534,7 @@
                 const scrollLeft = track.scrollLeft;
                 const maxScrollLeft = track.scrollWidth - track.clientWidth;
                 const totalDots = dotsContainer.children.length;
-                
+
                 if (totalDots === 0) return;
 
                 // Hitung index aktif berdasarkan posisi scroll
@@ -553,7 +564,10 @@
                         const dot = document.createElement('button');
                         dot.className = `h-3 rounded-full transition-all duration-300 ${i === 0 ? 'bg-blue-900 w-8' : 'bg-gray-300 w-3'}`;
                         dot.addEventListener('click', () => {
-                            track.scrollTo({ left: i * itemWidth * itemsPerView, behavior: 'smooth' });
+                            track.scrollTo({
+                                left: i * itemWidth * itemsPerView,
+                                behavior: 'smooth'
+                            });
                             resetTimer();
                         });
                         dotsContainer.appendChild(dot);
@@ -567,17 +581,29 @@
             function nextSlide() {
                 const maxScrollLeft = track.scrollWidth - track.clientWidth;
                 if (track.scrollLeft >= maxScrollLeft - 10) {
-                    track.scrollTo({ left: 0, behavior: 'smooth' }); // Loop back to start
+                    track.scrollTo({
+                        left: 0,
+                        behavior: 'smooth'
+                    }); // Loop back to start
                 } else {
-                    track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+                    track.scrollBy({
+                        left: getScrollAmount(),
+                        behavior: 'smooth'
+                    });
                 }
             }
 
             function prevSlide() {
                 if (track.scrollLeft <= 10) {
-                    track.scrollTo({ left: track.scrollWidth, behavior: 'smooth' }); // Loop to end
+                    track.scrollTo({
+                        left: track.scrollWidth,
+                        behavior: 'smooth'
+                    }); // Loop to end
                 } else {
-                    track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+                    track.scrollBy({
+                        left: -getScrollAmount(),
+                        behavior: 'smooth'
+                    });
                 }
             }
 
@@ -590,14 +616,14 @@
                 startTimer();
             }
 
-            if(nextBtn) {
+            if (nextBtn) {
                 nextBtn.addEventListener('click', () => {
                     nextSlide();
                     resetTimer();
                 });
             }
 
-            if(prevBtn) {
+            if (prevBtn) {
                 prevBtn.addEventListener('click', () => {
                     prevSlide();
                     resetTimer();
@@ -606,7 +632,7 @@
 
             track.addEventListener('scroll', updateDots);
 
-            if(container) {
+            if (container) {
                 container.addEventListener('mouseenter', () => clearInterval(autoPlayInterval));
                 container.addEventListener('mouseleave', () => startTimer());
             }
@@ -621,9 +647,9 @@
         });
     </script>
 
-            </div>
+    </div>
 
-        </div>
+    </div>
     </section>
 
     {{-- BERITA SECTION --}}
@@ -772,66 +798,70 @@
 
 </main>
 
-    <!-- Modal Konfirmasi Pelatih -->
-    <div id="coachModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-        <div class="relative transform rounded-2xl bg-white p-6 shadow-2xl transition-transform duration-300 scale-95" id="coachModalContent" style="width: 90%; max-width: 450px;">
-            <!-- Icon -->
-            <div class="text-center mb-4">
-                <div style="width: 56px; height: 56px; display: inline-flex;" class="items-center justify-center rounded-full bg-green-100">
-                    <svg style="width: 32px; height: 32px;" class="text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-            </div>
-            
-            <h3 class="text-center text-xl font-bold text-slate-900">Pilih Lapangan Terlebih Dahulu</h3>
-            <p class="mt-2 text-center text-sm text-slate-500 leading-relaxed">
-                Untuk mem-booking <strong id="modalCoachName" class="text-green-600"></strong>, Anda harus memilih jadwal dan lapangan badminton terlebih dahulu. Apakah Anda ingin diarahkan ke daftar lapangan sekarang?
-            </p>
-            
-            <div class="mt-8 flex gap-3 justify-center" style="justify-content: center;">
-                <button type="button" onclick="closeCoachModal()" class="rounded-xl bg-slate-100 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 cursor-pointer" style="padding: 12px 20px;">
-                    Tidak, Batal
-                </button>
-                <button type="button" onclick="proceedToCourt()" class="rounded-xl text-sm font-semibold text-white shadow-md transition hover:opacity-90 cursor-pointer" style="padding: 12px 20px; background-color: #16a34a;">
-                    Ya, Pilih Lapangan
-                </button>
+<!-- Modal Konfirmasi Pelatih -->
+<div id="coachModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/50 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+    <div class="relative transform rounded-2xl bg-white p-6 shadow-2xl transition-transform duration-300 scale-95" id="coachModalContent" style="width: 90%; max-width: 450px;">
+        <!-- Icon -->
+        <div class="text-center mb-4">
+            <div style="width: 56px; height: 56px; display: inline-flex;" class="items-center justify-center rounded-full bg-green-100">
+                <svg style="width: 32px; height: 32px;" class="text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
             </div>
         </div>
+
+        <h3 class="text-center text-xl font-bold text-slate-900">Pilih Lapangan Terlebih Dahulu</h3>
+        <p class="mt-2 text-center text-sm text-slate-500 leading-relaxed">
+            Untuk mem-booking <strong id="modalCoachName" class="text-green-600"></strong>, Anda harus memilih jadwal dan lapangan badminton terlebih dahulu. Apakah Anda ingin diarahkan ke daftar lapangan sekarang?
+        </p>
+
+        <div class="mt-8 flex gap-3 justify-center" style="justify-content: center;">
+            <button type="button" onclick="closeCoachModal()" class="rounded-xl bg-slate-100 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 cursor-pointer" style="padding: 12px 20px;">
+                Tidak, Batal
+            </button>
+            <button type="button" onclick="proceedToCourt()" class="rounded-xl text-sm font-semibold text-white shadow-md transition hover:opacity-90 cursor-pointer" style="padding: 12px 20px; background-color: #16a34a;">
+                Ya, Pilih Lapangan
+            </button>
+        </div>
     </div>
+</div>
 
-    <script>
-        const coachModal = document.getElementById('coachModal');
-        const coachModalContent = document.getElementById('coachModalContent');
-        const modalCoachName = document.getElementById('modalCoachName');
+<script>
+    const coachModal = document.getElementById('coachModal');
+    const coachModalContent = document.getElementById('coachModalContent');
+    const modalCoachName = document.getElementById('modalCoachName');
 
-        function openCoachModal(coachName) {
-            modalCoachName.innerText = coachName;
-            coachModal.classList.remove('hidden');
-            coachModal.classList.add('flex');
-            
-            // Trigger animation
-            setTimeout(() => {
-                coachModal.classList.remove('opacity-0');
-                coachModalContent.classList.remove('scale-95');
-            }, 10);
+    function openCoachModal(coachName) {
+        modalCoachName.innerText = coachName;
+        coachModal.classList.remove('hidden');
+        coachModal.classList.add('flex');
+
+        // Trigger animation
+        setTimeout(() => {
+            coachModal.classList.remove('opacity-0');
+            coachModalContent.classList.remove('scale-95');
+        }, 10);
+    }
+
+    function closeCoachModal() {
+        coachModal.classList.add('opacity-0');
+        coachModalContent.classList.add('scale-95');
+
+        setTimeout(() => {
+            coachModal.classList.remove('flex');
+            coachModal.classList.add('hidden');
+        }, 300);
+    }
+
+    function proceedToCourt() {
+        closeCoachModal();
+        // Scroll ke bagian lapangan populer secara mulus
+        const lapanganSection = document.getElementById('lapangan-populer');
+        if (lapanganSection) {
+            lapanganSection.scrollIntoView({
+                behavior: 'smooth'
+            });
         }
-
-        function closeCoachModal() {
-            coachModal.classList.add('opacity-0');
-            coachModalContent.classList.add('scale-95');
-            
-            setTimeout(() => {
-                coachModal.classList.remove('flex');
-                coachModal.classList.add('hidden');
-            }, 300);
-        }
-
-        function proceedToCourt() {
-            closeCoachModal();
-            // Scroll ke bagian lapangan populer secara mulus
-            const lapanganSection = document.getElementById('lapangan-populer');
-            if (lapanganSection) {
-                lapanganSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-    </script>
+    }
+</script>
 @endsection
