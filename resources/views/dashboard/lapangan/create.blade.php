@@ -8,11 +8,12 @@
 
             <div class="flex items-center justify-between mb-6">
                 <h1 class="text-2xl font-bold text-gray-800">
-                    Edit Data Lapangan
+                    Tambah Lapangan
                 </h1>
             </div>
-            <form action="{{ route('admin.lapangan.update', $lapangan->id_lapangan) }}" method="POST" enctype="multipart/form-data">
-                @method('PUT')
+            <form action="{{ route('admin.lapangan.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
                 @include('dashboard.lapangan.form')
             </form>
         </div>
