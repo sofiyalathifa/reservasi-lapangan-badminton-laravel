@@ -293,6 +293,12 @@ Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::put('/promo-admin/{id}', [\App\Http\Controllers\Admin\AdminPromoController::class, 'update'])->name('admin.promo.update');
     Route::delete('/promo-admin/{id}', [\App\Http\Controllers\Admin\AdminPromoController::class, 'destroy'])->name('admin.promo.destroy');
 
+    // Berita
+    Route::get('/berita-admin', [\App\Http\Controllers\Admin\AdminBeritaController::class, 'index'])->name('admin.berita.index');
+    Route::post('/berita-admin', [\App\Http\Controllers\Admin\AdminBeritaController::class, 'store'])->name('admin.berita.store');
+    Route::put('/berita-admin/{id}', [\App\Http\Controllers\Admin\AdminBeritaController::class, 'update'])->name('admin.berita.update');
+    Route::delete('/berita-admin/{id}', [\App\Http\Controllers\Admin\AdminBeritaController::class, 'destroy'])->name('admin.berita.destroy');
+
     // Laporan
     Route::get('/laporan', [\App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan');
     Route::get('/laporan/export', [\App\Http\Controllers\Admin\LaporanController::class, 'exportCsv'])->name('laporan.export');
