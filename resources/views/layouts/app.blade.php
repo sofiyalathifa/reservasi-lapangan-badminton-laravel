@@ -65,11 +65,6 @@
                             Berita
                         </a>
 
-                        <!-- Dashboard Admin -->
-                        <a href="{{ url('/admin/laporan') }}"
-                            class="text-gray-700 hover:text-green-500 font-medium transition">
-                            Dashboard
-                        </a>
 
                     </div>
 
