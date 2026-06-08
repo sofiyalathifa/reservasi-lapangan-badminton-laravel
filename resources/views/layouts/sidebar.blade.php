@@ -47,6 +47,7 @@
             <!-- Jarak antar menu vertikal dipadatkan (space-y-0.5) agar tombol logout naik ke atas layar -->
             <div class="flex flex-col h-full flex-1 space-y-0.5">
 
+                <!-- Padding vertikal menu dikurangi dari py-2 menjadi py-1.5 agar hemat ruang -->
                 <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-1.5 hover:text-white rounded-lg transition-colors hover:bg-gradient-to-r hover:from-green-500 hover:to-teal-500">
                     Dashboard
                 </a>
@@ -94,8 +95,13 @@
                         <li class="flex items-center pl-4 lg:hidden"> <a href="javascript:;" class="block p-0 text-sm text-white transition-all ease-nav-brand" sidenav-trigger>
                                 <div class="w-4.5 overflow-hidden"> <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i> <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i> <i class="ease relative block h-0.5 rounded-sm bg-white transition-all"></i> </div>
                             </a> </li> <!-- notifications -->
+<<<<<<< HEAD
                         <div class="flex items-center space-x-4"> <!-- Foto profil --> <img src="{{ asset('images/logo.png') }}" alt="User Profile" class="w-10 h-10 rounded-full border-2 border-white shadow-md"> <!-- Nama dan role -->
                             <div class="flex flex-col"> <span class="text-sm font-semibold text-white">{{ auth()->check() ? auth()->user()->name : 'User' }}</span> <span class="text-xs text-gray-200 capitalize">{{ auth()->check() ? auth()->user()->role : 'Guest' }}</span> </div>
+=======
+                        <div class="flex items-center space-x-4"> <!-- Foto profil --> <img src="{{ asset('images/logo.png') }}" alt="Admin Profile" class="w-10 h-10 rounded-full border-2 border-white shadow-md"> <!-- Nama dan role -->
+                            <div class="flex flex-col"> <span class="text-sm font-semibold text-white">Admin</span> <span class="text-xs text-gray-200">Administrator</span> </div>
+>>>>>>> origin/hafida/dashboardowner
                         </div>
                     </ul>
                 </div>

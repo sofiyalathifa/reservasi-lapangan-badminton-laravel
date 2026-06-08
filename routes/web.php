@@ -281,3 +281,9 @@ Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::put('/lapangan-admin/{id}', [\App\Http\Controllers\LapanganController::class, 'update'])->name('admin.lapangan.update');
     Route::delete('/lapangan-admin/{id}', [\App\Http\Controllers\LapanganController::class, 'destroy'])->name('admin.lapangan.destroy');
 });
+
+Route::prefix('owner')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard.owner.dashboard');
+    })->name('owner.dashboard');
+});
