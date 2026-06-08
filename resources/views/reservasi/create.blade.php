@@ -253,16 +253,30 @@
         const selectedTimeInput = document.getElementById('selectedTime');
         let currentSelectedTime = selectedTimeInput.value;
         
+        // Pengecekan realtime
+        const now = new Date();
+        const todayStr = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+        const isToday = date === todayStr;
+        const currentHourStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+        
         timeCards.forEach(card => {
             const timeVal = card.getAttribute('data-value');
             
-            if (booked.includes(timeVal)) {
-                // Booked: abu-abu dan tidak bisa diklik
+            const isPassed = isToday && timeVal < currentHourStr;
+            const isBooked = booked.includes(timeVal);
+            
+            if (isBooked || isPassed) {
+                // Booked or Passed: abu-abu dan tidak bisa diklik
                 card.className = "time-card cursor-not-allowed rounded-xl border-2 border-gray-100 bg-gray-100 py-2 text-center font-bold text-gray-400 relative overflow-hidden group";
                 
                 if (!card.querySelector('.booked-overlay')) {
-                    card.innerHTML = timeVal + `<div class="booked-overlay absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-gray-100/90 transition-opacity" title="Sudah dipesan">
-                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    const message = isPassed ? "Waktu Terlewat" : "Sudah dipesan";
+                    const icon = isPassed 
+                        ? `<svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`
+                        : `<svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>`;
+                        
+                    card.innerHTML = timeVal + `<div class="booked-overlay absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-gray-100/90 transition-opacity" title="${message}">
+                        ${icon}
                     </div>`;
                 }
                 
