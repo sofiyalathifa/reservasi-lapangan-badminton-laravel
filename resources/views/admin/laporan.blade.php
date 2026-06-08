@@ -9,15 +9,25 @@
                 <p class="text-slate-500 mt-1 text-sm">Pantau ringkasan reservasi, pendapatan, dan performa lapangan secara real-time.</p>
             </div>
             
-            <div class="mt-4 md:mt-0 flex gap-3 print:hidden">
-                <a href="{{ route('admin.laporan.export') }}" class="inline-flex items-center gap-2 bg-gradient-to-tl from-emerald-500 to-teal-400 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                    Export CSV
-                </a>
-                <button onclick="window.print()" class="inline-flex items-center gap-2 bg-gradient-to-tl from-slate-800 to-slate-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                    Print
-                </button>
+            <div class="mt-4 md:mt-0 flex items-center print:hidden">
+                <form action="{{ route('laporan.export') }}" method="GET" class="flex items-center gap-3">
+                    <select name="filter" class="bg-white border border-gray-200 text-slate-700 text-sm rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block px-4 py-2.5 shadow-sm font-medium outline-none h-full cursor-pointer">
+                        <option value="all">Semua Waktu</option>
+                        <option value="harian">Hari Ini</option>
+                        <option value="mingguan">Minggu Ini</option>
+                        <option value="bulanan">Bulan Ini</option>
+                    </select>
+                    <div class="flex items-center gap-2">
+                        <button type="submit" class="whitespace-nowrap inline-flex items-center justify-center gap-2 bg-gradient-to-tl from-emerald-500 to-teal-400 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <span>Export CSV</span>
+                        </button>
+                        <button type="button" onclick="const filterVal = document.querySelector('select[name=filter]').value; window.open('{{ route('laporan.print') }}?filter=' + filterVal, '_blank');" class="whitespace-nowrap inline-flex items-center justify-center gap-2 bg-gradient-to-tl from-slate-800 to-slate-700 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                            <span>Print</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 

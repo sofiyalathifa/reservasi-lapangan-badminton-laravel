@@ -156,30 +156,82 @@ $statusReservasi = DB::table('reservasi')
 ));
     }
 
-    public function exportCsv()
+    public function exportCsv(\Illuminate\Http\Request $request)
     {
-        $laporanBulanan = DB::table('reservasi')
-            ->select(
-                'tanggal_booking',
-                DB::raw('COUNT(*) as total_booking'),
-                DB::raw('SUM(total_biaya) as total_nilai')
+        $filter = $request->query('filter', 'all');
+
+        $query = DB::table('reservasi')
+            ->join('users', 'reservasi.id_pengguna', '=', 'users.id')
+            ->join('lapangan', 'reservasi.id_lapangan', '=', 'lapangan.id_lapangan')
+            ->leftJoin('pembayaran', 'reservasi.id_reservasi', '=', 'pembayaran.id_reservasi')
+            ->where('reservasi.status_reservasi', '!=', 'dibatalkan');
+
+        if ($filter == 'harian') {
+            $query->whereDate('reservasi.tanggal_booking', now());
+            $periodeStr = 'Harian_';
+        } elseif ($filter == 'mingguan') {
+            $query->whereBetween('reservasi.tanggal_booking', [now()->startOfWeek(), now()->endOfWeek()]);
+            $periodeStr = 'Mingguan_';
+        } elseif ($filter == 'bulanan') {
+            $query->whereMonth('reservasi.tanggal_booking', now()->month)
+                  ->whereYear('reservasi.tanggal_booking', now()->year);
+            $periodeStr = 'Bulanan_';
+        } else {
+            $periodeStr = 'Semua_';
+        }
+
+        $laporanDetail = $query->select(
+                'reservasi.id_reservasi',
+                'reservasi.tanggal_booking',
+                'reservasi.jam_mulai',
+                'reservasi.jam_selesai',
+                'lapangan.nama_lapangan',
+                'users.name as nama_pelanggan',
+                'users.nomor_telepon',
+                'reservasi.status_reservasi',
+                'reservasi.total_biaya',
+                'reservasi.diskon',
+                'pembayaran.metode_pembayaran',
+                'pembayaran.status_pembayaran'
             )
-            ->groupBy('tanggal_booking')
-            ->orderByDesc('tanggal_booking')
+            ->orderByDesc('reservasi.tanggal_booking')
+            ->orderBy('reservasi.jam_mulai')
             ->get();
 
-        $fileName = 'laporan_reservasi_' . now()->format('Ymd_His') . '.csv';
+        $fileName = 'Laporan_Detail_Reservasi_' . $periodeStr . now()->format('Ymd_His') . '.csv';
 
-        $callback = function () use ($laporanBulanan) {
+        $callback = function () use ($laporanDetail) {
             $handle = fopen('php://output', 'w');
-            fputcsv($handle, ['Tanggal', 'Total Booking', 'Total Nilai']);
+            
+            // Header CSV yang proper
+            fputcsv($handle, [
+                'ID Reservasi', 
+                'Tanggal Booking', 
+                'Waktu Main', 
+                'Lapangan', 
+                'Pelanggan', 
+                'No Telepon', 
+                'Status Reservasi', 
+                'Diskon Promo', 
+                'Total Biaya (Rp)', 
+                'Metode Bayar', 
+                'Status Bayar'
+            ], ';');
 
-            foreach ($laporanBulanan as $laporan) {
+            foreach ($laporanDetail as $row) {
                 fputcsv($handle, [
-                    $laporan->tanggal_booking,
-                    $laporan->total_booking,
-                    $laporan->total_nilai,
-                ]);
+                    $row->id_reservasi,
+                    \Carbon\Carbon::parse($row->tanggal_booking)->format('d-M-Y'),
+                    \Carbon\Carbon::parse($row->jam_mulai)->format('H:i') . ' - ' . \Carbon\Carbon::parse($row->jam_selesai)->format('H:i'),
+                    $row->nama_lapangan,
+                    $row->nama_pelanggan,
+                    $row->nomor_telepon ?? '-',
+                    strtoupper($row->status_reservasi),
+                    $row->diskon,
+                    $row->total_biaya,
+                    $row->metode_pembayaran ?? '-',
+                    strtoupper($row->status_pembayaran ?? 'BELUM BAYAR'),
+                ], ';');
             }
 
             fclose($handle);
@@ -189,5 +241,46 @@ $statusReservasi = DB::table('reservasi')
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ]);
+    }
+
+    public function print(\Illuminate\Http\Request $request)
+    {
+        $filter = $request->query('filter', 'all');
+
+        $query = DB::table('reservasi')
+            ->join('users', 'reservasi.id_pengguna', '=', 'users.id')
+            ->join('lapangan', 'reservasi.id_lapangan', '=', 'lapangan.id_lapangan')
+            ->leftJoin('pembayaran', 'reservasi.id_reservasi', '=', 'pembayaran.id_reservasi')
+            ->where('reservasi.status_reservasi', '!=', 'dibatalkan');
+
+        $periodeTitle = 'Semua Waktu';
+        if ($filter == 'harian') {
+            $query->whereDate('reservasi.tanggal_booking', now());
+            $periodeTitle = 'Hari Ini (' . now()->format('d M Y') . ')';
+        } elseif ($filter == 'mingguan') {
+            $query->whereBetween('reservasi.tanggal_booking', [now()->startOfWeek(), now()->endOfWeek()]);
+            $periodeTitle = 'Minggu Ini (' . now()->startOfWeek()->format('d M') . ' - ' . now()->endOfWeek()->format('d M Y') . ')';
+        } elseif ($filter == 'bulanan') {
+            $query->whereMonth('reservasi.tanggal_booking', now()->month)
+                  ->whereYear('reservasi.tanggal_booking', now()->year);
+            $periodeTitle = 'Bulan ' . now()->translatedFormat('F Y');
+        }
+
+        $laporanDetail = $query->select(
+                'reservasi.id_reservasi',
+                'reservasi.tanggal_booking',
+                'reservasi.jam_mulai',
+                'reservasi.jam_selesai',
+                'lapangan.nama_lapangan',
+                'users.name as nama_pelanggan',
+                'reservasi.status_reservasi',
+                'reservasi.total_biaya',
+                'pembayaran.status_pembayaran'
+            )
+            ->orderByDesc('reservasi.tanggal_booking')
+            ->orderBy('reservasi.jam_mulai')
+            ->get();
+
+        return view('admin.laporan_print', compact('laporanDetail', 'periodeTitle'));
     }
 }

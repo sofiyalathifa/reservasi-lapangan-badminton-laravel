@@ -287,6 +287,11 @@ Route::middleware(['auth', 'role:admin,owner'])->group(function () {
     Route::put('/pelatih-admin/{id}', [\App\Http\Controllers\AdminPelatihController::class, 'update'])->name('admin.pelatih.update');
     Route::delete('/pelatih-admin/{id}', [\App\Http\Controllers\AdminPelatihController::class, 'destroy'])->name('admin.pelatih.destroy');
 
+    // Laporan
+    Route::get('/laporan', [\App\Http\Controllers\LaporanController::class, 'index'])->name('laporan');
+    Route::get('/laporan/export', [\App\Http\Controllers\LaporanController::class, 'exportCsv'])->name('laporan.export');
+    Route::get('/laporan/print', [\App\Http\Controllers\LaporanController::class, 'print'])->name('laporan.print');
+
     Route::get('/lapangan-admin', [\App\Http\Controllers\LapanganController::class, 'index'])->name('admin.lapangan.index');
     Route::get('/lapangan-admin/create', [\App\Http\Controllers\LapanganController::class, 'create'])->name('admin.lapangan.create');
     Route::post('/lapangan-admin', [\App\Http\Controllers\LapanganController::class, 'store'])->name('admin.lapangan.store');
