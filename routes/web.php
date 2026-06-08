@@ -131,7 +131,7 @@ Route::middleware(['auth', 'role:admin,kasir,owner'])->group(function () {
 
         // 3. Lapangan Terpakai
         $totalLapangan = \App\Models\Lapangan::count();
-        $jamOperasional = 15; // Asumsi 15 jam buka per hari (misal jam 8 pagi - 11 malam)
+        $jamOperasional = 16; // Asumsi 16 jam buka per hari (07:00 - 22:00 terakhir booking, tutup 23:00)
         $totalSlot = $totalLapangan * $jamOperasional;
         
         $slotTerpakai = \App\Models\Reservasi::whereDate('tanggal_booking', $today)
