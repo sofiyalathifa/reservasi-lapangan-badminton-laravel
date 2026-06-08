@@ -75,6 +75,23 @@ class ReservasiController extends Controller
         $durasi = $request->durasi;
         $harga_per_jam = $lapangan->harga_per_jam;
 
+        // Validasi ketersediaan waktu (mencegah booking yang tumpang tindih)
+        $jam_mulai_int = (int) date('H', strtotime($jam_mulai));
+        for ($i = 0; $i < $durasi; $i++) {
+            $checkTime = sprintf('%02d:00:00', $jam_mulai_int + $i);
+            
+            $isBooked = \App\Models\Reservasi::where('id_lapangan', $lapangan->id_lapangan)
+                ->where('tanggal_booking', $request->tanggal)
+                ->where('status_reservasi', '!=', 'dibatalkan')
+                ->where('jam_mulai', '<=', $checkTime)
+                ->where('jam_selesai', '>', $checkTime)
+                ->exists();
+                
+            if ($isBooked) {
+                return back()->with('error', 'Gagal! Lapangan sudah ter-booking pada jam ' . sprintf('%02d:00', $jam_mulai_int + $i) . '. Silakan pilih waktu lain atau kurangi durasi main Anda.')->withInput();
+            }
+        }
+
         // Hitung jam_selesai
         $jamSelesaiStr = date('H:i:s', strtotime($jam_mulai . " + $durasi hours"));
         $totalBiaya = $durasi * $harga_per_jam;
