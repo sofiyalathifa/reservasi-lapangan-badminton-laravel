@@ -232,10 +232,9 @@ Proyek ini menggunakan lisensi MIT. Lihat file [LICENSE](LICENSE) untuk detail l
 
 ## 👨‍💻 Author
 
-**Sofiya Lathifa**
-
-- GitHub: [@sofiyalathifa](https://github.com/sofiyalathifa)
-- Repository: [reservasi-lapangan-badminton-laravel](https://github.com/sofiyalathifa/reservasi-lapangan-badminton-laravel)
+Mochamad Rico Andreano 	    24082010005
+Hafida Zahra Sofiya L.    	24082010013
+Evelin Salsabila A. 		24082010017
 
 ## 💬 Support & Feedback
 
@@ -252,6 +251,6 @@ Jika Anda menemukan bug atau memiliki saran, silakan buat [Issue](https://github
 
 ---
 
-**Made with ❤️ by Sofiya Lathifa**
+**Made with ❤️ by Team 4**
 
 Terakhir diperbarui: Juni 2026
